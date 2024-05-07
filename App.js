@@ -8,6 +8,7 @@ import theme from "./theme";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts, Inter_900Black, PatrickHand_400Regular } from '@expo-google-fonts/dev';
 import useSplashScreen from "./Functions/Hooks";
+import 'react-native-reanimated'; // needed for now because Expo SDK 51 is having issues with tab switching (app crashes)
 
 const Tab = createBottomTabNavigator();
 /* Automatically shows splash screen on start
@@ -20,19 +21,21 @@ const tabIcons = {
     inactive: <FontAwesome6
       name="circle-user"
       size={24}
-      color={theme.colors.lightBlue}
+      color={theme.colors.gray}
+      solid
     />,
     active: <FontAwesome6
       name="circle-user"
       size={24}
       color={theme.colors.black}
+      solid
     />
   },
   Groups: {
     inactive: <FontAwesome6
       name="users"
       size={24}
-      color={theme.colors.lightBlue}
+      color={theme.colors.gray}
     />,
     active: <FontAwesome6
       name="users"
@@ -44,7 +47,7 @@ const tabIcons = {
     inactive: <FontAwesome6
       name="camera"
       size={24}
-      color={theme.colors.lightBlue}
+      color={theme.colors.gray}
     />,
     active: <FontAwesome6
       name="camera"
@@ -82,6 +85,9 @@ const App = () => {
             );
           },
           tabBarActiveTintColor: theme.colors.black,
+          tabBarLabelStyle: {
+            fontWeight: "400",
+          },
         })}
       >
         {/* Bottom Navigation Bar Tabs */}

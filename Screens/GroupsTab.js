@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainGroupsScreen from './Groups/MainGroupsScreen';
 import GroupScreen from './Groups/GroupScreen';
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
 import theme from "../theme";
 
 const Stack = createNativeStackNavigator();
@@ -12,6 +12,7 @@ const Stack = createNativeStackNavigator();
 const GroupsTab = () => {
   return (
     <Stack.Navigator initialRouteName="Homepage">
+      {/* Groups Page is the default screen that will be shown when the user clicks on the Groups Tab. It displays a list of all groups the user is a part of. */}
       <Stack.Screen
         name="Groups Page"
         component={MainGroupsScreen}
@@ -27,7 +28,7 @@ const GroupsTab = () => {
             <TouchableOpacity
               onPress={() => alert('This is a button!')}
             >
-              <FontAwesome
+              <FontAwesome6
                 name="plus"
                 size={20}
                 color={theme.colors.black}
@@ -36,6 +37,7 @@ const GroupsTab = () => {
           )
 
         })} />
+      {/* Group Page is the screen that will be shown when the user clicks on a specific group in the Groups screen. */}
       <Stack.Screen
         name="Group Page"
         component={GroupScreen}
@@ -50,6 +52,17 @@ const GroupsTab = () => {
             >
               <Image style={styles.icon}
                 source={require('../assets/back.png')}
+              />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => alert('This is a button!')}
+            >
+              <FontAwesome6
+                name="chart-simple"
+                size={20}
+                color={theme.colors.black}
               />
             </TouchableOpacity>
           )
