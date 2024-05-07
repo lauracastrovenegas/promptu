@@ -1,13 +1,16 @@
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useState } from 'react';
+import { CameraView, useCameraPermissions, takePictureAsync } from 'expo-camera';
+import { useRef, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesome6 } from "@expo/vector-icons";
 import theme from '../../theme';
 
 /* This component is the Profile Screen */
-const MainCameraScreen = () => {
-  const [facing, setFacing] = useState("back");
+const MainCameraScreen = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
+  const [facing, setFacing] = useState("back");
+  const [flash, setFlash] = useState("auto");
+  const [isReady, setIsReady] = useState(false);
+  const cameraRef = useRef(null);
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -24,26 +27,54 @@ const MainCameraScreen = () => {
     );
   }
 
+  async function takePicture(camera) {
+    if (!isReady) {
+      return;
+    }
+
+    if (cameraRef.current) {
+      let photo = await cameraRef.current.takePictureAsync();
+      navigation.navigate('Photo Submission Screen', {
+        photo,
+      });
+    }
+  }
+
   function toggleCameraFacing() {
     setFacing((current) => (
       current === "back" ? "front" : "back"
     ));
   }
-  
+
+  function toggleFlash() {
+    setFlash((current) => {
+      switch (current) {
+        case "off":
+          return "on";
+        case "on":
+          return "auto";
+        case "auto":
+          return "off";
+      }
+    });
+  }
+
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} />
+      <CameraView ref={cameraRef} style={styles.camera} facing={facing} flash={flash} onCameraReady={() => setIsReady(true)}/>
       <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
-            <FontAwesome6 name="bolt" size={24} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.centerButton}>
-            <FontAwesome6 name="circle" size={60} color="white" solid/>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <FontAwesome6 name="rotate" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.button} onPress={toggleFlash}>
+          <FontAwesome6 name="bolt" size={24} color={flash === "off" ? theme.colors.white : theme.colors.lightPurple} />
+          {flash == "off" && <FontAwesome6 style={styles.slash} name="slash" size={24} color={theme.colors.white} />}
+          {flash === "auto" && <Text style={styles.text}>A</Text>}
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.centerButton} onPress={takePicture}>
+          <FontAwesome6 name="circle" size={75} color="white" solid />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+          <FontAwesome6 name="rotate" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
     </View>
   )
 };
@@ -57,9 +88,6 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
-    borderColor: 'white',
-    borderWidth: 1,
-    borderRadius: 30,
   },
   buttonContainer: {
     height: 'fit-content',
@@ -68,7 +96,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     gap: 20,
     backgroundColor: theme.colors.black,
-    padding: 30,
+    paddingHorizontal: 30,
+    paddingVertical: 20,
   },
   button: {
     height: 'flex-end',
@@ -77,20 +106,30 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 16,
     borderRadius: 50,
-    margin: 'auto'
+    margin: 'auto',
+    flexDirection: 'row',
+    gap: 5,
   },
   centerButton: {
     alignSelf: 'flex-end',
     alignItems: 'center',
     borderColor: 'white',
     borderWidth: 1,
-    padding: 16,
+    padding: 8,
     borderRadius: 50,
     margin: 'auto'
+  },
+  slash: {
+    position: 'absolute',
+    top: 18,
+    left: 15,
+    zIndex: 1,
+    fontSize: 20,
   },
   text: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'white',
+    color: theme.colors.lightPurple,
+    fontFamily: 'Inter_400Regular',
   },
 });

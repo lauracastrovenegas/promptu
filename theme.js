@@ -4,7 +4,8 @@ const theme = {
       black: '#000000',
       lightBlue: "#80B3EF",
       lightGray: "#D9D9D9",
-      gray: "#94A3B8"
+      gray: "#94A3B8",
+      lightPurple: "#C4B6FF"
     },
     sizes: {
       mobile: "767px",
