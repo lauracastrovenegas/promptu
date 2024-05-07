@@ -1,4 +1,4 @@
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import GroupsTab from "./Screens/GroupsTab";
@@ -6,7 +6,7 @@ import CameraTab from "./Screens/CameraTab";
 import ProfileTab from "./Screens/ProfileTab";
 import theme from "./theme";
 import * as SplashScreen from "expo-splash-screen";
-import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
+import { useFonts, Inter_900Black, PatrickHand_400Regular } from '@expo-google-fonts/dev';
 import useSplashScreen from "./Functions/Hooks";
 
 const Tab = createBottomTabNavigator();
@@ -17,36 +17,36 @@ SplashScreen.preventAutoHideAsync();
 
 const tabIcons = {
   Profile: {
-    inactive: <FontAwesome5
-      name="user-circle"
+    inactive: <FontAwesome6
+      name="circle-user"
       size={24}
       color={theme.colors.lightBlue}
     />,
-    active: <FontAwesome5
-      name="user-circle"
+    active: <FontAwesome6
+      name="circle-user"
       size={24}
       color={theme.colors.black}
     />
   },
   Groups: {
-    inactive: <FontAwesome5
-      name="user"
+    inactive: <FontAwesome6
+      name="users"
       size={24}
       color={theme.colors.lightBlue}
     />,
-    active: <FontAwesome5
-      name="user"
+    active: <FontAwesome6
+      name="users"
       size={24}
       color={theme.colors.black}
     />
   },
   Camera: {
-    inactive: <FontAwesome5
+    inactive: <FontAwesome6
       name="camera"
       size={24}
       color={theme.colors.lightBlue}
     />,
-    active: <FontAwesome5
+    active: <FontAwesome6
       name="camera"
       size={24}
       color={theme.colors.black}
@@ -57,7 +57,8 @@ const tabIcons = {
 const App = () => {
   // Look at this for more info on fonts: https://stackoverflow.com/questions/33971221/google-fonts-in-react-native
   let [fontsLoaded] = useFonts({
-    Inter_900Black
+    Inter_900Black,
+    PatrickHand_400Regular
   });
 
   /* This can be expanded to more than just fonts in the future,
