@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainProfileScreen from './Profile/MainProfileScreen';
+import { FontAwesome6 } from "@expo/vector-icons";
+import theme from '../theme';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +17,17 @@ const ProfileTab = () => {
           options={() => ({
           headerTitle: () => (
             <Text style={styles.title}>Profile</Text>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => alert('This is a button!')}
+            >
+              <FontAwesome6
+                name="gear"
+                size={20}
+                color={theme.colors.black}
+              />
+            </TouchableOpacity>
           )
         })} />
       </Stack.Navigator>
@@ -25,8 +38,8 @@ const ProfileTab = () => {
 // example of styling
 const styles = StyleSheet.create({
   title: {
-    textTransform: 'capitalize',
-    fontFamily: "Inter_900Black",
+    textTransform: 'uppercase',
+    fontFamily: "PatrickHand_400Regular",
     fontSize: 24,
   },
 });

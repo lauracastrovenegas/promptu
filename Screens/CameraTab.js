@@ -13,9 +13,7 @@ const CameraTab = () => {
           name="Main Camera Screen" 
           component={MainCameraScreen} 
           options={() => ({
-            headerTitle: () => (
-              <Text>Camera</Text>
-            ),
+            headerShown: false,
           })} />
       </Stack.Navigator>
     )

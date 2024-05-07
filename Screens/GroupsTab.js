@@ -3,6 +3,8 @@ import { StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainGroupsScreen from './Groups/MainGroupsScreen';
 import GroupScreen from './Groups/GroupScreen';
+import { FontAwesome } from "@expo/vector-icons";
+import theme from "../theme";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,16 +16,33 @@ const GroupsTab = () => {
         name="Groups Page"
         component={MainGroupsScreen}
         options={() => ({
+          // hide center header text but keep the header itself
           headerTitle: () => (
-            <Text>Groups</Text>
+            <Text></Text>
           ),
+          headerLeft: () => (
+            <Text style={styles.title}>Promptu</Text>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => alert('This is a button!')}
+            >
+              <FontAwesome
+                name="plus"
+                size={20}
+                color={theme.colors.black}
+              />
+            </TouchableOpacity>
+          )
+
         })} />
-      <Stack.Screen 
+      <Stack.Screen
         name="Group Page"
         component={GroupScreen}
-        options={({ navigation }) => ({
+        options={({ route, navigation }) => ({
           headerTitle: () => (
-            <Text>Groups</Text>
+            // set header title to the group name passed through route params
+            <Text>{route.params.group.name}</Text>
           ),
           headerLeft: () => (
             <TouchableOpacity
@@ -50,5 +69,10 @@ const styles = StyleSheet.create({
     objectFit: 'fill',
     marginRight: 10,
   },
+  title: {
+    fontFamily: "PatrickHand_400Regular",
+    textTransform: 'uppercase',
+    fontSize: 24,
+  }
 });
 

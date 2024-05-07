@@ -3,6 +3,7 @@ const theme = {
       white: '#FFFFFF',
       black: '#000000',
       lightBlue: "#80B3EF",
+      lightGray: "#D9D9D9",
     },
     sizes: {
       mobile: "767px",
