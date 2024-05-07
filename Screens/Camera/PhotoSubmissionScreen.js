@@ -1,14 +1,26 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, Text, StyleSheet, Image, TextInput } from 'react-native';
 import Button from '../../Components/Button';
 import theme from '../../theme';
 
 const PhotoSubmissionScreen = ({ route }) => {
+  const [caption, onChangeCaption] = React.useState('');
+
   return (
-    <View style={styles.screen}>
-      <Image source={{ uri: route.params.photo.uri }} style={styles.image}/>
-      <Button title="Submit Photo"/>
-    </View>
+    <ScrollView style={styles.screen} keyboardDismissMode="on-drag">
+      <Text>Put the drop down here using the group data (import it for now)</Text>
+      <Text>Today's Prompt</Text>
+      <Text>This is the prompt for the selected group</Text>
+      <Image source={{ uri: route.params.photo.uri }} style={styles.image} />
+      <TextInput
+        multiline
+        placeholder="Add a caption!"
+        style={styles.captionBox}
+        maxLength={200}
+        onChangeText={onChangeCaption}
+        value={caption} />
+      <Button title="Submit Photo" onPress={() => alert('This button submits the image!')} />
+    </ScrollView>
   );
 };
 
@@ -18,13 +30,18 @@ const styles = StyleSheet.create({
   screen: {
     padding: 20,
     backgroundColor: theme.colors.white,
-    height: '100%',
-    flexDirection: 'column',
-    gap: 20,
   },
   image: {
-    height: '80%',
-    width: '100%',
+    height: 300,
     borderRadius: 30,
-  }
+  },
+  captionBox: {
+    backgroundColor: theme.colors.mediumGray,
+    borderColor: theme.colors.white,
+    borderRadius: 8,
+    padding: 20,
+    fontSize: 16,
+    marginVertical: 20,
+    minHeight: 100,
+  },
 });
