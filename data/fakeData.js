@@ -3,7 +3,7 @@ import favicon from "../assets/favicon.png";
 export const groups = [
   {
     id: 1,
-    name: "Group 1",
+    name: "Group 1 this is a name",
     groupPhoto: favicon,
     prompt: "This is Group 1",
     members: [
@@ -13,3 +13,9 @@ export const groups = [
     ],
   },
 ];
+
+export const user = {
+  id: 1,
+  name: "User 1",
+  photo: favicon,
+};

@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -8,7 +9,10 @@ import theme from "./theme";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts, Inter_900Black, PatrickHand_400Regular } from '@expo-google-fonts/dev';
 import useSplashScreen from "./Functions/Hooks";
-import 'react-native-reanimated'; // needed for now because Expo SDK 51 is having issues with tab switching (app crashes)
+// needed for now because Expo SDK 51 is having issues with tab switching (app crashes)
+import 'react-native-reanimated'; 
+
+import { user, groups } from "./data/fakeData";
 
 const Tab = createBottomTabNavigator();
 /* Automatically shows splash screen on start
@@ -58,20 +62,38 @@ const tabIcons = {
 };
 
 const App = () => {
-  // Look at this for more info on fonts: https://stackoverflow.com/questions/33971221/google-fonts-in-react-native
+  const [userData, setUserData] = useState(null);
+  const [groupData, setGroupData] = useState(null);
+
   let [fontsLoaded] = useFonts({
     Inter_900Black,
     PatrickHand_400Regular
   });
 
+  useEffect(() => {
+    fetchUserData();
+    fetchGroupData();
+  }, []);
+
   /* This can be expanded to more than just fonts in the future,
      could also check for api results, and other stuff. Just stick
      the bool in the array */
-  const isReady = useSplashScreen([fontsLoaded]);
+  const isReady = useSplashScreen([fontsLoaded, userData !== null, groupData !== null]);
 
   if (!isReady) {
     return null;
   }
+
+  function fetchUserData() {
+    // use the fake data for now
+    setUserData(user);
+  }
+
+  function fetchGroupData() {
+    // use the fake data for now
+    setGroupData(groups);
+  }
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -91,8 +113,8 @@ const App = () => {
         })}
       >
         {/* Bottom Navigation Bar Tabs */}
-        <Tab.Screen name="Profile" component={ProfileTab} />
-        <Tab.Screen name="Groups" component={GroupsTab} />
+        <Tab.Screen name="Profile" component={ProfileTab} initialParams={{ userData }}/>
+        <Tab.Screen name="Groups" component={GroupsTab} initialParams={{ groupData }}/>
         <Tab.Screen name="Camera" component={CameraTab} />
       </Tab.Navigator>
     </NavigationContainer>

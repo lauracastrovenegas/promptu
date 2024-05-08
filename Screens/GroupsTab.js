@@ -9,13 +9,14 @@ import theme from "../theme";
 const Stack = createNativeStackNavigator();
 
 /* This component defines the possible screens that can be accessed from the Groups Tab */
-const GroupsTab = () => {
+const GroupsTab = ({ route }) => {
   return (
     <Stack.Navigator initialRouteName="Homepage">
       {/* Groups Page is the default screen that will be shown when the user clicks on the Groups Tab. It displays a list of all groups the user is a part of. */}
       <Stack.Screen
         name="Groups Page"
         component={MainGroupsScreen}
+        initialParams={{groupData: route.params.groupData}}
         options={() => ({
           // hide center header text but keep the header itself
           headerTitle: () => (
@@ -35,7 +36,6 @@ const GroupsTab = () => {
               />
             </TouchableOpacity>
           )
-
         })} />
       {/* Group Page is the screen that will be shown when the user clicks on a specific group in the Groups screen. */}
       <Stack.Screen

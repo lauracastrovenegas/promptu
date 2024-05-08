@@ -1,14 +1,14 @@
 import React from "react";
 import { ScrollView, Text, StyleSheet, TouchableOpacity } from "react-native";
 import theme from "../../theme";
-import {groups} from "../../data/fakeData";
 import CardContainer from "../../Components/CardContainer";
+import { groups } from "../../data/fakeData";
 
 /* This component is the Main Groups Screen of the app opened by default */
-const MainGroupsScreen = ({ navigation }) => {
+const MainGroupsScreen = ({ route, navigation }) => {
   return (
     <ScrollView style={styles.screen}>
-      {groups.map(group => (
+      {route.params.groupData.map(group => (
         <TouchableOpacity 
           key={group.id}
           onPress={() => {
