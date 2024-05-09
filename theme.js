@@ -7,7 +7,8 @@ const theme = {
       lightGray: "#D9D9D9",
       gray: "#94A3B8",
       lightPurple: "#C4B6FF",
-      purple: "#7E60FD"
+      purple: "#7E60FD",
+      green: "#00C48C",
     },
     sizes: {
       mobile: "767px",
