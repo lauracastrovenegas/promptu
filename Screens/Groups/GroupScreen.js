@@ -7,6 +7,7 @@ import Button from "../../Components/Button";
 import { hasUserSubmittedToGroup, timeUntilEndOfDay } from "../../Functions/utils";
 import { useAppContext } from "../../AppContext";
 import Countdown from "../../Components/Countdown";
+import CommentSection from "../../Components/CommentSection";
 
 /* This component is the Individual Group Screen  */
 const GroupScreen = ({ route, navigation }) => {
@@ -30,6 +31,7 @@ const GroupScreen = ({ route, navigation }) => {
             } />
         </View>
       </CardContainer>
+      <CommentSection group={group} />
     </View>
   )
 };
@@ -41,6 +43,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     height: '100%',
     padding: 20,
+    gap: 20
   },
   cardContents: {
     display: 'flex',

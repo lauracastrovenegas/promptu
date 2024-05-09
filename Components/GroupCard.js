@@ -1,37 +1,21 @@
 import React from 'react';
-import { Text, StyleSheet, View, Image } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 import CardContainer from './CardContainer';
-import { FontAwesome6 } from '@expo/vector-icons';
 import theme from '../theme';
 import MemberListBubbles from './MemberListBubbles';
+import GroupPhotoName from './GroupPhotoName';
 
 const GroupCard = ({ group }) => {
   return (
     <CardContainer>
       <View style={styles.row}>
-        <View style={styles.gropuPicAndName}>
-          <GroupPhoto groupPhoto={group.groupPhoto} />
-          <Text style={styles.groupName} numberOfLines={1}>{group.name}</Text>
-        </View>
+        <GroupPhotoName group={group} />
         <View style={styles.promptAndMembers}>
           <Text style={styles.prompt}>{group.prompt}</Text>
           <MemberListBubbles group={group} />
         </View>
       </View>
     </CardContainer>
-  );
-};
-
-const GroupPhoto = ({ groupPhoto }) => {
-  return (
-    <View style={styles.centerImages}>
-      {groupPhoto ?
-        <Image style={styles.groupPhoto} source={groupPhoto} />
-        :
-        <View style={styles.groupPhotoIcon}>
-          <FontAwesome6 name="users" size={30} color={theme.colors.white} />
-        </View>}
-    </View>
   );
 };
 
@@ -46,7 +30,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 20,
   },
-  gropuPicAndName: {
+  groupPicAndName: {
     flex: 1,
     gap: 5,
   },

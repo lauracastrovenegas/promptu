@@ -9,20 +9,20 @@ const MainGroupsScreen = ({ navigation }) => {
   const { state, isLoading } = useAppContext();
   return (
     <ScrollView style={{ backgroundColor: theme.colors.white }}>
-      <View style={styles.screen}>
-        {isLoading && <Text>Loading...</Text>}
-        {state.groupsData.map(group => (
-          <TouchableOpacity
-            key={group.id}
-            onPress={() => {
-              navigation.navigate('Group Page', {
-                group,
-              });
-            }}>
-            <GroupCard group={group} />
-          </TouchableOpacity>
-        ))}
-      </View>
+      {isLoading ? <Text>Loading...</Text>
+        : <View style={styles.screen}>
+          {state.groupsData.map(group => (
+            <TouchableOpacity
+              key={group.id}
+              onPress={() => {
+                navigation.navigate('Group Page', {
+                  group,
+                });
+              }}>
+              <GroupCard group={group} />
+            </TouchableOpacity>
+          ))}
+        </View>}
     </ScrollView>
   )
 };
