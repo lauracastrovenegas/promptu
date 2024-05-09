@@ -6,13 +6,14 @@ import GroupScreen from './Groups/GroupScreen';
 import { FontAwesome6 } from "@expo/vector-icons";
 import theme from "../theme";
 import { useAppContext } from '../AppContext';
+import GroupHeaderButton from '../Components/GroupHeaderButton';
 
 const Stack = createNativeStackNavigator();
 
 /* This component defines the possible screens that can be accessed from the Groups Tab */
 const GroupsTab = ({ route }) => {
   return (
-    <Stack.Navigator initialRouteName="Homepage">
+    <Stack.Navigator initialRouteName="Groups Page">
       {/* Groups Page is the default screen that will be shown when the user clicks on the Groups Tab. It displays a list of all groups the user is a part of. */}
       <Stack.Screen
         name="Groups Page"
@@ -44,7 +45,7 @@ const GroupsTab = ({ route }) => {
         options={({ route, navigation }) => ({
           headerTitle: () => (
             // set header title to the group name passed through route params
-            <Text>{route.params.group.name}</Text>
+            <GroupHeaderButton group={route.params.group} onPress={() => alert('This opens the group settings button!')} />
           ),
           headerLeft: () => (
             <TouchableOpacity
@@ -55,17 +56,6 @@ const GroupsTab = ({ route }) => {
               />
             </TouchableOpacity>
           ),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => alert('This is a button!')}
-            >
-              <FontAwesome6
-                name="chart-simple"
-                size={20}
-                color={theme.colors.black}
-              />
-            </TouchableOpacity>
-          )
         })}
       />
     </Stack.Navigator>
@@ -86,6 +76,6 @@ const styles = StyleSheet.create({
     fontFamily: "PatrickHand_400Regular",
     textTransform: 'uppercase',
     fontSize: 24,
-  }
+  },
 });
 

@@ -3,27 +3,9 @@ import { Text, StyleSheet, View, Image } from 'react-native';
 import CardContainer from './CardContainer';
 import { FontAwesome6 } from '@expo/vector-icons';
 import theme from '../theme';
+import MemberListBubbles from './MemberListBubbles';
 
 const GroupCard = ({ group }) => {
-  const memberSubmissions = getMemberSubmissions();
-
-  // Goes through all members and the submissions and returns whether each member has submitted or not
-  function getMemberSubmissions() {
-    const members = group.members;
-    const submissions = group.submissions;
-
-    const memberSubmissions = members.map(member => {
-      const memberSubmission = submissions.find(submission => submission.userId === member.id);
-
-      return { 
-        userPhoto: member.photo, 
-        hasSubmitted: memberSubmission ? true : false 
-      };
-    });
-
-    return memberSubmissions;
-  }
-
   return (
     <CardContainer>
       <View style={styles.row}>
@@ -33,29 +15,12 @@ const GroupCard = ({ group }) => {
         </View>
         <View style={styles.promptAndMembers}>
           <Text style={styles.prompt}>{group.prompt}</Text>
-          <View style={styles.centerImages}>
-            {memberSubmissions.map((memberSubmission, index) => (
-              <UserBubble
-                key={index}
-                userPhoto={memberSubmission.userPhoto}
-                hasSubmitted={memberSubmission.hasSubmitted}
-              />
-            ))}
-          </View>
+          <MemberListBubbles group={group} />
         </View>
       </View>
     </CardContainer>
   );
 };
-
-const UserBubble = ({ userPhoto, hasSubmitted }) => {
-  return (
-    <View>
-      <Image style={styles.userPhoto} source={userPhoto} />
-      {hasSubmitted && <FontAwesome6 style={styles.check} name="check" size={12} color={theme.colors.green} />}
-    </View>
-  );
-}
 
 const GroupPhoto = ({ groupPhoto }) => {
   return (
@@ -73,7 +38,7 @@ const GroupPhoto = ({ groupPhoto }) => {
 const styles = StyleSheet.create({
   groupName: {
     fontSize: 15,
-    fontFamily: 'PatrickHand_400Regular',
+    fontFamily: theme.fonts.patrickHand,
     textTransform: 'uppercase',
     textAlign: 'center',
   },
@@ -111,19 +76,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 10,
-  },
-  userPhoto: {
-    width: 30,
-    height: 30,
-    borderRadius: 25,
-  },
-  check: {
-    position: 'absolute',
-    top: 2,
-    left: 3,
-    zIndex: 1,
-    fontSize: 25,
-  },
+  }
 });
 
 export default GroupCard;

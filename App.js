@@ -7,7 +7,7 @@ import CameraTab from "./Screens/CameraTab";
 import ProfileTab from "./Screens/ProfileTab";
 import theme from "./theme";
 import * as SplashScreen from "expo-splash-screen";
-import { useFonts, Inter_900Black, PatrickHand_400Regular } from '@expo-google-fonts/dev';
+import { useFonts, Inter_400Regular, Inter_700Bold, Inter_900Black, PatrickHand_400Regular } from '@expo-google-fonts/dev';
 import useSplashScreen from "./Functions/Hooks";
 import { AppProvider } from "./AppContext";
 // needed for now because Expo SDK 51 is having issues with tab switching (app crashes)
@@ -63,7 +63,7 @@ const tabIcons = {
 
 const App = () => {
   let [fontsLoaded] = useFonts({
-    Inter_900Black,
+    Inter_400Regular, Inter_700Bold, Inter_900Black,
     PatrickHand_400Regular
   });
 
@@ -82,6 +82,7 @@ const App = () => {
         <Tab.Navigator
           initialRouteName="Groups"
           screenOptions={({ route }) => ({
+            lazy: false, // needed to navigate to camera from groups
             headerShown: false, // hide the header of each tab
             tabBarIcon: ({ focused }) => {
               // set the icons for each tab
@@ -90,9 +91,6 @@ const App = () => {
               );
             },
             tabBarActiveTintColor: theme.colors.black,
-            tabBarLabelStyle: {
-              fontWeight: "400",
-            },
           })}
         >
           {/* Bottom Navigation Bar Tabs */}

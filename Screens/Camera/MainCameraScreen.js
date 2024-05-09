@@ -5,7 +5,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import theme from '../../theme';
 
 /* This component is the Profile Screen */
-const MainCameraScreen = ({ navigation }) => {
+const MainCameraScreen = ({ route, navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState("back");
   const [flash, setFlash] = useState("auto");
@@ -36,6 +36,7 @@ const MainCameraScreen = ({ navigation }) => {
       let photo = await cameraRef.current.takePictureAsync();
       navigation.navigate('Photo Submission Screen', {
         photo,
+        group: route.params.group ?? null,
       });
     }
   }
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
   button: {
     height: 'flex-end',
     alignItems: 'center',
-    borderColor: 'white',
+    borderColor: theme.colors.white,
     borderWidth: 1,
     padding: 16,
     borderRadius: 50,
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
   centerButton: {
     alignSelf: 'flex-end',
     alignItems: 'center',
-    borderColor: 'white',
+    borderColor: theme.colors.white,
     borderWidth: 1,
     padding: 8,
     borderRadius: 50,
@@ -130,6 +131,5 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: theme.colors.lightPurple,
-    fontFamily: 'Inter_400Regular',
   },
 });

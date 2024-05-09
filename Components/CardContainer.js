@@ -12,7 +12,7 @@ const CardContainer = ({children}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: 'flex',
     padding: 16,
     backgroundColor: '#fff',
     borderRadius: 8,

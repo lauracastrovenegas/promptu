@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { ScrollView, Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import theme from "../../theme";
 import GroupCard from "../../Components/GroupCard";
 import { useAppContext } from "../../AppContext";
@@ -8,20 +8,21 @@ import { useAppContext } from "../../AppContext";
 const MainGroupsScreen = ({ navigation }) => {
   const { state, isLoading } = useAppContext();
   return (
-    <ScrollView style={styles.screen}>
-      {isLoading && <Text>Loading...</Text>}
-      {state.groupsData.map(group => (
-        <TouchableOpacity 
-          key={group.id}
-          style={{ marginBottom: 20 }}
-          onPress={() => {
-            navigation.navigate('Group Page', {
-              group,
-            });
-          }}>
-          <GroupCard group={group}/>
-        </TouchableOpacity>
-      ))}
+    <ScrollView style={{ backgroundColor: theme.colors.white }}>
+      <View style={styles.screen}>
+        {isLoading && <Text>Loading...</Text>}
+        {state.groupsData.map(group => (
+          <TouchableOpacity
+            key={group.id}
+            onPress={() => {
+              navigation.navigate('Group Page', {
+                group,
+              });
+            }}>
+            <GroupCard group={group} />
+          </TouchableOpacity>
+        ))}
+      </View>
     </ScrollView>
   )
 };
@@ -32,7 +33,6 @@ const styles = StyleSheet.create({
   screen: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: theme.colors.white,
     padding: 20,
     gap: 20,
   },

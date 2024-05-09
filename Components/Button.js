@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    color: 'white',
+    color: theme.colors.white,
     fontSize: 16,
     fontWeight: 'bold',
     textTransform: 'uppercase',
