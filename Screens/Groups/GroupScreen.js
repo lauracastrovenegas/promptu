@@ -12,25 +12,27 @@ import CommentSection from "../../Components/CommentSection";
 /* This component is the Individual Group Screen  */
 const GroupScreen = ({ route, navigation }) => {
   const { state } = useAppContext();
-  
+
   const group = route.params.group;
 
   return (
     <View style={styles.screen}>
-      <CardContainer>
-        <View style={styles.cardContents}>
-          <Text style={styles.promptTitle}>Today's Prompt</Text>
-          <Text style={styles.prompt}>{group.prompt}</Text>
-          <Countdown style={styles.countdown} deadline={group.votingTime}/>
-          <MemberListBubbles group={group} />
-          <Button
-            title={`${hasUserSubmittedToGroup(group, state.userData) ? "Resubmit" : "Submit"} Your Photo`}
-            onPress={() => {
-              navigation.navigate('Main Camera Screen', { group })
-            }
-            } />
-        </View>
-      </CardContainer>
+      <View style={{ padding: 20 }}>
+        <CardContainer>
+          <View style={styles.cardContents}>
+            <Text style={styles.promptTitle}>Today's Prompt</Text>
+            <Text style={styles.prompt}>{group.prompt}</Text>
+            <Countdown style={styles.countdown} deadline={group.votingTime} />
+            <MemberListBubbles group={group} />
+            <Button
+              title={`${hasUserSubmittedToGroup(group, state.userData) ? "Resubmit" : "Submit"} Your Photo`}
+              onPress={() => {
+                navigation.navigate('Main Camera Screen', { group })
+              }
+              } />
+          </View>
+        </CardContainer>
+      </View>
       <CommentSection group={group} />
     </View>
   )
@@ -42,8 +44,6 @@ const styles = StyleSheet.create({
   screen: {
     backgroundColor: theme.colors.white,
     height: '100%',
-    padding: 20,
-    gap: 20
   },
   cardContents: {
     display: 'flex',

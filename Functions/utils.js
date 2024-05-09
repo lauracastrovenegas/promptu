@@ -41,7 +41,7 @@ export const timeUntilEndOfDay = (deadline) => {
 
 // Get timestamp for comment
 export const getCommentTimestamp = (comment) => {
-  const date = new Date(comment.createdAt * 1000); // Multiply by 1000 to convert from seconds to milliseconds
+  const date = new Date(comment.createdAt); // Multiply by 1000 to convert from seconds to milliseconds
   const now = new Date();
 
   const timeDifference = now.getTime() - date.getTime();
