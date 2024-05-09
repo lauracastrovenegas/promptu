@@ -1,29 +1,63 @@
 import React, { useState } from 'react';
-import { ScrollView, Text, StyleSheet, Image, TextInput } from 'react-native';
+import { ScrollView, Text, StyleSheet, Image, TextInput, Alert } from 'react-native';
 import Button from '../../Components/Button';
 import theme from '../../theme';
 import { useAppContext } from '../../AppContext';
 
-const PhotoSubmissionScreen = ({ route }) => {
-  const { state } = useAppContext();
+const PhotoSubmissionScreen = ({ route, navigation }) => {
+  const { state, dispatch } = useAppContext();
 
   const [caption, onChangeCaption] = React.useState('');
-  const [selectedGroup, setSelectedGroup] = React.useState(null);
-  console.log(state);
+  const [selectedGroup, setSelectedGroup] = React.useState(state.groupsData[0]);
 
-  function submitPhoto() {
-    const currentGroupData = state.groupsData;
-    const currentPhoto = route.params.photo;
+  function createReplaceSubmissionConfirmationAlert() {
+    return new Promise((resolve) => {
+      Alert.alert('Confirm Submission', 'You have already submitted a photo for this group. Would you like to replace it?', [
+        {
+          text: 'Yes, replace it',
+          onPress: () => { resolve(true) },
+        },
+        {
+          text: 'Cancel',
+          onPress: () => { resolve(false) },
+          style: 'cancel',
+        },
+      ], { cancelable: false });
+    });
+  };
+
+  async function submitPhoto() {
+    const currentGroupData = selectedGroup;
+
+    // check if there is an existing submission for the user
+    const memberSubmission = currentGroupData.submissions.find(submission => submission.userId === state.userData.id);
+
+    console.log(currentGroupData.submissions);
+
+    if (memberSubmission) {
+      const replaceSubmission = await createReplaceSubmissionConfirmationAlert();
+
+      if (!replaceSubmission) {
+        return;
+      }
+
+      // remove the existing submission
+      currentGroupData.submissions = currentGroupData.submissions.filter(submission => submission.userId !== state.userData.id);
+    }
 
     // Add the photo to the group's submission array
-    currentGroupData.forEach((group) => {
-      if (group.id === selectedGroup.groupId) {
-        group.submissions.push({
-          photo: currentPhoto,
-          caption: caption,
-        });
-      }
+    currentGroupData.submissions.push({
+      id: currentGroupData.submissions.length + 1,
+      photo: route.params.photo,
+      caption: caption,
+      userId: state.userData.id,
     });
+
+    dispatch({ type: 'UPDATE_GROUPS_DATA', payload: currentGroupData });
+    alert(`Photo submitted to ${selectedGroup.name}!`);
+
+    // go to the camera screen
+    navigation.navigate('Main Camera Screen');
   }
 
   return (
@@ -32,7 +66,7 @@ const PhotoSubmissionScreen = ({ route }) => {
         <Text key={group.id}>{group.name}</Text>
       ))}
       <Text>Today's Prompt</Text>
-      <Text>This is the prompt for the selected group</Text>
+      <Text>{selectedGroup.prompt}</Text>
       <Image source={{ uri: route.params.photo.uri }} style={styles.image} />
       <TextInput
         multiline
