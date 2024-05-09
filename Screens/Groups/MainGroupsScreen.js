@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, Text, StyleSheet, TouchableOpacity } from "react-native";
 import theme from "../../theme";
-import CardContainer from "../../Components/CardContainer";
+import GroupCard from "../../Components/GroupCard";
 import { useAppContext } from "../../AppContext";
 
 /* This component is the Main Groups Screen of the app opened by default */
@@ -13,6 +13,7 @@ const MainGroupsScreen = ({ navigation }) => {
       {state.groupsData.map(group => (
         <TouchableOpacity 
           key={group.id}
+          style={{ marginBottom: 20 }}
           onPress={() => {
             navigation.navigate('Group Page', {
               group,
@@ -27,17 +28,12 @@ const MainGroupsScreen = ({ navigation }) => {
 
 export default MainGroupsScreen;
 
-const GroupCard = ({group}) => {
-  return (
-    <CardContainer>
-      <Text>{group.name}</Text>
-    </CardContainer>
-  )
-};
-
 const styles = StyleSheet.create({
   screen: {
+    display: 'flex',
+    flexDirection: 'column',
     backgroundColor: theme.colors.white,
     padding: 20,
+    gap: 20,
   },
 });
