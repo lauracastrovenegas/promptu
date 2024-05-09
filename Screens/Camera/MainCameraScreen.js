@@ -27,7 +27,7 @@ const MainCameraScreen = ({ navigation }) => {
     );
   }
 
-  async function takePicture(camera) {
+  async function takePicture() {
     if (!isReady) {
       return;
     }

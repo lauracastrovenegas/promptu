@@ -9,10 +9,10 @@ import theme from "./theme";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts, Inter_900Black, PatrickHand_400Regular } from '@expo-google-fonts/dev';
 import useSplashScreen from "./Functions/Hooks";
+import { AppProvider } from "./AppContext";
 // needed for now because Expo SDK 51 is having issues with tab switching (app crashes)
-import 'react-native-reanimated'; 
-
-import { user, groups } from "./data/fakeData";
+import 'react-native-reanimated';
+import { useAppContext } from "./AppContext";
 
 const Tab = createBottomTabNavigator();
 /* Automatically shows splash screen on start
@@ -62,62 +62,46 @@ const tabIcons = {
 };
 
 const App = () => {
-  const [userData, setUserData] = useState(null);
-  const [groupData, setGroupData] = useState(null);
-
   let [fontsLoaded] = useFonts({
     Inter_900Black,
     PatrickHand_400Regular
   });
 
-  useEffect(() => {
-    fetchUserData();
-    fetchGroupData();
-  }, []);
-
   /* This can be expanded to more than just fonts in the future,
      could also check for api results, and other stuff. Just stick
      the bool in the array */
-  const isReady = useSplashScreen([fontsLoaded, userData !== null, groupData !== null]);
+  const isReady = useSplashScreen([fontsLoaded]);
 
   if (!isReady) {
     return null;
   }
 
-  function fetchUserData() {
-    // use the fake data for now
-    setUserData(user);
-  }
-
-  function fetchGroupData() {
-    // use the fake data for now
-    setGroupData(groups);
-  }
-
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="Groups"
-        screenOptions={({ route }) => ({
-          headerShown: false, // hide the header of each tab
-          tabBarIcon: ({ focused }) => {
-            // set the icons for each tab
-            return (
-              focused ? tabIcons[route.name].active : tabIcons[route.name].inactive
-            );
-          },
-          tabBarActiveTintColor: theme.colors.black,
-          tabBarLabelStyle: {
-            fontWeight: "400",
-          },
-        })}
-      >
-        {/* Bottom Navigation Bar Tabs */}
-        <Tab.Screen name="Profile" component={ProfileTab} initialParams={{ userData }}/>
-        <Tab.Screen name="Groups" component={GroupsTab} initialParams={{ groupData }}/>
-        <Tab.Screen name="Camera" component={CameraTab} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <AppProvider>
+      <NavigationContainer>
+        <Tab.Navigator
+          initialRouteName="Groups"
+          screenOptions={({ route }) => ({
+            headerShown: false, // hide the header of each tab
+            tabBarIcon: ({ focused }) => {
+              // set the icons for each tab
+              return (
+                focused ? tabIcons[route.name].active : tabIcons[route.name].inactive
+              );
+            },
+            tabBarActiveTintColor: theme.colors.black,
+            tabBarLabelStyle: {
+              fontWeight: "400",
+            },
+          })}
+        >
+          {/* Bottom Navigation Bar Tabs */}
+          <Tab.Screen name="Profile" component={ProfileTab} />
+          <Tab.Screen name="Groups" component={GroupsTab} />
+          <Tab.Screen name="Camera" component={CameraTab} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </AppProvider>
   );
 };
 

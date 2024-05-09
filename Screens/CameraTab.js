@@ -7,7 +7,7 @@ import PhotoSubmissionScreen from './Camera/PhotoSubmissionScreen';
 const Stack = createNativeStackNavigator();
 
 /* This component defines the possible screens that can be accessed from the Camera Tab */
-const CameraTab = () => {
+const CameraTab = ({ route }) => {
   return (
     <Stack.Navigator initialRouteName="Main Camera Screen">
       <Stack.Screen

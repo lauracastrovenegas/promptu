@@ -8,13 +8,12 @@ import theme from '../theme';
 const Stack = createNativeStackNavigator();
 
 /* This component defines the possible screens that can be accessed from the Profile Tab */
-const ProfileTab = ({ route }) => {
+const ProfileTab = () => {
     return (
       <Stack.Navigator initialRouteName="Main Profile Screen">
         <Stack.Screen 
           name="Main Profile Screen" 
           component={MainProfileScreen} 
-          initialParams={{userData: route.params.userData}}
           options={() => ({
           headerTitle: () => (
             <Text style={styles.title}>Profile</Text>

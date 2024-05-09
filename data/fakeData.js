@@ -11,6 +11,10 @@ export const groups = [
       { id: 2, name: "User 2", photo: favicon },
       { id: 3, name: "User 3", photo: favicon },
     ],
+    submissions: [
+      { id: 1, photo: favicon, caption: "Caption 1", userId: 1 },
+      { id: 2, photo: favicon, caption: "Caption 2", userId: 2 },
+    ]
   },
 ];
 

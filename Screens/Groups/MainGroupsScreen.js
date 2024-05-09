@@ -2,13 +2,15 @@ import React from "react";
 import { ScrollView, Text, StyleSheet, TouchableOpacity } from "react-native";
 import theme from "../../theme";
 import CardContainer from "../../Components/CardContainer";
-import { groups } from "../../data/fakeData";
+import { useAppContext } from "../../AppContext";
 
 /* This component is the Main Groups Screen of the app opened by default */
-const MainGroupsScreen = ({ route, navigation }) => {
+const MainGroupsScreen = ({ navigation }) => {
+  const { state, isLoading } = useAppContext();
   return (
     <ScrollView style={styles.screen}>
-      {route.params.groupData.map(group => (
+      {isLoading && <Text>Loading...</Text>}
+      {state.groupsData.map(group => (
         <TouchableOpacity 
           key={group.id}
           onPress={() => {

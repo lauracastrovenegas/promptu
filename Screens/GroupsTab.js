@@ -5,6 +5,7 @@ import MainGroupsScreen from './Groups/MainGroupsScreen';
 import GroupScreen from './Groups/GroupScreen';
 import { FontAwesome6 } from "@expo/vector-icons";
 import theme from "../theme";
+import { useAppContext } from '../AppContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +17,6 @@ const GroupsTab = ({ route }) => {
       <Stack.Screen
         name="Groups Page"
         component={MainGroupsScreen}
-        initialParams={{groupData: route.params.groupData}}
         options={() => ({
           // hide center header text but keep the header itself
           headerTitle: () => (
