@@ -28,8 +28,7 @@ const GroupPhoto = ({ groupPhoto }) => {
 const styles = StyleSheet.create({
   groupName: {
     fontSize: 15,
-    fontFamily: theme.fonts.patrickHand,
-    textTransform: 'uppercase',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   groupPicAndName: {

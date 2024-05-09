@@ -13,11 +13,13 @@ const DropdownMenu = ({ items, selectedItem, setSelectedItem }) => {
         style={[styles.dropdown, isFocus && { borderColor: theme.colors.purple }]}
         selectedTextStyle={styles.textStyle}
         itemTextStyle={styles.textStyle}
+        placeholderStyle={styles.placeholder}
+        placeholder="Select a group to submit to..."
         data={items}
         maxHeight={300}
         labelField="name"
         valueField="id"
-        value={selectedItem.id}
+        value={selectedItem ? selectedItem.id : null}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
@@ -43,8 +45,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   textStyle: {
-    fontSize: 20,
-    fontFamily: theme.fonts.patrickHand,
-    textTransform: 'uppercase',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  placeholder: {
+    color: theme.colors.lightGray,
   },
 });

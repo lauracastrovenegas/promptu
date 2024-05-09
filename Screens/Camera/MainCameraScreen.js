@@ -36,7 +36,7 @@ const MainCameraScreen = ({ route, navigation }) => {
       let photo = await cameraRef.current.takePictureAsync();
       navigation.navigate('Photo Submission Screen', {
         photo,
-        group: route.params.group ?? null,
+        group: route.params ? route.params.group ?? null : null,
       });
     }
   }

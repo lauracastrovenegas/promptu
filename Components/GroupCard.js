@@ -20,32 +20,9 @@ const GroupCard = ({ group }) => {
 };
 
 const styles = StyleSheet.create({
-  groupName: {
-    fontSize: 15,
-    fontFamily: theme.fonts.patrickHand,
-    textTransform: 'uppercase',
-    textAlign: 'center',
-  },
   row: {
     flexDirection: 'row',
     gap: 20,
-  },
-  groupPicAndName: {
-    flex: 1,
-    gap: 5,
-  },
-  groupPhoto: {
-    width: 75,
-    height: 75,
-    borderRadius: 50,
-  },
-  groupPhotoIcon: {
-    backgroundColor: theme.colors.lightPurple,
-    width: 75,
-    height: 75,
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   promptAndMembers: {
     flex: 3,
@@ -55,11 +32,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 'auto',
     fontSize: 16,
-  },
-  centerImages: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 10,
   }
 });
 

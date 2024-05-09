@@ -35,7 +35,7 @@ export default MainProfileScreen;
 
 const styles = StyleSheet.create({
   screen: {
-    padding: 40,
+    padding: 20,
   },
   profilePic: {
     width: 150,
@@ -47,12 +47,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 20,
+    marginVertical: 20,
   },
   userName: {
-    fontFamily: theme.fonts.patrickHand,
     fontSize: 20,
-    textTransform: 'uppercase',
+    fontWeight: 'bold',
   },
   sectionTitle: {
     fontSize: 20,

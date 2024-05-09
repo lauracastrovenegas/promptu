@@ -51,9 +51,11 @@ const GroupsTab = ({ route }) => {
             <TouchableOpacity
               onPress={() => navigation.goBack()}
             >
-              <Image style={styles.icon}
-                source={require('../assets/back.png')}
-              />
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon}/>
             </TouchableOpacity>
           ),
         })}
@@ -67,9 +69,6 @@ export default GroupsTab;
 // example of styling
 const styles = StyleSheet.create({
   icon: {
-    width: 27,
-    height: 25,
-    objectFit: 'fill',
     marginRight: 10,
   },
   title: {

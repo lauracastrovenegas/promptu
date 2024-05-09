@@ -53,3 +53,48 @@ export const user = {
   name: "User 1",
   photo: user1,
 };
+
+export const groupComments = [
+  {
+    id: 2,
+    groupId: 1,
+    userId: 2,
+    createdAt: 1715225352,
+    text: "This is a comment from User 2 on the Friends group",
+  },
+  {
+    id: 1,
+    groupId: 1,
+    userId: 1,
+    createdAt: 1715288352,
+    text: "This is a comment from User 1 on the Friends group and more to this comment to make it extra long to handle this edge case.",
+  },
+  {
+    id: 3,
+    groupId: 2,
+    userId: 1,
+    createdAt: 1715225352,
+    text: "This is a comment from User 1 on the Coworkers group",
+  },
+  {
+    id: 4,
+    groupId: 2,
+    userId: 4,
+    createdAt: 1715288352,
+    text: "This is a comment from User 4 on the Coworkers group",
+  },
+  {
+    id: 5,
+    groupId: 1,
+    userId: 3,
+    createdAt: 1715288352,
+    text: "This is a comment from User 3 on the Friends group",
+  },
+  {
+    id: 6,
+    groupId: 1,
+    userId: 3,
+    createdAt: 1715288352,
+    text: "This is a comment from User 3 on the Friends group",
+  }
+];

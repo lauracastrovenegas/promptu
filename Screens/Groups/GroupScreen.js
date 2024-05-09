@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   promptTitle: {
-    fontFamily: theme.fonts.patrickHand,
+    fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: -10,
     fontSize: 16,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   countdown: {
-    fontSize: 50,
+    fontSize: 60,
     textAlign: 'center',
     fontFamily: theme.fonts.patrickHand,
   },

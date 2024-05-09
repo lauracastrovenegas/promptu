@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { ScrollView, Text, StyleSheet, Image, TextInput, Alert, View } from 'react-native';
+import React from 'react';
+import { Text, StyleSheet, Image, TextInput, Alert, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Button from '../../Components/Button';
 import DropdownMenu from '../../Components/DropdownMenu';
 import theme from '../../theme';
@@ -10,7 +11,7 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
   const { state, dispatch } = useAppContext();
 
   const [caption, onChangeCaption] = React.useState('');
-  const [selectedGroup, setSelectedGroup] = React.useState(route.params.group ?? state.groupsData[0]);
+  const [selectedGroup, setSelectedGroup] = React.useState(route.params.group ?? null);
 
   function createReplaceSubmissionConfirmationAlert() {
     return new Promise((resolve) => {
@@ -61,11 +62,11 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: theme.colors.white }} keyboardDismissMode="on-drag">
+    <KeyboardAwareScrollView style={{ backgroundColor: theme.colors.white }} keyboardDismissMode="on-drag">
       <View style={styles.screen}>
         <DropdownMenu items={state.groupsData} selectedItem={selectedGroup} setSelectedItem={setSelectedGroup} />
-        <Text style={styles.promptTitle}>Today's Prompt</Text>
-        <Text style={styles.prompt}>{selectedGroup.prompt}</Text>
+        {selectedGroup && <Text style={styles.promptTitle}>Today's Prompt</Text>}
+        {selectedGroup && <Text style={styles.prompt}>{selectedGroup.prompt}</Text>}
         <Image source={{ uri: route.params.photo.uri }} style={styles.image} />
         <TextInput
           multiline
@@ -74,9 +75,9 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
           maxLength={200}
           onChangeText={onChangeCaption}
           value={caption} />
-        <Button title="Submit Photo" onPress={submitPhoto} />
+        <Button title="Submit Photo" onPress={submitPhoto} disabled={selectedGroup === null}/>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -85,21 +86,23 @@ export default PhotoSubmissionScreen;
 const styles = StyleSheet.create({
   screen: {
     padding: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 20,
   },
   promptTitle: {
-    fontSize: 20,
-    fontFamily: theme.fonts.patrickHand,
+    fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 20,
+    marginBottom: -10,
+    fontSize: 16,
   },
   prompt: {
     fontSize: 20,
     textAlign: 'center',
-    marginBottom: 20,
   },
   image: {
     height: 500,
-    borderRadius: 30,
+    borderRadius: 8,
   },
   captionBox: {
     backgroundColor: theme.colors.mediumGray,
@@ -107,7 +110,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 20,
     fontSize: 16,
-    marginVertical: 20,
     minHeight: 100,
   },
 });

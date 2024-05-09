@@ -38,9 +38,8 @@ const ProfileTab = () => {
 // example of styling
 const styles = StyleSheet.create({
   title: {
-    textTransform: 'uppercase',
-    fontFamily: "PatrickHand_400Regular",
-    fontSize: 24,
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 
