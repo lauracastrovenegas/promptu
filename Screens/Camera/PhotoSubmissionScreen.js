@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { ScrollView, Text, StyleSheet, Image, TextInput, Alert } from 'react-native';
+import { ScrollView, Text, StyleSheet, Image, TextInput, Alert, View } from 'react-native';
 import Button from '../../Components/Button';
+import DropdownMenu from '../../Components/DropdownMenu';
 import theme from '../../theme';
 import { useAppContext } from '../../AppContext';
+import { hasUserSubmittedToGroup } from '../../Functions/utils';
 
 const PhotoSubmissionScreen = ({ route, navigation }) => {
   const { state, dispatch } = useAppContext();
 
   const [caption, onChangeCaption] = React.useState('');
-  const [selectedGroup, setSelectedGroup] = React.useState(state.groupsData[0]);
+  const [selectedGroup, setSelectedGroup] = React.useState(route.params.group ?? state.groupsData[0]);
 
   function createReplaceSubmissionConfirmationAlert() {
     return new Promise((resolve) => {
@@ -30,11 +32,9 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
     const currentGroupData = selectedGroup;
 
     // check if there is an existing submission for the user
-    const memberSubmission = currentGroupData.submissions.find(submission => submission.userId === state.userData.id);
+    const userHasSubmittedAlready = hasUserSubmittedToGroup(currentGroupData, state.userData);
 
-    console.log(currentGroupData.submissions);
-
-    if (memberSubmission) {
+    if (userHasSubmittedAlready) {
       const replaceSubmission = await createReplaceSubmissionConfirmationAlert();
 
       if (!replaceSubmission) {
@@ -61,21 +61,21 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
   }
 
   return (
-    <ScrollView style={styles.screen} keyboardDismissMode="on-drag">
-      {state.groupsData.map((group) => (
-        <Text key={group.id}>{group.name}</Text>
-      ))}
-      <Text>Today's Prompt</Text>
-      <Text>{selectedGroup.prompt}</Text>
-      <Image source={{ uri: route.params.photo.uri }} style={styles.image} />
-      <TextInput
-        multiline
-        placeholder="Add a caption!"
-        style={styles.captionBox}
-        maxLength={200}
-        onChangeText={onChangeCaption}
-        value={caption} />
-      <Button title="Submit Photo" onPress={submitPhoto} />
+    <ScrollView style={{ backgroundColor: theme.colors.white }} keyboardDismissMode="on-drag">
+      <View style={styles.screen}>
+        <DropdownMenu items={state.groupsData} selectedItem={selectedGroup} setSelectedItem={setSelectedGroup} />
+        <Text style={styles.promptTitle}>Today's Prompt</Text>
+        <Text style={styles.prompt}>{selectedGroup.prompt}</Text>
+        <Image source={{ uri: route.params.photo.uri }} style={styles.image} />
+        <TextInput
+          multiline
+          placeholder="Add a caption!"
+          style={styles.captionBox}
+          maxLength={200}
+          onChangeText={onChangeCaption}
+          value={caption} />
+        <Button title="Submit Photo" onPress={submitPhoto} />
+      </View>
     </ScrollView>
   );
 };
@@ -85,10 +85,20 @@ export default PhotoSubmissionScreen;
 const styles = StyleSheet.create({
   screen: {
     padding: 20,
-    backgroundColor: theme.colors.white,
+  },
+  promptTitle: {
+    fontSize: 20,
+    fontFamily: theme.fonts.patrickHand,
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  prompt: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 20,
   },
   image: {
-    height: 300,
+    height: 500,
     borderRadius: 30,
   },
   captionBox: {
