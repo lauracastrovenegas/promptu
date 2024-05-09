@@ -18,13 +18,13 @@ export const groups = [
     groupPhoto: group1,
     ownerId: 1,
     prompt: "This is the prompt of the day for the Friends group",
+    votingTime: 18, // 6 PM
     members: [
       { id: 1, name: "User 1", photo: user1 },
       { id: 2, name: "User 2", photo: user2 },
       { id: 3, name: "User 3", photo: user3 },
     ],
     submissions: [
-      { id: 1, photo: submission1, caption: "Caption 1", userId: 1 },
       { id: 2, photo: submission2, caption: "Caption 2", userId: 2 },
     ]
   },
@@ -33,6 +33,7 @@ export const groups = [
     name: "Coworkers",
     ownerId: 2,
     prompt: "This is the prompt of the day for the Coworkers group",
+    votingTime: 20, // 8 PM
     members: [
       { id: 1, name: "User 1", photo: user1 },
       { id: 3, name: "User 3", photo: user3 },
