@@ -1,15 +1,14 @@
 import React from "react";
-import { ScrollView, Text, StyleSheet, View, Image, TouchableOpacity, Pressable } from "react-native";
+import { ScrollView, Text, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView } from "react-native";
 import theme from "../../theme";
 import { useAppContext } from "../../AppContext";
 import SingleInput from "../../Components/SingleInput";
 import ThirdPartyAuth from "../../Components/ThirdPartyAuth";
 import Button from "../../Components/Button";
 import SingleInputSecure from "../../Components/SingleInputSecure";
-import * as ImagePicker from "expo-image-picker";
 
-/* This component is the Signup Screen */
-const SignupScreen = ({ navigation }) => {
+/* This component is the Login Screen */
+const LoginScreen = ({ navigation }) => {
     const { state, isLoading } = useAppContext();
     const [email, onChangeEmail] = React.useState('');
     const [password, onChangePassword] = React.useState('');
@@ -34,64 +33,69 @@ const SignupScreen = ({ navigation }) => {
 
 
     return (
-        <ScrollView style={{ backgroundColor: theme.colors.white }}>
-            {isLoading ? <Text>Loading...</Text> :
-                <View style={styles.screen}>
-                    <View style={styles.container}>
-                        <View style={styles.welcomeBox}>
-                            <Text style={styles.title}>promptu</Text>
-                            <Text style={styles.subtext}>Log in with the data you entered during registration.</Text>
+        <KeyboardAvoidingView style={{ flex: 10 }} behavior="padding" keyboardVerticalOffset={10}>
 
-                        </View>
+            <ScrollView style={{ backgroundColor: theme.colors.white }}>
+                {isLoading ? <Text>Loading...</Text> :
+                    <View style={styles.screen}>
+                        <View style={styles.container}>
+                            <View style={styles.welcomeBox}>
+                                <Text style={styles.title}>promptu</Text>
+                                <Text style={styles.subtext}>Log in with the data you entered during registration.</Text>
 
-                        <View style={styles.topSection}>
+                            </View>
 
-                            <ThirdPartyAuth
-                                title="Sign in with Google">
-                            </ThirdPartyAuth>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
-                                <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
-                                <View>
-                                    <Text style={{ fontFamily: "Poppins_400Regular", width: 50, textAlign: 'center' }}>Or</Text>
+                            <View style={styles.topSection}>
+
+                                <ThirdPartyAuth
+                                    title="Sign in with Google">
+                                </ThirdPartyAuth>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
+                                    <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
+                                    <View>
+                                        <Text style={{ fontFamily: "Poppins_400Regular", width: 50, textAlign: 'center' }}>Or</Text>
+                                    </View>
+                                    <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
                                 </View>
-                                <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
-                            </View>
-                            <View style={styles.form}>
-                                <SingleInput
-                                    placeholder="Email/Phone Number"
-                                    onChangeText={onChangeEmail}
-                                    text={email}
-                                    passwordBool={false}
-                                />
-                                <SingleInputSecure
-                                    placeholder="Password"
-                                    onChangeText={onChangePassword}
-                                    text={password}
-                                    showPassword={showPassword}
-                                    toggleShowPassword={toggleShowPassword}
-                                />
+                                <View style={styles.form}>
+                                    <SingleInput
+                                        placeholder="Email/Phone Number"
+                                        onChangeText={onChangeEmail}
+                                        text={email}
+                                        passwordBool={false}
+                                    />
+                                    <SingleInputSecure
+                                        placeholder="Password"
+                                        onChangeText={onChangePassword}
+                                        text={password}
+                                        showPassword={showPassword}
+                                        toggleShowPassword={toggleShowPassword}
+                                    />
+                                </View>
                             </View>
                         </View>
-                    </View>
-                    <View style={styles.bottomSection}>
-                        <Button
-                            title="Sign in"
-                            disabled={isButtonDisabled} />
-                        <TouchableOpacity onPress={() => navigation.navigate('Signup')} >
-                            <Text style={styles.signupText}>
-                                <Text style={[styles.signupText, { color: theme.colors.black }]}>Don't have an account? </Text>
-                                <Text style={[styles.signupText, { color: theme.colors.purple }]}> Sign up</Text>
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>}
+                        <View style={styles.bottomSection}>
+                            <Button
+                                title="Sign in"
+                                disabled={isButtonDisabled} 
+                                onPress={() => navigation.navigate('Groups')}
+                                />
+                            <TouchableOpacity onPress={() => navigation.navigate('Signup')} >
+                                <Text style={styles.signupText}>
+                                    <Text style={[styles.signupText, { color: theme.colors.black }]}>Don't have an account? </Text>
+                                    <Text style={[styles.signupText, { color: theme.colors.purple }]}> Sign up</Text>
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>}
 
-        </ScrollView>
+            </ScrollView>
+        </KeyboardAvoidingView>
 
     )
 };
 
-export default SignupScreen;
+export default LoginScreen;
 
 const styles = StyleSheet.create({
     screen: {

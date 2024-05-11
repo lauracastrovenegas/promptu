@@ -1,8 +1,9 @@
 import React from "react";
-import { ScrollView, Text, StyleSheet, View, Image, TouchableOpacity, Pressable } from "react-native";
+import { ScrollView, Text, StyleSheet, View, Image, TouchableOpacity, Pressable, KeyboardAvoidingView } from "react-native";
 import theme from "../../theme";
 import { useAppContext } from "../../AppContext";
 import addProfilePicture from "../../assets/add_profile_picture.png";
+import editIcon from "../../assets/edit_icon.png";
 import SingleInput from "../../Components/SingleInput";
 import ThirdPartyAuth from "../../Components/ThirdPartyAuth";
 import Button from "../../Components/Button";
@@ -65,67 +66,74 @@ const SignupScreen = ({ navigation }) => {
     };
 
     return (
-        <ScrollView style={{ backgroundColor: theme.colors.white }}>
-            {isLoading ? <Text>Loading...</Text> :
-                <View style={styles.screen}>
-                    <View style={styles.container}>
-                        <Text style={styles.title}>promptu</Text>
-                        <View style={styles.topSection}>
-                            {!image ? <Pressable onPress={() => pickImage()}>
-                                <Image source={addProfilePicture} style={styles.addProfilePicture} />
-                            </Pressable> :
-                                <View>
-                                    <Image source={{ uri: image }} style={styles.selectedImage} />
+        <KeyboardAvoidingView style={{ flex: 10 }} behavior="padding" keyboardVerticalOffset={10}>
+            <ScrollView style={{ backgroundColor: theme.colors.white }}>
+                {isLoading ? <Text>Loading...</Text> :
+                    <View style={styles.screen}>
+                        <View style={styles.container}>
+                            <Text style={styles.title}>promptu</Text>
+                            <View style={styles.topSection}>
+                                {!image ? <Pressable onPress={() => pickImage()}>
+                                    <Image source={addProfilePicture} style={styles.addProfilePicture} />
+                                </Pressable> :
+                                    <View style={styles.imageContainer}>
+                                        <Image source={{ uri: image }} style={styles.selectedImage} />
+
+                                        <Pressable onPress={() => pickImage()}>
+                                            <Image source={editIcon} style={styles.icon} />
+                                        </Pressable>
+                                    </View>
+                                }
+                                <ThirdPartyAuth
+                                    title="Sign up with Google">
+                                </ThirdPartyAuth>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
+                                    <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
+                                    <View>
+                                        <Text style={{ fontFamily: "Poppins_400Regular", width: 50, textAlign: 'center' }}>Or</Text>
+                                    </View>
+                                    <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
                                 </View>
-                            }
-                            <ThirdPartyAuth
-                                title="Sign up with Google">
-                            </ThirdPartyAuth>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
-                                <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
-                                <View>
-                                    <Text style={{ fontFamily: "Poppins_400Regular", width: 50, textAlign: 'center' }}>Or</Text>
+                                <View style={styles.form}>
+                                    <SingleInput
+                                        placeholder="Full Name"
+                                        onChangeText={onChangeName}
+                                        text={name}
+                                        passwordBool={false}
+                                    />
+                                    <SingleInput
+                                        placeholder="Email/Phone Number"
+                                        onChangeText={onChangeEmail}
+                                        text={email}
+                                        passwordBool={false}
+                                    />
+                                    <SingleInputSecure
+                                        placeholder="Password"
+                                        onChangeText={onChangePassword}
+                                        text={password}
+                                        showPassword={showPassword}
+                                        toggleShowPassword={toggleShowPassword}
+                                    />
                                 </View>
-                                <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
-                            </View>
-                            <View style={styles.form}>
-                                <SingleInput
-                                    placeholder="Full Name"
-                                    onChangeText={onChangeName}
-                                    text={name}
-                                    passwordBool={false}
-                                />
-                                <SingleInput
-                                    placeholder="Email/Phone Number"
-                                    onChangeText={onChangeEmail}
-                                    text={email}
-                                    passwordBool={false}
-                                />
-                                <SingleInputSecure
-                                    placeholder="Password"
-                                    onChangeText={onChangePassword}
-                                    text={password}
-                                    showPassword={showPassword}
-                                    toggleShowPassword={toggleShowPassword}
-                                />
                             </View>
                         </View>
-                    </View>
-                    <View style={styles.bottomSection}>
-                        <Button 
-                        title="Create Account" 
-                        disabled={isButtonDisabled} />
-                        <TouchableOpacity onPress={() => navigation.navigate('Login')} >
-                            <Text style={styles.signupText}>
-                                <Text style={[styles.signupText, { color: theme.colors.black }]}>Do you have an account? </Text>
-                                <Text style={[styles.signupText, { color: theme.colors.purple }]}> Sign in</Text>
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>}
+                        <View style={styles.bottomSection}>
+                            <Button
+                                title="Create Account"
+                                disabled={isButtonDisabled} 
+                                onPress={() => navigation.navigate('Groups')}
+                                />
+                            <TouchableOpacity onPress={() => navigation.navigate('Login')} >
+                                <Text style={styles.signupText}>
+                                    <Text style={[styles.signupText, { color: theme.colors.black }]}>Do you have an account? </Text>
+                                    <Text style={[styles.signupText, { color: theme.colors.purple }]}> Sign in</Text>
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>}
 
-        </ScrollView>
-
+            </ScrollView>
+        </KeyboardAvoidingView>
     )
 };
 
@@ -174,11 +182,24 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 16,
     },
-    selectedImage: {
+    imageContainer: {
+        position: 'relative',
         width: 149.64,
         height: 146.57,
         marginBottom: 30,
         marginTop: -30,
+    },
+    selectedImage: {
+        width: '100%',
+        height: '100%',
         borderRadius: 100,
-    }
+    },
+    icon: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        width: 44.06, // Adjust size as needed
+        height: 43.15, // Adjust size as needed
+        zIndex: 1, // Ensure icon is above image
+    },
 });
