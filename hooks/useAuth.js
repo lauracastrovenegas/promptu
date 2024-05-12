@@ -12,7 +12,7 @@ export default function useAuth() {
             if (user) {
                 setUser(user);
             } else {
-                setUser(null);
+                setUser(false);
             }
         });
         return unsub;

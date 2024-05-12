@@ -67,8 +67,9 @@ const tabIcons = {
   },
 };
 
-function HomeScreen() {
+function App() {
   const { user } = useAuth();
+
   let [fontsLoaded] = useFonts({
     Inter_400Regular, Inter_700Bold, Inter_900Black,
     PatrickHandSC_400Regular
@@ -77,7 +78,7 @@ function HomeScreen() {
   /* This can be expanded to more than just fonts in the future,
      could also check for api results, and other stuff. Just stick
      the bool in the array */
-  const isReady = useSplashScreen([fontsLoaded]);
+  const isReady = useSplashScreen([fontsLoaded, user !== null]);
 
   if (!isReady) {
     return null;
@@ -86,47 +87,48 @@ function HomeScreen() {
   if (user) {
     return (
       <AppProvider>
-        <Tab.Navigator
-          initialRouteName="Groups"
-          screenOptions={({ route }) => ({
-            lazy: false, // needed to navigate to camera from groups
-            headerShown: false, // hide the header of each tab
-            tabBarIcon: ({ focused }) => {
-              // set the icons for each tab
-              return (
-                focused ? tabIcons[route.name].active : tabIcons[route.name].inactive
-              );
-            },
-            tabBarActiveTintColor: theme.colors.black,
-          })}
-        >
-          {/* Bottom Navigation Bar Tabs */}
-          <Tab.Screen name="Profile" component={ProfileTab} />
-          <Tab.Screen name="Groups" component={GroupsTab} />
-          <Tab.Screen name="Camera" component={CameraTab} />
-        </Tab.Navigator>
+        <NavigationContainer>
+          <Tab.Navigator
+            initialRouteName="Groups"
+            screenOptions={({ route }) => ({
+              lazy: false, // needed to navigate to camera from groups
+              headerShown: false, // hide the header of each tab
+              tabBarIcon: ({ focused }) => {
+                // set the icons for each tab
+                return (
+                  focused ? tabIcons[route.name].active : tabIcons[route.name].inactive
+                );
+              },
+              tabBarActiveTintColor: theme.colors.black,
+            })}
+          >
+            {/* Bottom Navigation Bar Tabs */}
+            <Tab.Screen name="Profile" component={ProfileTab} />
+            <Tab.Screen name="Groups" component={GroupsTab} />
+            <Tab.Screen name="Camera" component={CameraTab} />
+          </Tab.Navigator>
+        </NavigationContainer>
       </AppProvider>
     );
   } else {
     return (
       <AppProvider>
-        <Stack.Navigator
-          screenOptions={{ headerShown: false }}
-        >
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Signup" component={SignupScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Groups Stack" component={HomeScreen} />
-
-        </Stack.Navigator>
-
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+          >
+            <Stack.Screen name="Welcome" component={WelcomeScreen} />
+            <Stack.Screen name="Signup" component={SignupScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </AppProvider>
     );
   }
 
 
 };
-
+/* 
 
 function App() {
   let [fontsLoaded] = useFonts({
@@ -134,9 +136,6 @@ function App() {
     PatrickHandSC_400Regular
   });
 
-  /* This can be expanded to more than just fonts in the future,
-     could also check for api results, and other stuff. Just stick
-     the bool in the array */
   const isReady = useSplashScreen([fontsLoaded]);
 
   if (!isReady) {
@@ -162,7 +161,7 @@ function App() {
 
 
 
-};
+}; */
 
 export default App;
 

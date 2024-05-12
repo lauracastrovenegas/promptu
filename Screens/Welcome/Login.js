@@ -24,11 +24,11 @@ const LoginScreen = ({ navigation }) => {
         setShowPassword(!showPassword);
     };
 
-    const handleSubmit = async ()=> {
+    const handleSubmit = async () => {
         if (email && password) {
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-            } catch(err) {
+            } catch (err) {
                 console.log('Error: ', err.message);
             }
         }
@@ -45,53 +45,49 @@ const LoginScreen = ({ navigation }) => {
 
 
     return (
-        <KeyboardAvoidingView style={{ flex: 10 }} behavior="padding" keyboardVerticalOffset={10}>
+        <KeyboardAvoidingView style={styles.screen} behavior="padding" keyboardVerticalOffset={10}>
+            {isLoading ? <Text>Loading...</Text> :
+                <ScrollView>
+                    <View style={styles.screen2}>
+                        <View style={styles.welcomeBox}>
+                            <Text style={styles.title}>promptu</Text>
+                            <Text style={styles.subtext}>Log in with the data you entered during registration.</Text>
+                        </View>
 
-            <ScrollView style={{ backgroundColor: theme.colors.white }}>
-                {isLoading ? <Text>Loading...</Text> :
-                    <View style={styles.screen}>
-                        <View style={styles.container}>
-                            <View style={styles.welcomeBox}>
-                                <Text style={styles.title}>promptu</Text>
-                                <Text style={styles.subtext}>Log in with the data you entered during registration.</Text>
+                        <View style={styles.topSection}>
 
+                            <ThirdPartyAuth
+                                title="Sign in with Google">
+                            </ThirdPartyAuth>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
+                                <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
+                                <View>
+                                    <Text style={{ fontFamily: "Poppins_400Regular", width: 50, textAlign: 'center' }}>Or</Text>
+                                </View>
+                                <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
                             </View>
-
-                            <View style={styles.topSection}>
-
-                                <ThirdPartyAuth
-                                    title="Sign in with Google">
-                                </ThirdPartyAuth>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
-                                    <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
-                                    <View>
-                                        <Text style={{ fontFamily: "Poppins_400Regular", width: 50, textAlign: 'center' }}>Or</Text>
-                                    </View>
-                                    <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
-                                </View>
-                                <View style={styles.form}>
-                                    <SingleInput
-                                        placeholder="Email"
-                                        onChangeText={onChangeEmail}
-                                        text={email}
-                                        passwordBool={false}
-                                    />
-                                    <SingleInputSecure
-                                        placeholder="Password"
-                                        onChangeText={onChangePassword}
-                                        text={password}
-                                        showPassword={showPassword}
-                                        toggleShowPassword={toggleShowPassword}
-                                    />
-                                </View>
+                            <View style={styles.form}>
+                                <SingleInput
+                                    placeholder="Email"
+                                    onChangeText={onChangeEmail}
+                                    text={email}
+                                    passwordBool={false}
+                                />
+                                <SingleInputSecure
+                                    placeholder="Password"
+                                    onChangeText={onChangePassword}
+                                    text={password}
+                                    showPassword={showPassword}
+                                    toggleShowPassword={toggleShowPassword}
+                                />
                             </View>
                         </View>
                         <View style={styles.bottomSection}>
                             <Button
                                 title="Sign in"
-                                disabled={isButtonDisabled} 
+                                disabled={isButtonDisabled}
                                 onPress={handleSubmit}
-                                />
+                            />
                             <TouchableOpacity onPress={() => navigation.navigate('Signup')} >
                                 <Text style={styles.signupText}>
                                     <Text style={[styles.signupText, { color: theme.colors.black }]}>Don't have an account? </Text>
@@ -99,11 +95,9 @@ const LoginScreen = ({ navigation }) => {
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                    </View>}
-
-            </ScrollView>
+                    </View>
+                </ScrollView>}
         </KeyboardAvoidingView>
-
     )
 };
 
@@ -111,18 +105,28 @@ export default LoginScreen;
 
 const styles = StyleSheet.create({
     screen: {
+        flexDirection: 'column',
+        paddingTop: 60,
+        paddingBottom: 20,
+        backgroundColor: theme.colors.white,
+        height: '100%',
+        flex: 10
+    },
+    screen2: {
+        minHeight: '100%',
+        flex: 1,
         padding: 20,
     },
     welcomeBox: {
         display: 'flex',
         alignItems: 'center',
-        marginVertical: "34%",
+        flex: 2,
+        justifyContent: 'center',
     },
     title: {
         fontFamily: "PatrickHandSC_400Regular",
         fontSize: 70,
     },
-
     subtext: {
         fontFamily: "Poppins_400Regular",
         color: "#7C8BA0",
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginVertical: -40
+        flex: 3,
     },
     form: {
         display: 'flex',
@@ -144,12 +148,13 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-evenly',
-        marginVertical: 148
+        height: 'fit-content',
     },
     container: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: 1,
     },
     signupText: {
         fontSize: "14px",

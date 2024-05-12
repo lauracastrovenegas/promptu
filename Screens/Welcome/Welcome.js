@@ -13,28 +13,25 @@ const WelcomeScreen = ({ navigation }) => {
 
     const user = state.userData;
     return (
-        <ScrollView style={{ backgroundColor: theme.colors.lightPurple }}>
-            {isLoading ? <Text>Loading...</Text> :
-                <View style={styles.screen}>
-                    <View style={styles.topSection}>
-                        <Image source={logo} style={styles.logo} />
-                    </View>
-                    <View style={styles.bottomSection}>
-                        <Button
-                            title="Log in"
-                            onPress={() => {
-                                navigation.navigate('Login')
-                            }
-                            } />
-                            <WhiteButton
-                            title="Create Account"
-                            onPress={() => {
-                                navigation.navigate('Signup')
-                            }
-                            } />
-                    </View>
-                </View>}
-        </ScrollView>
+        <View style={styles.screen}>
+            <View style={styles.topSection}>
+                <Image source={logo} style={styles.logo} resizeMode="cover" />
+            </View>
+            <View style={styles.bottomSection}>
+                <Button
+                    title="Log in"
+                    onPress={() => {
+                        navigation.navigate('Login')
+                    }
+                    } />
+                <WhiteButton
+                    title="Create Account"
+                    onPress={() => {
+                        navigation.navigate('Signup')
+                    }
+                    } />
+            </View>
+        </View>
     )
 }
 
@@ -42,24 +39,24 @@ export default WelcomeScreen
 
 const styles = StyleSheet.create({
     screen: {
-        padding: 20,
+        flexDirection: 'column',
+        paddingTop: 60,
+        paddingBottom: 20,
+        backgroundColor: theme.colors.lightPurple,
+        height: '100%',
     },
     logo: {
-        width: 430,
-        height: 465,
+        width: '100%',
+        height: '80%',
     },
     topSection: {
-        display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        marginVertical: "50%",
+        width: '100%',
+        justifyContent: 'center',
+        flex: 1,
+        paddingTop: '15%',
     },
-
     bottomSection: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-evenly',
-        marginVertical: -100
+        padding: 20,
     }
-    
 });

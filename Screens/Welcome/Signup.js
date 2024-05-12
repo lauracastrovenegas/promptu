@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, StyleSheet, View, Image, TouchableOpacity, Pressable, KeyboardAvoidingView } from "react-native";
+import { ScrollView, Text, StyleSheet, View, Image, TouchableOpacity, KeyboardAvoidingView } from "react-native";
 import theme from "../../theme";
 import { useAppContext } from "../../AppContext";
 import addProfilePicture from "../../assets/add_profile_picture.png";
@@ -28,13 +28,13 @@ const SignupScreen = ({ navigation }) => {
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     };
-    
-    const handleSubmit = async ()=>{
-        if(email && password) {
+
+    const handleSubmit = async () => {
+        if (email && password) {
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
                 navigation.navigate("Groups Stack");
-            } catch(err) {
+            } catch (err) {
                 console.log('Got error: ', err.message);
             }
         }
@@ -85,20 +85,22 @@ const SignupScreen = ({ navigation }) => {
                         <View style={styles.container}>
                             <Text style={styles.title}>promptu</Text>
                             <View style={styles.topSection}>
-                                {!image ? <Pressable onPress={() => pickImage()}>
+                                {!image ? <TouchableOpacity onPress={() => pickImage()}>
                                     <Image source={addProfilePicture} style={styles.addProfilePicture} />
-                                </Pressable> :
+                                </TouchableOpacity> :
                                     <View style={styles.imageContainer}>
                                         <Image source={{ uri: image }} style={styles.selectedImage} />
 
-                                        <Pressable onPress={() => pickImage()}>
+                                        <TouchableOpacity onPress={() => pickImage()}>
                                             <Image source={editIcon} style={styles.icon} />
-                                        </Pressable>
+                                        </TouchableOpacity>
                                     </View>
                                 }
-                                <ThirdPartyAuth
-                                    title="Sign up with Google">
-                                </ThirdPartyAuth>
+                                <View style={styles.form}>
+                                    <ThirdPartyAuth
+                                        title="Sign up with Google">
+                                    </ThirdPartyAuth>
+                                </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
                                     <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
                                     <View>
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
     title: {
         fontFamily: "PatrickHandSC_400Regular",
         fontSize: 70,
-        marginVertical: "15%",
+        marginVertical: 40,
     },
     topSection: {
         display: 'flex',
@@ -175,7 +177,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     bottomSection: {
         display: 'flex',
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     signupText: {
         fontSize: "14px",

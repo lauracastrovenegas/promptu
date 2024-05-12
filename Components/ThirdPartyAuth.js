@@ -7,33 +7,27 @@ import google from '../assets/google_icon.png';
 const ThirdPartyAuth = ({ title, onPress, disabled }) => {
     const [text, onChangeText] = React.useState('');
     return (
-        <TouchableOpacity style={disabled ? styles.buttonDisabled : styles.button} onPress={onPress} disabled={disabled}>
+        <TouchableOpacity onPress={onPress} disabled={disabled} style={disabled ? styles.buttonDisabled : styles.button}>
+            <View style={styles.contents}>
                 <Image source={google} style={styles.logo} />
                 <Text style={styles.buttonText}>{title}</Text>
+            </View>
         </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
     button: {
-        height: 60,
-        width: 390,
-        margin: 12,
-        padding: 10,
-        borderRadius: 14,
-        backgroundColor: theme.colors.lighterPurple,
-        display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center'
+        backgroundColor: theme.colors.lighterPurple,
+        width: '100%',
+        borderRadius: 14,
     },
     buttonDisabled: {
+        flexDirection: 'row',
         backgroundColor: theme.colors.lightPurple,
-        paddingHorizontal: 10,
-        paddingVertical: 15,
-        borderRadius: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
+        width: '100%',
+        borderRadius: 14,
     },
     buttonText: {
         color: '#61677D',
@@ -43,7 +37,14 @@ const styles = StyleSheet.create({
     logo: {
         width: 24,
         height: 24,
-        marginRight: 17,
+        marginRight: 16,
+    },
+    contents: {
+        flex: 1, // Take the remaining space
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
     },
 
 });
