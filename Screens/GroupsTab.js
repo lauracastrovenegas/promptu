@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   title: {
-    fontFamily: "PatrickHand_400Regular",
+    fontFamily: "PatrickHandSC_400Regular",
     textTransform: 'uppercase',
     fontSize: 24,
   },
