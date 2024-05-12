@@ -6,6 +6,8 @@ import SingleInput from "../../Components/SingleInput";
 import ThirdPartyAuth from "../../Components/ThirdPartyAuth";
 import Button from "../../Components/Button";
 import SingleInputSecure from "../../Components/SingleInputSecure";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 /* This component is the Login Screen */
 const LoginScreen = ({ navigation }) => {
@@ -21,6 +23,16 @@ const LoginScreen = ({ navigation }) => {
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     };
+
+    const handleSubmit = async ()=> {
+        if (email && password) {
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch(err) {
+                console.log('Error: ', err.message);
+            }
+        }
+    }
 
     // Function to check if all fields are filled and set the button disabled state accordingly
     React.useEffect(() => {
@@ -59,7 +71,7 @@ const LoginScreen = ({ navigation }) => {
                                 </View>
                                 <View style={styles.form}>
                                     <SingleInput
-                                        placeholder="Email/Phone Number"
+                                        placeholder="Email"
                                         onChangeText={onChangeEmail}
                                         text={email}
                                         passwordBool={false}
@@ -78,7 +90,7 @@ const LoginScreen = ({ navigation }) => {
                             <Button
                                 title="Sign in"
                                 disabled={isButtonDisabled} 
-                                onPress={() => navigation.navigate('Groups')}
+                                onPress={handleSubmit}
                                 />
                             <TouchableOpacity onPress={() => navigation.navigate('Signup')} >
                                 <Text style={styles.signupText}>
