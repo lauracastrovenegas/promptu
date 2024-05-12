@@ -4,14 +4,17 @@ import CardContainer from './CardContainer';
 import theme from '../theme';
 import MemberListBubbles from './MemberListBubbles';
 import GroupPhotoName from './GroupPhotoName';
+import { getTodaysGroupContest } from '../Functions/utils';
 
 const GroupCard = ({ group }) => {
+  const constestInfo = getTodaysGroupContest(group);
+
   return (
     <CardContainer>
       <View style={styles.row}>
         <GroupPhotoName group={group} />
         <View style={styles.promptAndMembers}>
-          <Text style={styles.prompt}>{group.prompt}</Text>
+          <Text style={styles.prompt}>{constestInfo.prompt}</Text>
           <MemberListBubbles group={group} />
         </View>
       </View>

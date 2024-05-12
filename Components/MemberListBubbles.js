@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { FontAwesome6 } from '@expo/vector-icons';
 import theme from '../theme';
+import { getTodaysGroupContest } from '../Functions/utils';
 
 const MemberListBubbles = ({ group }) => {
   const memberSubmissions = getMemberSubmissions();
@@ -9,7 +10,8 @@ const MemberListBubbles = ({ group }) => {
   // Goes through all members and the submissions and returns whether each member has submitted or not
   function getMemberSubmissions() {
     const members = group.members;
-    const submissions = group.submissions;
+    const constestInfo  = getTodaysGroupContest(group);
+    const submissions = constestInfo.submissions;
 
     const memberSubmissions = members.map(member => {
       const memberSubmission = submissions.find(submission => submission.userId === member.id);

@@ -1,7 +1,8 @@
-import { groupComments } from '../data/fakeData';
+import { groupComments, groupContests } from '../data/fakeData';
 
 export const hasUserSubmittedToGroup = (group, user) => {
-  const memberSubmission = group.submissions.find(submission => submission.userId === user.id);
+  const contestInfo = getTodaysGroupContest(group);
+  const memberSubmission = contestInfo.submissions.find(submission => submission.userId === user.id);
   return memberSubmission ? true : false;
 }
 
@@ -17,8 +18,8 @@ export const timeUntilEndOfDay = (deadline) => {
 
   // Check if it's past deadline today
   if (currentHour > deadline || (currentHour === deadline && currentMinute > 0)) {
-      // If so, increment the date by one day
-      deadlineDate.setDate(deadlineDate.getDate() + 1);
+    // If so, increment the date by one day
+    deadlineDate.setDate(deadlineDate.getDate() + 1);
   }
 
   // Set the time to deadline
@@ -70,4 +71,18 @@ export const getGroupComments = (group) => {
     ...comment,
     user: groupMembers.find(user => user.id === comment.userId),
   }));
+}
+
+export const getTodaysGroupContest = (group) => {
+  // get today's date
+  const today = new Date();
+
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+
+  // To do: use this when we have real data
+  const dateStamp = year + "-" + month + "-" + day;
+
+  return groupContests.find(contest => contest.groupId === group.id && contest.date === "2024-06-01");
 }

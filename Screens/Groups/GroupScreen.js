@@ -4,7 +4,7 @@ import theme from "../../theme";
 import MemberListBubbles from "../../Components/MemberListBubbles";
 import CardContainer from "../../Components/CardContainer";
 import Button from "../../Components/Button";
-import { hasUserSubmittedToGroup, timeUntilEndOfDay } from "../../Functions/utils";
+import { hasUserSubmittedToGroup, getTodaysGroupContest } from "../../Functions/utils";
 import { useAppContext } from "../../AppContext";
 import Countdown from "../../Components/Countdown";
 import CommentSection from "../../Components/CommentSection";
@@ -14,6 +14,7 @@ const GroupScreen = ({ route, navigation }) => {
   const { state } = useAppContext();
 
   const group = route.params.group;
+  const constestInfo = getTodaysGroupContest(group);
 
   return (
     <View style={styles.screen}>
@@ -21,7 +22,7 @@ const GroupScreen = ({ route, navigation }) => {
         <CardContainer>
           <View style={styles.cardContents}>
             <Text style={styles.promptTitle}>Today's Prompt</Text>
-            <Text style={styles.prompt}>{group.prompt}</Text>
+            <Text style={styles.prompt}>{constestInfo.prompt}</Text>
             <Countdown style={styles.countdown} deadline={group.votingTime} />
             <MemberListBubbles group={group} />
             <Button

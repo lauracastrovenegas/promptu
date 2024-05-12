@@ -17,22 +17,18 @@ export const groups = [
     name: "Friends",
     groupPhoto: group1,
     ownerId: 1,
-    prompt: "This is the prompt of the day for the Friends group",
     votingTime: 18, // 6 PM
     members: [
       { id: 1, name: "User 1", photo: user1 },
       { id: 2, name: "User 2", photo: user2 },
       { id: 3, name: "User 3", photo: user3 },
-    ],
-    submissions: [
-      { id: 2, photo: submission2, caption: "Caption 2", userId: 2 },
     ]
   },
   {
     id: 2,
     name: "Coworkers",
+    groupPhoto: null,
     ownerId: 2,
-    prompt: "This is the prompt of the day for the Coworkers group",
     votingTime: 20, // 8 PM
     members: [
       { id: 1, name: "User 1", photo: user1 },
@@ -40,12 +36,42 @@ export const groups = [
       { id: 4, name: "User 4", photo: user4 },
       { id: 5, name: "User 5", photo: user5 },
       { id: 6, name: "User 6", photo: user6 },
+    ]
+  }
+];
+
+// create this object as soon as the winner of the previous day picks a new prompt
+export const groupContests = [
+  {
+    groupId: 1,
+    date: "2024-06-01",
+    winner: null,
+    hasVotingOccurred: false,
+    prompt: "This is the prompt of the day for the Friends group",
+    submissions: [
+      { id: 2, photo: submission2, caption: "Caption 2", userId: 2 },
     ],
+    votes: [
+      { submissionId: 2, userId: 3, value: 100 },
+      { submissionId: 2, userId: 1, value: 50 },
+    ]
+  },
+  {
+    groupId: 2,
+    date: "2024-06-01",
+    winner: null,
+    hasVotingOccurred: false,
+    prompt: "This is the prompt of the day for the Coworkers group",
     submissions: [
       { id: 1, photo: submission1, caption: "Caption 1", userId: 1 },
       { id: 2, photo: submission2, caption: "Caption 2", userId: 4 },
+    ],
+    votes: [
+      { submissionId: 1, userId: 3, value: 100 },
+      { submissionId: 2, userId: 1, value: 50 },
     ]
   }
+
 ];
 
 export const user = {
