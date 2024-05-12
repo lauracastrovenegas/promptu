@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
     screen: {
         flexDirection: 'column',
         paddingTop: 60,
-        paddingBottom: 20,
         backgroundColor: theme.colors.white,
         height: '100%',
         flex: 10
@@ -149,6 +148,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-evenly',
         height: 'fit-content',
+        marginVertical: 20
     },
     container: {
         display: 'flex',

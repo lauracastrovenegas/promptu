@@ -5,6 +5,7 @@ import MainProfileScreen from './Profile/MainProfileScreen';
 import { FontAwesome6 } from "@expo/vector-icons";
 import theme from '../theme';
 import ProfileSettings from './ProfileSettings';
+import useAuth from "../hooks/useAuth";
 
 const Stack = createNativeStackNavigator();
 

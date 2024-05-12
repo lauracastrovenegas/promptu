@@ -9,7 +9,7 @@ import ThirdPartyAuth from "../../Components/ThirdPartyAuth";
 import Button from "../../Components/Button";
 import SingleInputSecure from "../../Components/SingleInputSecure";
 import * as ImagePicker from "expo-image-picker";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/firebase";
 
 /* This component is the Signup Screen */
@@ -31,14 +31,20 @@ const SignupScreen = ({ navigation }) => {
 
     const handleSubmit = async () => {
         if (email && password) {
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                navigation.navigate("Groups Stack");
-            } catch (err) {
-                console.log('Got error: ', err.message);
-            }
+            await createUserWithEmailAndPassword(auth, email, password)
+                .then(async (userCredentials) => {
+                    await updateProfile(userCredentials.user, { displayName: name, photoURL: undefined })
+                        .then(async () => {
+                            await signInWithEmailAndPassword(auth, email, password);
+                        }).catch((error) => {
+                            console.log('Error: ', error.message);
+                        });
+                }).catch((error) => {
+                    console.log('Error: ', error.message);
+                });
         }
     }
+    
     // profile picture logic 
     const [image, setImage] = React.useState(null);
 
@@ -134,9 +140,9 @@ const SignupScreen = ({ navigation }) => {
                         <View style={styles.bottomSection}>
                             <Button
                                 title="Create Account"
-                                disabled={isButtonDisabled} 
+                                disabled={isButtonDisabled}
                                 onPress={handleSubmit}
-                                />
+                            />
                             <TouchableOpacity onPress={() => navigation.navigate('Login')} >
                                 <Text style={styles.signupText}>
                                     <Text style={[styles.signupText, { color: theme.colors.black }]}>Do you have an account? </Text>

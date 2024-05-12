@@ -16,7 +16,7 @@ const MainProfileScreen = () => {
         <View style={styles.screen}>
           <View style={styles.topSection}>
             <Image source={user.photo} style={styles.profilePic} />
-            <Text style={styles.userName}>{user.name}</Text>
+            <Text style={styles.userName}>{user.displayName}</Text>
           </View>
           <View style={{ display: 'flex' }}>
             <Text style={styles.sectionTitle}>Your Groups</Text>

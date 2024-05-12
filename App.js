@@ -86,7 +86,7 @@ function App() {
 
   if (user) {
     return (
-      <AppProvider>
+      <AppProvider currentUser={user}>
         <NavigationContainer>
           <Tab.Navigator
             initialRouteName="Groups"

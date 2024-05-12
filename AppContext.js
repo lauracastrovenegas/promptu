@@ -42,13 +42,20 @@ const appReducer = (state, action) => {
   }
 };
 
-export const AppProvider = ({ children }) => {
+export const AppProvider = ({ children, currentUser }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
   const [isLoading, setIsLoading] = useState(true);
 
   function fetchUserData() {
+    let userData = user;
     // use the fake data for now
-    return user;
+    if (currentUser) {
+      if (currentUser.displayName !== undefined)
+        userData.displayName = currentUser.displayName;
+
+    }
+
+    return userData;
   }
 
   function fetchGroupData() {
