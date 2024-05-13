@@ -6,7 +6,7 @@ import { useAppContext } from "../../AppContext";
 import Button from "../../Components/Button";
 import theme from '../../theme';
 
-/* This component is the Individual Group Screen  */
+/* This component is the Create Group Screen  */
 const CreateGroupScreen = ({ navigation }) => {
   const [group, onChangeGroup] = React.useState('');
   const { state, dispatch } = useAppContext();

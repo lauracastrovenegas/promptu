@@ -4,8 +4,8 @@ import { Text, StyleSheet, View, Image } from 'react-native';
 const UserPhotoName = ({ user }) => {
   return (
     <View style={styles.userPicAndName}>
-      <UserPhoto userPhoto={user.user.photo} />
-      <Text style={styles.userName} numberOfLines={1}>{user.user.name}</Text>
+      <UserPhoto userPhoto={user.photo} />
+      <Text style={styles.userName} numberOfLines={1}>{user.name}</Text>
     </View>
   );
 };

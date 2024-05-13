@@ -7,11 +7,12 @@ import MemberRequestCard from '../../Components/MemberRequestCard';
 import theme from '../../theme';
 import * as Clipboard from 'expo-clipboard';
 
-/* This component is the Individual Group Screen  */
+/* This component is the Share Group Screen  */
 const ShareGroupScreen = ({ route }) => {
   const { state, isLoading } = useAppContext();
   const group = route.params.groupData;
 
+  // test value, to be replaced later
   const requests = state.groupsData[0].members;
 
   return (

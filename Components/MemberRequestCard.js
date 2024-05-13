@@ -8,7 +8,7 @@ const MemberRequestCard = ( user ) => {
   return (
     <CardContainer>
       <View style={styles.row}>
-        <UserPhotoName user={user} />
+        <UserPhotoName user={user.user} />
         <View style={styles.options}>
             <Button
                 title={`Approve`}

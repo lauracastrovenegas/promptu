@@ -5,6 +5,7 @@ import MainGroupsScreen from './Groups/MainGroupsScreen';
 import GroupScreen from './Groups/GroupScreen';
 import CreateGroupScreen from './Groups/CreateGroupScreen';
 import ShareGroupScreen from './Groups/ShareGroupScreen';
+import JoinGroupScreen from './Groups/JoinGroupScreen';
 import { FontAwesome6 } from "@expo/vector-icons";
 import theme from "../theme";
 import { useAppContext } from '../AppContext';
@@ -93,6 +94,26 @@ const GroupsTab = ({ route }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon}/>
+            </TouchableOpacity>
+          ),
+        })} />
+      {/* Join Groups Page is the screen that allows users to join groups. */}
+      <Stack.Screen
+        name="Join Group Page"
+        component={JoinGroupScreen}
+        options={({ navigation }) => ({
+          headerTitle: () => (
+            <Text style={styles.title}>Join Group</Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Groups Page")}
             >
               <FontAwesome6
                 name="chevron-left"
