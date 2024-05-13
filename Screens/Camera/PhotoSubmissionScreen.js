@@ -33,7 +33,7 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
     const currentGroupData = selectedGroup;
 
     // check if there is an existing submission for the user
-    const userHasSubmittedAlready = hasUserSubmittedToGroup(currentGroupData, state.userData);
+    const userHasSubmittedAlready = hasUserSubmittedToGroup(currentGroupData, state.userData, state.groupsContestData);
 
     if (userHasSubmittedAlready) {
       const replaceSubmission = await createReplaceSubmissionConfirmationAlert();

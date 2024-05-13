@@ -6,8 +6,8 @@ import MemberListBubbles from './MemberListBubbles';
 import GroupPhotoName from './GroupPhotoName';
 import { getTodaysGroupContest } from '../Functions/utils';
 
-const GroupCard = ({ group }) => {
-  const constestInfo = getTodaysGroupContest(group);
+const GroupCard = ({ groupContests, group }) => {
+  const constestInfo = getTodaysGroupContest(group, groupContests);
 
   return (
     <CardContainer>
@@ -15,7 +15,7 @@ const GroupCard = ({ group }) => {
         <GroupPhotoName group={group} />
         <View style={styles.promptAndMembers}>
           <Text style={styles.prompt}>{constestInfo.prompt}</Text>
-          <MemberListBubbles group={group} />
+          <MemberListBubbles group={group} groupContests={groupContests} />
         </View>
       </View>
     </CardContainer>

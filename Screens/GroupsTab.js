@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainGroupsScreen from './Groups/MainGroupsScreen';
 import GroupScreen from './Groups/GroupScreen';
+import CreateGroupScreen from './Groups/CreateGroupScreen';
 import { FontAwesome6 } from "@expo/vector-icons";
 import theme from "../theme";
 import { useAppContext } from '../AppContext';
@@ -18,7 +19,7 @@ const GroupsTab = ({ route }) => {
       <Stack.Screen
         name="Groups Page"
         component={MainGroupsScreen}
-        options={() => ({
+        options={({ navigation }) => ({
           // hide center header text but keep the header itself
           headerTitle: () => (
             <Text></Text>
@@ -28,7 +29,7 @@ const GroupsTab = ({ route }) => {
           ),
           headerRight: () => (
             <TouchableOpacity
-              onPress={() => alert('This is a button!')}
+              onPress={() => navigation.navigate('Create Group Page')}
             >
               <FontAwesome6
                 name="plus"
@@ -60,6 +61,26 @@ const GroupsTab = ({ route }) => {
           ),
         })}
       />
+      {/* Create Groups Page is the screen that allows uses to create new groups. It lets users imput a group photo icon and a group name. */}
+      <Stack.Screen
+        name="Create Group Page"
+        component={CreateGroupScreen}
+        options={({ navigation }) => ({
+          headerTitle: () => (
+            <Text style={styles.title}>Create New Group</Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon}/>
+            </TouchableOpacity>
+          ),
+        })} />
     </Stack.Navigator>
   )
 }

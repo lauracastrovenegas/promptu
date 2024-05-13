@@ -14,7 +14,7 @@ const GroupScreen = ({ route, navigation }) => {
   const { state } = useAppContext();
 
   const group = route.params.group;
-  const constestInfo = getTodaysGroupContest(group);
+  const constestInfo = getTodaysGroupContest(group, state.groupsContestData);
 
   return (
     <View style={styles.screen}>
@@ -24,9 +24,9 @@ const GroupScreen = ({ route, navigation }) => {
             <Text style={styles.promptTitle}>Today's Prompt</Text>
             <Text style={styles.prompt}>{constestInfo.prompt}</Text>
             <Countdown style={styles.countdown} deadline={group.votingTime} />
-            <MemberListBubbles group={group} />
+            <MemberListBubbles group={group} groupContests={state.groupsContestData} />
             <Button
-              title={`${hasUserSubmittedToGroup(group, state.userData) ? "Resubmit" : "Submit"} Your Photo`}
+              title={`${hasUserSubmittedToGroup(group, state.userData, state.groupsContestData) ? "Resubmit" : "Submit"} Your Photo`}
               onPress={() => {
                 navigation.navigate('Main Camera Screen', { group })
               }

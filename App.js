@@ -68,7 +68,7 @@ const tabIcons = {
 };
 
 function App() {
-  const { user } = useAuth();
+  const user = true; // useAuth();
 
   let [fontsLoaded] = useFonts({
     Inter_400Regular, Inter_700Bold, Inter_900Black,

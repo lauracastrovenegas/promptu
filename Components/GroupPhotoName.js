@@ -16,7 +16,7 @@ const GroupPhoto = ({ groupPhoto }) => {
   return (
     <View style={styles.centerImages}>
       {groupPhoto ?
-        <Image style={styles.groupPhoto} source={groupPhoto} />
+        <Image style={styles.groupPhoto} source={{ uri : groupPhoto}} />
         :
         <View style={styles.groupPhotoIcon}>
           <FontAwesome6 name="users" size={30} color={theme.colors.white} />

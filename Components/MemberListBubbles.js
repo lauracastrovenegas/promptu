@@ -4,13 +4,14 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import theme from '../theme';
 import { getTodaysGroupContest } from '../Functions/utils';
 
-const MemberListBubbles = ({ group }) => {
+const MemberListBubbles = ({ group, groupContests }) => {
+
   const memberSubmissions = getMemberSubmissions();
 
   // Goes through all members and the submissions and returns whether each member has submitted or not
   function getMemberSubmissions() {
     const members = group.members;
-    const constestInfo  = getTodaysGroupContest(group);
+    const constestInfo  = getTodaysGroupContest(group, groupContests);
     const submissions = constestInfo.submissions;
 
     const memberSubmissions = members.map(member => {
