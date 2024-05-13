@@ -15,7 +15,7 @@ const MainGroupsScreen = ({ navigation }) => {
             <TouchableOpacity
               key={group.id}
               onPress={() => {
-                navigation.navigate('Group Page', {
+                navigation.navigate('Group Screen', {
                   group,
                 });
               }}>
