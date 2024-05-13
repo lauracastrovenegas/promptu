@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import addProfilePicture from "../assets/add_profile_picture.png";
+import addProfilePicture from "../assets/add_group_picture.png";
 import editIcon from "../assets/edit_icon.png";
 import * as ImagePicker from "expo-image-picker";
 
