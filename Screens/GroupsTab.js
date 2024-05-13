@@ -46,7 +46,6 @@ const GroupsTab = ({ route }) => {
         component={GroupScreen}
         options={({ route, navigation }) => ({
           headerTitle: () => (
-            // set header title to the group name passed through route params
             <GroupHeaderButton group={route.params.group} onPress={() => alert('This opens the group settings button!')} />
           ),
           headerLeft: () => (
@@ -65,10 +64,9 @@ const GroupsTab = ({ route }) => {
       <Stack.Screen
         name="Voting Screen"
         component={VotingScreen}
-        options={({ navigation }) => ({
+        options={({ route, navigation }) => ({
           headerTitle: () => (
-            // set header title to the group name passed through route params
-            <Text></Text>
+            <GroupHeaderButton group={route.params.group} />
           ),
           headerLeft: () => (
             <TouchableOpacity
@@ -86,10 +84,9 @@ const GroupsTab = ({ route }) => {
       <Stack.Screen
         name="Winner Announcement Screen"
         component={WinnerAnnouncementScreen}
-        options={({ navigation }) => ({
+        options={({ route, navigation }) => ({
           headerTitle: () => (
-            // set header title to the group name passed through route params
-            <Text></Text>
+            <GroupHeaderButton group={route.params.group} />
           ),
           headerLeft: () => (
             <TouchableOpacity
@@ -107,10 +104,9 @@ const GroupsTab = ({ route }) => {
       <Stack.Screen
         name="Choose Prompt Screen"
         component={ChoosePromptScreen}
-        options={({ navigation }) => ({
+        options={({ route, navigation }) => ({
           headerTitle: () => (
-            // set header title to the group name passed through route params
-            <Text></Text>
+            <GroupHeaderButton group={route.params.group} />
           ),
           headerLeft: () => (
             <TouchableOpacity

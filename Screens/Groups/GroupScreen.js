@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import theme from "../../theme";
 import MemberListBubbles from "../../Components/MemberListBubbles";
 import CardContainer from "../../Components/CardContainer";
@@ -8,6 +8,8 @@ import { hasUserSubmittedToGroup, getTodaysGroupContest } from "../../Functions/
 import { useAppContext } from "../../AppContext";
 import Countdown from "../../Components/Countdown";
 import CommentSection from "../../Components/CommentSection";
+import PolaroidPhoto from "../../Components/PolaroidPhoto";
+import user2 from "../../assets/fakeProfilePhotos/user2.png";
 
 /* This component is the Individual Group Screen  */
 const GroupScreen = ({ route, navigation }) => {
@@ -74,8 +76,7 @@ const VotingBox = ({ group, onSubmit }) => {
   return (
     <CardContainer>
       <View style={styles.cardContents}>
-        <Text style={styles.promptTitle}>It's time to vote!</Text>
-        <Text style={styles.prompt}>Vote for your favorite photos</Text>
+        <Text style={styles.largePromptTitle}>It's time to vote!</Text>
         <MemberListBubbles group={group} />
         <Button
           title="Vote"
@@ -89,9 +90,17 @@ const VotingBox = ({ group, onSubmit }) => {
 const ResultsBox = ({ group }) => {
   return (
     <CardContainer>
-      <View style={styles.cardContents}>
-        <Text style={styles.promptTitle}>Results</Text>
-        <Text style={styles.prompt}>So and so is the winner!</Text>
+      <View style={styles.cardContentsRow}>
+        <View style={styles.winner}>
+          <Text style={styles.promptTitle}>Today's Winner</Text>
+          <View style={styles.centerImage}>
+            <Image source={user2} style={styles.image} />
+          </View>
+          <Text style={styles.prompt}>Stacy</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <PolaroidPhoto small/>
+        </View>
       </View>
     </CardContainer>
   );
@@ -107,11 +116,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 20,
   },
+  cardContentsRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 20,
+  },
   promptTitle: {
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: -10,
-    fontSize: 16,
+    fontSize: 14,
+  },
+  largePromptTitle: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 20,
   },
   prompt: {
     fontSize: 16,
@@ -122,4 +140,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: theme.fonts.patrickHand,
   },
+  image: {
+    width: 80, 
+    height: 80, 
+    borderRadius: 100
+  },
+  centerImage: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  winner: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 10,
+    justifyContent: 'center',
+  }
 });

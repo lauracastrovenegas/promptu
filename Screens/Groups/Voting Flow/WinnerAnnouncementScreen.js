@@ -1,21 +1,23 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import Button from '../../../Components/Button';
+import PolaroidPhoto from '../../../Components/PolaroidPhoto';
+import theme from '../../../theme';
 
-const WinnerAnnouncementScreen = ({ navigation }) => {
+const WinnerAnnouncementScreen = ({ route, navigation }) => {
+  const group = route.params.group;
 
   return (
     <View style={styles.screen}>
+      <Text style={styles.title}>Stacy Wins!</Text>
       <View style={styles.topSection}>
-        <ScrollView>
-          <Text>This is the WinnerAnnouncementScreen component.</Text>
-        </ScrollView>
+        <PolaroidPhoto />
       </View>
-      <Button 
-        title="Continue" 
+      <Button
+        title="Continue"
         onPress={() => {
-          navigation.navigate('Choose Prompt Screen')
-          }} />
+          navigation.navigate('Choose Prompt Screen', { group })
+        }} />
     </View>
   );
 };
@@ -27,8 +29,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 20,
     flex: 1,
+    backgroundColor: theme.colors.white,
   },
   topSection: {
     flex: 1,
-  }
+    paddingBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 40,
+    fontFamily: 'PatrickHandSC-Regular',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
 });
