@@ -43,7 +43,7 @@ const SignupScreen = ({ navigation }) => {
                 });
         }
     }
-    
+
     // profile picture logic 
     const [image, setImage] = React.useState(null);
 

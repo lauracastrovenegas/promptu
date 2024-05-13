@@ -8,13 +8,16 @@ const GroupHeaderButton = ({ group, onPress }) => {
     <TouchableOpacity
       style={styles.groupNameButton}
       onPress={onPress}
+      activeOpacity={onPress ? 0.2 : 1} // this disabled the animation if onPress is not defined
     >
       <GroupPhoto groupPhoto={group.groupPhoto} />
       <Text style={styles.groupNameText}>{group.name}</Text>
-      {/* <FontAwesome6
-        name="chevron-right"
-        size={8}
-        color={theme.colors.black} /> */}
+      {onPress ?
+        <FontAwesome6
+          name="chevron-right"
+          size={8}
+          color={theme.colors.black} />
+        : null}
     </TouchableOpacity>
   );
 };
