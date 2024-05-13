@@ -4,6 +4,7 @@ import InputImage from "../../Components/InputImage";
 import SingleInput from "../../Components/SingleInput";
 import { useAppContext } from "../../AppContext";
 import Button from "../../Components/Button";
+import theme from '../../theme';
 
 /* This component is the Individual Group Screen  */
 const CreateGroupScreen = ({ navigation }) => {
@@ -38,7 +39,7 @@ const CreateGroupScreen = ({ navigation }) => {
     dispatch({ type: 'ADD_GROUPS_CONTEST_DATA', payload: groupContestData });
 
     // go to the group screen
-    navigation.navigate('Share Group Page', { group });
+    navigation.navigate('Share Group Page', { groupData });
   }
 
   // Function to check if group and image fields are filled
@@ -80,6 +81,7 @@ export default CreateGroupScreen;
 
 const styles = StyleSheet.create({
     screen: {
+      backgroundColor: theme.colors.white,
       display: 'flex',
       flexDirection: 'column',
       padding: 20,

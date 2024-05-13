@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainGroupsScreen from './Groups/MainGroupsScreen';
 import GroupScreen from './Groups/GroupScreen';
 import CreateGroupScreen from './Groups/CreateGroupScreen';
+import ShareGroupScreen from './Groups/ShareGroupScreen';
 import { FontAwesome6 } from "@expo/vector-icons";
 import theme from "../theme";
 import { useAppContext } from '../AppContext';
@@ -61,7 +62,27 @@ const GroupsTab = ({ route }) => {
           ),
         })}
       />
-      {/* Create Groups Page is the screen that allows uses to create new groups. It lets users imput a group photo icon and a group name. */}
+      {/* Share Groups Page is the screen that allows users to share new groups and approve members. */}
+      <Stack.Screen
+        name="Share Group Page"
+        component={ShareGroupScreen}
+        options={({ navigation }) => ({
+          headerTitle: () => (
+            <Text style={styles.title}>Share Group</Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Groups Page")}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon}/>
+            </TouchableOpacity>
+          ),
+        })} />
+      {/* Create Groups Page is the screen that allows users to create new groups. It lets users imput a group photo icon and a group name. */}
       <Stack.Screen
         name="Create Group Page"
         component={CreateGroupScreen}
