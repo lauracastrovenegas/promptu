@@ -1,7 +1,7 @@
-import { groupComments, groupContests } from '../data/fakeData';
+import { groupComments } from '../data/fakeData';
 
-export const hasUserSubmittedToGroup = (group, user) => {
-  const contestInfo = getTodaysGroupContest(group);
+export const hasUserSubmittedToGroup = (group, user, groupsContests) => {
+  const contestInfo = getTodaysGroupContest(group, groupsContests);
   const memberSubmission = contestInfo.submissions.find(submission => submission.userId === user.id);
   return memberSubmission ? true : false;
 }
@@ -73,7 +73,7 @@ export const getGroupComments = (group) => {
   }));
 }
 
-export const getTodaysGroupContest = (group) => {
+export const getTodaysGroupContest = (group, groupContests) => {
   // get today's date
   const today = new Date();
 

@@ -19,7 +19,7 @@ const MainGroupsScreen = ({ navigation }) => {
                   group,
                 });
               }}>
-              <GroupCard group={group} />
+              <GroupCard groupContests={state.groupsContestData} group={group} />
             </TouchableOpacity>
           ))}
         </View>}

@@ -3,6 +3,9 @@ import { StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainGroupsScreen from './Groups/MainGroupsScreen';
 import GroupScreen from './Groups/GroupScreen';
+import CreateGroupScreen from './Groups/CreateGroupScreen';
+import ShareGroupScreen from './Groups/ShareGroupScreen';
+import JoinGroupScreen from './Groups/JoinGroupScreen';
 import { FontAwesome6 } from "@expo/vector-icons";
 import theme from "../theme";
 import GroupHeaderButton from '../Components/GroupHeaderButton';
@@ -20,7 +23,7 @@ const GroupsTab = ({ route }) => {
       <Stack.Screen
         name="Groups Screen"
         component={MainGroupsScreen}
-        options={() => ({
+        options={({ navigation }) => ({
           // hide center header text but keep the header itself
           headerTitle: () => (
             <Text></Text>
@@ -30,7 +33,7 @@ const GroupsTab = ({ route }) => {
           ),
           headerRight: () => (
             <TouchableOpacity
-              onPress={() => alert('This is a button!')}
+              onPress={() => navigation.navigate('Create Group Page')}
             >
               <FontAwesome6
                 name="plus"
@@ -61,16 +64,17 @@ const GroupsTab = ({ route }) => {
           ),
         })}
       />
+      {/* Share Groups Page is the screen that allows users to share new groups and approve members. */}
       <Stack.Screen
-        name="Voting Screen"
-        component={VotingScreen}
-        options={({ route, navigation }) => ({
+        name="Share Group Page"
+        component={ShareGroupScreen}
+        options={({ navigation }) => ({
           headerTitle: () => (
-            <GroupHeaderButton group={route.params.group} />
+            <Text style={styles.title}>Share Group</Text>
           ),
           headerLeft: () => (
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate("Groups Screen")}
             >
               <FontAwesome6
                 name="chevron-left"
@@ -79,8 +83,67 @@ const GroupsTab = ({ route }) => {
                 style={styles.icon}/>
             </TouchableOpacity>
           ),
-        })}
-      />
+        })} />
+      {/* Create Groups Page is the screen that allows users to create new groups. It lets users imput a group photo icon and a group name. */}
+      <Stack.Screen
+        name="Create Group Page"
+        component={CreateGroupScreen}
+        options={({ navigation }) => ({
+          headerTitle: () => (
+            <Text style={styles.title}>Create New Group</Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+                onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon}/>
+            </TouchableOpacity>
+          ),
+        })} />
+      <Stack.Screen
+        name="Voting Screen"
+        component={VotingScreen}
+        options={({ route, navigation }) => ({
+          headerTitle: () => (
+            <GroupHeaderButton group={route.params.group} />
+            ),
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+              >
+                <FontAwesome6
+                  name="chevron-left"
+                  size={20}
+                  color={theme.colors.black}
+                  style={styles.icon}/>
+              </TouchableOpacity>
+            ),
+          })}
+        />
+      {/* Join Groups Page is the screen that allows users to join groups. */}
+      <Stack.Screen
+        name="Join Group Page"
+        component={JoinGroupScreen}
+        options={({ navigation }) => ({
+          headerTitle: () => (
+            <Text style={styles.title}>Join Group</Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Groups Screen")}
+              >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon}/>
+            </TouchableOpacity>
+          ),
+      })} />
       <Stack.Screen
         name="Winner Announcement Screen"
         component={WinnerAnnouncementScreen}
@@ -99,8 +162,7 @@ const GroupsTab = ({ route }) => {
                 style={styles.icon}/>
             </TouchableOpacity>
           ),
-        })}
-      />
+        })} />
       <Stack.Screen
         name="Choose Prompt Screen"
         component={ChoosePromptScreen}

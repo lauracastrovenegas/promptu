@@ -33,9 +33,9 @@ const GroupScreen = ({ route, navigation }) => {
   function getBox() {
     switch (votingStage) {
       case 0:
-        return <DailyPromptInfoBox group={group} userData={state.userData} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
+        return <DailyPromptInfoBox group={group} userData={state.userData} contestData={state.groupsContestData} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
       case 1:
-        return <VotingBox group={group} onSubmit={() => navigation.navigate('Voting Screen', { group })} />;
+        return <VotingBox group={group} contestData={state.groupsContestData} onSubmit={() => navigation.navigate('Voting Screen', { group })} />;
       case 2:
         return <ResultsBox group={group} />;
     }
@@ -53,8 +53,8 @@ const GroupScreen = ({ route, navigation }) => {
 
 export default GroupScreen;
 
-const DailyPromptInfoBox = ({ group, userData, onSubmit }) => {
-  const constestInfo = getTodaysGroupContest(group);
+const DailyPromptInfoBox = ({ group, userData, contestData, onSubmit }) => {
+  const constestInfo = getTodaysGroupContest(group, contestData);
 
   return (
     <CardContainer>
@@ -62,9 +62,9 @@ const DailyPromptInfoBox = ({ group, userData, onSubmit }) => {
         <Text style={styles.promptTitle}>Today's Prompt</Text>
         <Text style={styles.prompt}>{constestInfo.prompt}</Text>
         <Countdown style={styles.countdown} deadline={group.votingTime} />
-        <MemberListBubbles group={group} />
+        <MemberListBubbles group={group} groupContests={contestData} />
         <Button
-          title={`${hasUserSubmittedToGroup(group, userData) ? "Resubmit" : "Submit"} Your Photo`}
+          title={`${hasUserSubmittedToGroup(group, userData, contestData) ? "Resubmit" : "Submit"} Your Photo`}
           onPress={onSubmit}
         />
       </View>
@@ -72,12 +72,12 @@ const DailyPromptInfoBox = ({ group, userData, onSubmit }) => {
   );
 }
 
-const VotingBox = ({ group, onSubmit }) => {
+const VotingBox = ({ group, contestData, onSubmit }) => {
   return (
     <CardContainer>
       <View style={styles.cardContents}>
         <Text style={styles.largePromptTitle}>It's time to vote!</Text>
-        <MemberListBubbles group={group} />
+        <MemberListBubbles group={group} groupContests={contestData} />
         <Button
           title="Vote"
           onPress={onSubmit}

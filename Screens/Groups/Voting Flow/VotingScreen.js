@@ -5,11 +5,13 @@ import PolaroidPhoto from '../../../Components/PolaroidPhoto';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { getTodaysGroupContest } from '../../../Functions/utils';
 import theme from '../../../theme';
+import { useAppContext } from "../../../AppContext";
 
 const VotingScreen = ({ route, navigation }) => {
+  const { state } = useAppContext();
   const group = route.params.group;
 
-  const contest = getTodaysGroupContest(group);
+  const contest = getTodaysGroupContest(group, state.groupsContestData);
 
   return (
     <View style={styles.screen}>

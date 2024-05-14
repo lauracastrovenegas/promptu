@@ -2,8 +2,7 @@ import React from "react";
 import { ScrollView, Text, StyleSheet, View, Image, TouchableOpacity, KeyboardAvoidingView } from "react-native";
 import theme from "../../theme";
 import { useAppContext } from "../../AppContext";
-import addProfilePicture from "../../assets/add_profile_picture.png";
-import editIcon from "../../assets/edit_icon.png";
+import InputImage from "../../Components/InputImage";
 import SingleInput from "../../Components/SingleInput";
 import ThirdPartyAuth from "../../Components/ThirdPartyAuth";
 import Button from "../../Components/Button";
@@ -91,17 +90,7 @@ const SignupScreen = ({ navigation }) => {
                         <View style={styles.container}>
                             <Text style={styles.title}>promptu</Text>
                             <View style={styles.topSection}>
-                                {!image ? <TouchableOpacity onPress={() => pickImage()}>
-                                    <Image source={addProfilePicture} style={styles.addProfilePicture} />
-                                </TouchableOpacity> :
-                                    <View style={styles.imageContainer}>
-                                        <Image source={{ uri: image }} style={styles.selectedImage} />
-
-                                        <TouchableOpacity onPress={() => pickImage()}>
-                                            <Image source={editIcon} style={styles.icon} />
-                                        </TouchableOpacity>
-                                    </View>
-                                }
+                                <InputImage image={image} setImage={setImage} />
                                 <View style={styles.form}>
                                     <ThirdPartyAuth
                                         title="Sign up with Google">
@@ -173,12 +162,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
     },
-    addProfilePicture: {
-        width: 149.64,
-        height: 146.57,
-        marginBottom: 30,
-        marginTop: -30
-    },
     form: {
         display: 'flex',
         flexDirection: 'column',
@@ -201,25 +184,5 @@ const styles = StyleSheet.create({
         fontFamily: "Poppins_400Regular",
         textAlign: 'center',
         margin: 16,
-    },
-    imageContainer: {
-        position: 'relative',
-        width: 149.64,
-        height: 146.57,
-        marginBottom: 30,
-        marginTop: -30,
-    },
-    selectedImage: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 100,
-    },
-    icon: {
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        width: 44.06, // Adjust size as needed
-        height: 43.15, // Adjust size as needed
-        zIndex: 1, // Ensure icon is above image
     },
 });
