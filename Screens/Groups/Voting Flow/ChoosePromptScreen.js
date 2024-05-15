@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Button from '../../../Components/Button';
 import CardContainer from '../../../Components/CardContainer';
 import theme from '../../../theme';
@@ -23,7 +24,7 @@ const ChoosePromptScreen = ({ navigation }) => {
     <View style={styles.screen}>
       <View style={styles.topSection}>
         <Text style={styles.title}>Choose tomorrow's photo prompt...</Text>
-        <ScrollView>
+        <KeyboardAwareScrollView>
           <View style={styles.options}>
             {prompts.map(prompt => (
               <TouchableOpacity key={prompt} onPress={() => setPrompt(prompt)}>
@@ -43,7 +44,7 @@ const ChoosePromptScreen = ({ navigation }) => {
                 value={customPrompt} />
             </CardContainer>
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </View>
       <Button
         title="Continue"

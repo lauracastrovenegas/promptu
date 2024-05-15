@@ -13,6 +13,12 @@ const GroupPhotoName = ({ group }) => {
 };
 
 const GroupPhoto = ({ groupPhoto }) => {
+  
+  // temporary fix for groupPhoto
+  if (groupPhoto && groupPhoto.toString().split(":")[0] === "file"){
+    groupPhoto = null;
+  }
+
   return (
     <View style={styles.centerImages}>
       {groupPhoto ?

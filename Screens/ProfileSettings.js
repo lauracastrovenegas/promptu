@@ -4,13 +4,15 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
 export default function ProfileSettings() {
-    const handleLogout = async ()=> {
-        await signOut(auth);
+    const handleLogout = async () => {
+        await signOut(auth).catch((error) => {
+            console.log(error);
+        });
     }
     return (
-            <Button
+        <Button
             title={"Logout"}
             onPress={handleLogout}
-            />
+        />
     )
 }

@@ -68,7 +68,7 @@ const tabIcons = {
 };
 
 function App() {
-  const user = useAuth();
+  const { user } = useAuth();
 
   let [fontsLoaded] = useFonts({
     Inter_400Regular, Inter_700Bold, Inter_900Black,
@@ -83,6 +83,8 @@ function App() {
   if (!isReady) {
     return null;
   }
+
+  console.log(user);
 
   if (user) {
     return (
@@ -116,6 +118,7 @@ function App() {
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
+            initialRouteName="Welcome"
           >
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
             <Stack.Screen name="Signup" component={SignupScreen} />
