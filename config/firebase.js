@@ -1,13 +1,9 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import { initializeApp, getApps } from "firebase/app";
+import { initializeAuth, getReactNativePersistence, getAuth } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getFirestore, setDoc, doc, addDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyC0dBiY-wDc_hMuwjAdHHjpgKgDqmDL2W4",
   authDomain: "promptu-cs278.firebaseapp.com",
@@ -19,11 +15,58 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app;
+if (getApps().length === 0) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0];
+}
 
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-});
+// Initialize Firebase Storage
+const storage = getStorage();
 
+// Initialize Firestore
+const db = getFirestore(app);
 
-// export const auth = getAuth(app);
+// Initialize Authentication
+let auth;
+if (!getAuth(app)) {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+  });
+} else {
+  auth = getAuth(app);
+}
+
+export const addUserToFirestore = async (user) => {
+  try {
+    if (user) {
+      const userDocRef = doc(db, "users", user.uid);
+      await setDoc(userDocRef, {
+        name: user.displayName,
+        id: user.uid,
+        photo: user.photoURL
+      });
+    }
+  } catch (err) {
+    console.log("Error in adding user to DB");
+    console.log(err.message);
+  }
+};
+
+export const uploadImageAsync = async (uri) => {
+  try {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const filename = uri.substring(uri.lastIndexOf('/') + 1);
+    const storageRef = ref(storage, `images/${filename}`);
+    await uploadBytes(storageRef, blob);
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
+  } catch (error) {
+    console.log("Error uploading image: ", error);
+    throw error;
+  }
+};
+// Export db, auth, and app to be accessible for other files.
+export { db, auth, app };

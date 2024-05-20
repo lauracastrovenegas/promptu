@@ -15,6 +15,8 @@ const LoginScreen = ({ navigation }) => {
     const [email, onChangeEmail] = React.useState('');
     const [password, onChangePassword] = React.useState('');
     const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
+    const [isFormValid, setFormValid] = React.useState(false);
+    const [formErrors, setFormErrors] = React.useState('');
 
     // State variable to track password visibility 
     const [showPassword, setShowPassword] = React.useState(false);
@@ -29,6 +31,8 @@ const LoginScreen = ({ navigation }) => {
             try {
                 await signInWithEmailAndPassword(auth, email, password);
             } catch (err) {
+                setFormValid(false);
+                setFormErrors(err.message);
                 console.log('Error: ', err.message);
             }
         }
@@ -81,6 +85,10 @@ const LoginScreen = ({ navigation }) => {
                                     toggleShowPassword={toggleShowPassword}
                                 />
                             </View>
+                            {!isFormValid ?
+                                <Text style={{ color: 'red', fontFamily: "Poppins_400Regular", width: '90%', textAlign: 'center' }}>{formErrors}</Text>
+                                :
+                                null}
                         </View>
                         <View style={styles.bottomSection}>
                             <Button

@@ -10,6 +10,7 @@ import SingleInputSecure from "../../Components/SingleInputSecure";
 import * as ImagePicker from "expo-image-picker";
 import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/firebase";
+import { addUserToFirestore, uploadImageAsync } from "../../config/firebase";
 
 /* This component is the Signup Screen */
 const SignupScreen = ({ navigation }) => {
@@ -19,6 +20,9 @@ const SignupScreen = ({ navigation }) => {
     const [password, onChangePassword] = React.useState('');
     const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
     const [hasGalleryPermission, setHasGalleryPermission] = React.useState(false);
+    const [isFormValid, setFormValid] = React.useState(false);
+    const [formErrors, setFormErrors] = React.useState('');
+    const [image, setImage] = React.useState(null);
 
     // State variable to track password visibility 
     const [showPassword, setShowPassword] = React.useState(false);
@@ -30,23 +34,28 @@ const SignupScreen = ({ navigation }) => {
 
     const handleSubmit = async () => {
         if (email && password) {
-            await createUserWithEmailAndPassword(auth, email, password)
-                .then(async (userCredentials) => {
-                    await updateProfile(userCredentials.user, { displayName: name, photoURL: undefined })
-                        .then(async () => {
-                            await signInWithEmailAndPassword(auth, email, password);
-                        }).catch((error) => {
-                            console.log('Error: ', error.message);
-                        });
-                }).catch((error) => {
-                    console.log('Error: ', error.message);
-                });
+          try {
+            const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+            let photoURL = null;
+            if (image) {
+              photoURL = await uploadImageAsync(image);
+            }
+            await updateProfile(userCredentials.user, { displayName: name, photoURL: photoURL });
+            await signInWithEmailAndPassword(auth, email, password);
+            const user = {
+              ...userCredentials.user,
+              photoURL,
+            };
+            await addUserToFirestore(user);
+          } catch (error) {
+            setFormValid(false);
+            setFormErrors(error.message);
+            console.log('Error: ', error.message);
+          }
         }
     }
 
-    // profile picture logic 
-    const [image, setImage] = React.useState(null);
-
+    
     // Function to check if all fields are filled and set the button disabled state accordingly
     React.useEffect(() => {
         if (name !== '' && email !== '' && password !== '') {
@@ -63,25 +72,6 @@ const SignupScreen = ({ navigation }) => {
         })();
     }, []);
 
-    const pickImage = async () => {
-        if (!hasGalleryPermission) {
-            // Handle case where permission is not granted
-            alert("Please grant access to your media library to select an image.");
-            return;
-        }
-
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.cancelled) {
-            setImage(result.assets[0].uri);
-        }
-    };
-
     return (
         <KeyboardAvoidingView style={{ flex: 10 }} behavior="padding" keyboardVerticalOffset={10}>
             <ScrollView style={{ backgroundColor: theme.colors.white }}>
@@ -90,7 +80,7 @@ const SignupScreen = ({ navigation }) => {
                         <View style={styles.container}>
                             <Text style={styles.title}>promptu</Text>
                             <View style={styles.topSection}>
-                                <InputImage image={image} setImage={setImage} />
+                                <InputImage image={image} setImage={setImage} profile={true} />
                                 <View style={styles.form}>
                                     <ThirdPartyAuth
                                         title="Sign up with Google">
@@ -113,7 +103,7 @@ const SignupScreen = ({ navigation }) => {
                                     <SingleInput
                                         placeholder="Email"
                                         onChangeText={onChangeEmail}
-                                        text={email}
+                                        text={email.trim()}
                                         passwordBool={false}
                                     />
                                     <SingleInputSecure
@@ -125,6 +115,10 @@ const SignupScreen = ({ navigation }) => {
                                     />
                                 </View>
                             </View>
+                            {!isFormValid ?
+                                <Text style={{ color: 'red', fontFamily: "Poppins_400Regular", width: '90%', textAlign: 'center' }}>{formErrors}</Text>
+                                :
+                                null}
                         </View>
                         <View style={styles.bottomSection}>
                             <Button
