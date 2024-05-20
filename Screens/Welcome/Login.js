@@ -33,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
             } catch (err) {
                 setFormValid(false);
                 setFormErrors(err.message);
-                console.log('Error: ', err.message);
+                console.log("Error in logging in: ", err.message);
             }
         }
     }

@@ -53,7 +53,7 @@ export default CommentSection;
 const Comment = ({ comment }) => {
   return (
     <View style={styles.commentContainer}>
-      <Image source={comment.user.photo} style={styles.profilePic} />
+      <Image source={{uri: comment.user.photo}} style={styles.profilePic} />
       <View style={styles.content}>
         <View style={styles.row}>
           <Text style={styles.userName}>{comment.user.name}</Text>

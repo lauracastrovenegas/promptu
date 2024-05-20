@@ -1,7 +1,7 @@
 import { initializeApp, getApps } from "firebase/app";
 import { initializeAuth, getReactNativePersistence, getAuth } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, setDoc, doc, addDoc } from "firebase/firestore";
+import { getFirestore, setDoc, doc, getDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const firebaseConfig = {
@@ -49,8 +49,7 @@ export const addUserToFirestore = async (user) => {
       });
     }
   } catch (err) {
-    console.log("Error in adding user to DB");
-    console.log(err.message);
+    console.log("Error in adding user to DB", error.message);
   }
 };
 
@@ -68,5 +67,20 @@ export const uploadImageAsync = async (uri) => {
     throw error;
   }
 };
+
+export const getUserData = async (uid) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      return userDoc.data();
+    } else {
+      console.log("No user document exists.")
+    }
+  } catch (error) {
+    console.log("Error getting document: ", error.message);
+  }
+}
+
 // Export db, auth, and app to be accessible for other files.
 export { db, auth, app };

@@ -34,28 +34,42 @@ const SignupScreen = ({ navigation }) => {
 
     const handleSubmit = async () => {
         if (email && password) {
-          try {
-            const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-            let photoURL = null;
-            if (image) {
-              photoURL = await uploadImageAsync(image);
+            try {
+                const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+                let photoURL = null;
+                if (image) {
+                    photoURL = await uploadImageAsync(image);
+                }
+                await updateProfile(userCredentials.user, { displayName: name, photoURL: photoURL });
+
+                const user = {
+                    uid: userCredentials.user.uid,
+                    displayName: name,
+                    photoURL: photoURL,
+                };
+                console.log("User object to be added to Firestore: ", user);
+                await addUserToFirestore(user);
+                console.log("User added to Firestore successfully");
+            } catch (error) {
+                setFormValid(false);
+                setFormErrors(error.message);
+                console.log("Error during sign up: ", error.message);
+
+                // Clean up the user from Firebase Auth in case of an error in adding user to db
+                const currentUser = auth.currentUser;
+                if (currentUser) {
+                    try {
+                        await currentUser.delete();
+                        console.log("Partially created user deleted from Firebase Auth");
+                    } catch (cleanupError) {
+                        console.log("Error during user cleanup: ", cleanupError.message);
+                    }
+                }
             }
-            await updateProfile(userCredentials.user, { displayName: name, photoURL: photoURL });
-            await signInWithEmailAndPassword(auth, email, password);
-            const user = {
-              ...userCredentials.user,
-              photoURL,
-            };
-            await addUserToFirestore(user);
-          } catch (error) {
-            setFormValid(false);
-            setFormErrors(error.message);
-            console.log('Error: ', error.message);
-          }
         }
     }
 
-    
+
     // Function to check if all fields are filled and set the button disabled state accordingly
     React.useEffect(() => {
         if (name !== '' && email !== '' && password !== '') {

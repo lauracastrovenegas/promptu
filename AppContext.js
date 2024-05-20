@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 
 import { user, groups, groupContests } from "./data/fakeData";
-
+import { getUserData } from './config/firebase';
+import { signOut } from 'firebase/auth'; // Import signOut from Firebase auth
+import { auth } from './config/firebase';
 const AppContext = createContext();
 
 const initialState = {
@@ -67,18 +69,15 @@ export const AppProvider = ({ children, currentUser }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
   const [isLoading, setIsLoading] = useState(true);
 
-  function fetchUserData() {
-    let userData = user;
-    // use the fake data for now
-    if (currentUser) {
-      if (currentUser.displayName !== undefined)
-        userData.displayName = currentUser.displayName;
-
+  const fetchUserData = async (uid) => {
+    try {
+      const userData = await getUserData(uid);
+      return userData;
+    } catch (err) {
+      console.log("Error fetching user data: ", err.message);
+      return null;
     }
-
-    return userData;
-  }
-
+  };
   function fetchGroupData() {
     // use the fake data for now
     return groups;
@@ -89,19 +88,42 @@ export const AppProvider = ({ children, currentUser }) => {
     return groupContests;
   }
 
-  useEffect(() => {
-    const userData = fetchUserData();
-    const groupData = fetchGroupData();
-    const groupContestData = fetchGroupContestData();
+  const handleLogout = async () => { // Mark handleLogout as async
+    try {
+      // Call signOut asynchronously
+      await signOut(auth); // Assuming auth is imported from Firebase config
+      // Clear user data from state
+      dispatch({ type: 'SET_USER_DATA', payload: null });
+    } catch (error) {
+      console.log("Error while logging out: ", error.message);
+    }
+  }
 
-    dispatch({ type: 'SET_USER_DATA', payload: userData });
-    dispatch({ type: 'SET_GROUPS_DATA', payload: groupData });
-    dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: groupContestData });
-    setIsLoading(false);
-  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+
+      if (currentUser) {
+        const userData = await fetchUserData(currentUser.uid);
+        const groupData = fetchGroupData();
+        const groupContestData = fetchGroupContestData();
+
+        dispatch({ type: 'SET_USER_DATA', payload: userData });
+        dispatch({ type: 'SET_GROUPS_DATA', payload: groupData });
+        dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: groupContestData });
+        setIsLoading(false);
+      } else {
+        // No user logged in, clear user data from state
+        dispatch({ type: 'SET_USER_DATA', payload: null });
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [currentUser]); // when currentUser changes aka when new user logged in
 
   return (
-    <AppContext.Provider value={{ state, dispatch, isLoading }}>
+    <AppContext.Provider value={{ state, dispatch, isLoading, handleLogout }}>
       {children}
     </AppContext.Provider>
   );
