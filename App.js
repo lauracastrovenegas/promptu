@@ -17,7 +17,6 @@ import { AppProvider } from "./AppContext";
 // needed for now because Expo SDK 51 is having issues with tab switching (app crashes)
 import 'react-native-reanimated';
 import useAuth from "./hooks/useAuth";
-import { useUserContext } from "./UserContext";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth } from "./config/firebase";

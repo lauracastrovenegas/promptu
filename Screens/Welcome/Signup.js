@@ -12,7 +12,6 @@ import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPasswo
 import { auth, storage, db } from "../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
-import { useUserContext } from "../../UserContext";
 
 const SignupScreen = ({ navigation }) => {
     const { state, isLoading } = useAppContext();
