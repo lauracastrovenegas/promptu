@@ -76,7 +76,7 @@ function App() {
     PatrickHandSC_400Regular
   });
 
-
+  console.log("test refresh");
 
   /* This can be expanded to more than just fonts in the future,
      could also check for api results, and other stuff. Just stick

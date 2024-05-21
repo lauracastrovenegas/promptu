@@ -81,7 +81,7 @@ const SignupScreen = ({ navigation }) => {
                 console.log('User signed in');
             }
         } catch (error) {
-            console.error('Error during sign up:', error);
+            console.log('Error during sign up:', error);
             Alert.alert("Sign Up Error", error.message);
         }
     };
@@ -94,7 +94,7 @@ const SignupScreen = ({ navigation }) => {
                         <View style={styles.container}>
                             <Text style={styles.title}>promptu</Text>
                             <View style={styles.topSection}>
-                                <InputImage image={image} setImage={setImage} />
+                                <InputImage image={image} setImage={setImage} profile={true} />
                                 <View style={styles.form}>
                                     <ThirdPartyAuth title="Sign up with Google" />
                                 </View>
