@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import addGroupPicture from "../assets/add_group_picture.png";
 import addProfilePicture from "../assets/add_profile_picture.png";
-
 import editIcon from "../assets/edit_icon.png";
 import * as ImagePicker from "expo-image-picker";
 
@@ -18,43 +17,46 @@ const InputImage = ({ image, setImage, profile }) => {
 
     const pickImage = async () => {
         if (!hasGalleryPermission) {
-          // Handle case where permission is not granted
-          alert("Please grant access to your media library to select an image.");
-          return;
+            // Handle case where permission is not granted
+            alert("Please grant access to your media library to select an image.");
+            return;
         }
-      
+
         let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
         });
-      
+
         if (!result.cancelled) {
-          setImage(result.assets[0].uri);
+            setImage(result.assets[0].uri);
+
+        } else {
+            Alert("Photo selection cancelled.")
         }
-      };
-      
+    };
+
 
     if (!image)
         return (
             <TouchableOpacity onPress={() => pickImage()}>
                 {profile ?
-                <Image source={addProfilePicture} style={styles.addGroupPicture} />
-                :
-                <Image source={addGroupPicture} style={styles.addGroupPicture} />
+                    <Image source={addProfilePicture} style={styles.addGroupPicture} />
+                    :
+                    <Image source={addGroupPicture} style={styles.addGroupPicture} />
                 }
             </TouchableOpacity>
         );
 
-  return (
-    <View style={styles.imageContainer}>
-        <Image source={{ uri: image }} style={styles.selectedImage} />
-        <TouchableOpacity onPress={() => pickImage()}>
-            <Image source={editIcon} style={styles.icon} />
-        </TouchableOpacity>
-    </View>
-  );
+    return (
+        <View style={styles.imageContainer}>
+            <Image source={{ uri: image }} style={styles.selectedImage} />
+            <TouchableOpacity onPress={() => pickImage()}>
+                <Image source={editIcon} style={styles.icon} />
+            </TouchableOpacity>
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({

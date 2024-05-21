@@ -9,6 +9,7 @@ const MainProfileScreen = () => {
   const { state, isLoading } = useAppContext();
 
   const user = state.userData;
+  console.log("USER IN THE PROFILE MAIN PAGE: ", user)
 
   return (
     <ScrollView style={{ backgroundColor: theme.colors.white }}>
@@ -17,8 +18,8 @@ const MainProfileScreen = () => {
           {user ? (
             <View>
               <View style={styles.topSection}>
-                <Image source={user.photo ? { uri: user.photo } : require('../../assets/default_profile_picture.png')} style={styles.profilePic} />
-                <Text style={styles.userName}>{user.name}</Text>
+                <Image source={user.photoURL ? { uri: user.photoURL } : require('../../assets/default_profile_picture.png')} style={styles.profilePic} />
+                <Text style={styles.userName}>{user.displayName}</Text>
               </View>
               <View style={{ display: 'flex' }}>
                 <Text style={styles.sectionTitle}>Your Groups</Text>

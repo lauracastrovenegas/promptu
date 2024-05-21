@@ -1,8 +1,8 @@
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp, getApp, getApps } from "firebase/app";
 import { initializeAuth, getReactNativePersistence, getAuth } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, setDoc, doc, getDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC0dBiY-wDc_hMuwjAdHHjpgKgDqmDL2W4",
@@ -14,59 +14,23 @@ const firebaseConfig = {
   measurementId: "G-SNGG5GLP88"
 };
 
-// Initialize Firebase
 let app;
-if (getApps().length === 0) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = getApps()[0];
-}
-
-// Initialize Firebase Storage
-const storage = getStorage();
-
-// Initialize Firestore
-const db = getFirestore(app);
-
-// Initialize Authentication
 let auth;
-if (!getAuth(app)) {
+
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
   auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage),
   });
 } else {
+  app = getApp();
   auth = getAuth(app);
 }
 
-export const addUserToFirestore = async (user) => {
-  try {
-    if (user) {
-      const userDocRef = doc(db, "users", user.uid);
-      await setDoc(userDocRef, {
-        name: user.displayName,
-        id: user.uid,
-        photo: user.photoURL
-      });
-    }
-  } catch (err) {
-    console.log("Error in adding user to DB", error.message);
-  }
-};
+const storage = getStorage(app);
+const db = getFirestore(app);
 
-export const uploadImageAsync = async (uri) => {
-  try {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    const filename = uri.substring(uri.lastIndexOf('/') + 1);
-    const storageRef = ref(storage, `images/${filename}`);
-    await uploadBytes(storageRef, blob);
-    const downloadURL = await getDownloadURL(storageRef);
-    return downloadURL;
-  } catch (error) {
-    console.log("Error uploading image: ", error);
-    throw error;
-  }
-};
+
 
 export const getUserData = async (uid) => {
   try {
@@ -75,12 +39,12 @@ export const getUserData = async (uid) => {
     if (userDoc.exists()) {
       return userDoc.data();
     } else {
-      console.log("No user document exists.")
+      console.log("No user document exists.");
     }
   } catch (error) {
     console.log("Error getting document: ", error.message);
   }
-}
+ };
+ 
 
-// Export db, auth, and app to be accessible for other files.
-export { db, auth, app };
+export { db, auth, app, storage };
