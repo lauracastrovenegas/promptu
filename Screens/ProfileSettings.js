@@ -1,14 +1,11 @@
 import React from 'react';
 import Button from '../Components/Button';
-import { signOut } from 'firebase/auth';
-import { auth } from '../config/firebase';
+import { useAppContext } from '../AppContext';
+
 
 export default function ProfileSettings() {
-    const handleLogout = async () => {
-        await signOut(auth).catch((error) => {
-            console.log(error);
-        });
-    }
+    const { handleLogout } = useAppContext();
+
     return (
         <Button
             title={"Logout"}

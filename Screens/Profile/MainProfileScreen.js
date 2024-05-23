@@ -9,23 +9,30 @@ const MainProfileScreen = () => {
   const { state, isLoading } = useAppContext();
 
   const user = state.userData;
+  console.log("USER IN THE PROFILE MAIN PAGE: ", user)
 
   return (
     <ScrollView style={{ backgroundColor: theme.colors.white }}>
       {isLoading ? <Text>Loading...</Text> :
         <View style={styles.screen}>
-          <View style={styles.topSection}>
-            <Image source={user.photo} style={styles.profilePic} />
-            <Text style={styles.userName}>{user.displayName}</Text>
-          </View>
-          <View style={{ display: 'flex' }}>
-            <Text style={styles.sectionTitle}>Your Groups</Text>
-            <View style={styles.groups}>
-              {state.groupsData.map(group => (
-                <GroupPhotoName key={group.id} group={group} />
-              ))}
+          {user ? (
+            <View>
+              <View style={styles.topSection}>
+                <Image source={user.photoURL ? { uri: user.photoURL } : require('../../assets/default_profile_picture.png')} style={styles.profilePic} />
+                <Text style={styles.userName}>{user.displayName}</Text>
+              </View>
+              <View style={{ display: 'flex' }}>
+                <Text style={styles.sectionTitle}>Your Groups</Text>
+                <View style={styles.groups}>
+                  {state.groupsData.map(group => (
+                    <GroupPhotoName key={group.id} group={group} />
+                  ))}
+                </View>
+              </View>
             </View>
-          </View>
+          ) : (
+            <Text>No user data available</Text>
+          )}
         </View>}
     </ScrollView>
   )

@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import addProfilePicture from "../assets/add_group_picture.png";
+import { View, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import addGroupPicture from "../assets/add_group_picture.png";
+import addProfilePicture from "../assets/add_profile_picture.png";
 import editIcon from "../assets/edit_icon.png";
 import * as ImagePicker from "expo-image-picker";
 
-const InputImage = ({ image, setImage }) => {
+const InputImage = ({ image, setImage, profile }) => {
     const [hasGalleryPermission, setHasGalleryPermission] = React.useState(false);
 
     React.useEffect(() => {
@@ -30,28 +31,36 @@ const InputImage = ({ image, setImage }) => {
 
         if (!result.cancelled) {
             setImage(result.assets[0].uri);
+
+        } else {
+            Alert("Photo selection cancelled.")
         }
     };
+
 
     if (!image)
         return (
             <TouchableOpacity onPress={() => pickImage()}>
-                <Image source={addProfilePicture} style={styles.addProfilePicture} />
+                {profile ?
+                    <Image source={addProfilePicture} style={styles.addGroupPicture} />
+                    :
+                    <Image source={addGroupPicture} style={styles.addGroupPicture} />
+                }
             </TouchableOpacity>
         );
 
-  return (
-    <View style={styles.imageContainer}>
-        <Image source={{ uri: image }} style={styles.selectedImage} />
-        <TouchableOpacity onPress={() => pickImage()}>
-            <Image source={editIcon} style={styles.icon} />
-        </TouchableOpacity>
-    </View>
-  );
+    return (
+        <View style={styles.imageContainer}>
+            <Image source={{ uri: image }} style={styles.selectedImage} />
+            <TouchableOpacity onPress={() => pickImage()}>
+                <Image source={editIcon} style={styles.icon} />
+            </TouchableOpacity>
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
-    addProfilePicture: {
+    addGroupPicture: {
         width: 149.64,
         height: 146.57,
         marginBottom: 30,

@@ -17,8 +17,9 @@ import { AppProvider } from "./AppContext";
 // needed for now because Expo SDK 51 is having issues with tab switching (app crashes)
 import 'react-native-reanimated';
 import useAuth from "./hooks/useAuth";
-
-
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth } from "./config/firebase";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 /* Automatically shows splash screen on start
@@ -75,16 +76,18 @@ function App() {
     PatrickHandSC_400Regular
   });
 
+  console.log("test refresh");
+
   /* This can be expanded to more than just fonts in the future,
      could also check for api results, and other stuff. Just stick
      the bool in the array */
-  const isReady = useSplashScreen([fontsLoaded, user !== null]);
+  const isReady = useSplashScreen([fontsLoaded]);
 
   if (!isReady) {
     return null;
   }
 
-  console.log(user);
+  console.log("user: ", user)
 
   if (user) {
     return (
@@ -121,7 +124,15 @@ function App() {
             initialRouteName="Welcome"
           >
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen name="Signup" component={SignupScreen} />
+            <Stack.Screen 
+              name="Signup" 
+              // Pass setOnSubmit as a prop to Signup component
+              children={({ navigation }) => (
+                <SignupScreen 
+                  navigation={navigation} 
+                />
+              )}
+            />            
             <Stack.Screen name="Login" component={LoginScreen} />
           </Stack.Navigator>
         </NavigationContainer>

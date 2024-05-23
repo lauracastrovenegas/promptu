@@ -54,7 +54,7 @@ const CreateGroupScreen = ({ navigation }) => {
   return (
           <View style={styles.screen}>
               <View style={styles.topSection}>
-                  <InputImage image={image} setImage={setImage} />
+                  <InputImage image={image} setImage={setImage} profile={false} />
                   <View style={styles.form}>
                     <SingleInput
                       placeholder="Group Name"
