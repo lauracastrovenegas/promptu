@@ -47,7 +47,7 @@ const SignupScreen = ({ navigation }) => {
         try {
             console.log('handleSubmit triggered');
             if (email && password) {
-                console.log('Creating user with email and password...');
+                console.log('Creating user with email and password and signing in...');
                 const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredentials.user;
                 console.log('User created:', user.uid);
@@ -75,10 +75,6 @@ const SignupScreen = ({ navigation }) => {
                     uid: user.uid,
                 });
                 console.log('User data stored in Firestore');
-
-                console.log('Signing in the user...');
-                await signInWithEmailAndPassword(auth, email, password);
-                console.log('User signed in');
             }
         } catch (error) {
             console.log('Error during sign up:', error);
