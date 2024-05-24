@@ -9,7 +9,6 @@ export default function useAuth() {
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (user) => {
-            console.log("useAuth: onAuthStateChanged ", user);
             if (user) {
                 const userDoc = await getDoc(doc(db, 'users', user.uid));
                 if (userDoc.exists()) {

@@ -69,7 +69,7 @@ const tabIcons = {
 };
 
 function App() {
-  const { user, ready } = useAuth();
+  const { user, authReady } = useAuth();
 
   let [fontsLoaded] = useFonts({
     Inter_400Regular, Inter_700Bold, Inter_900Black,
@@ -79,7 +79,7 @@ function App() {
   /* This can be expanded to more than just fonts in the future,
      could also check for api results, and other stuff. Just stick
      the bool in the array */
-  const isReady = useSplashScreen([fontsLoaded, !user || ready]);
+  const isReady = useSplashScreen([fontsLoaded, authReady]);
 
   if (!isReady) {
     return null;
