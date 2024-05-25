@@ -5,23 +5,25 @@ import { auth, db } from '../config/firebase';
 
 export default function useAuth() {
     const [user, setUser] = useState(null);
+    const [ready, setReady] = useState(true);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const userDoc = await getDoc(doc(db, 'users', user.uid));
                 if (userDoc.exists()) {
-                    setUser(user);
+                    setReady(true);
                 } else {
-                    setUser(null); // User data not in Firestore
+                    setReady(false); // User data not in Firestore
                 }
             } else {
-                setUser(null);
+                setReady(true);
             }
+            setUser(user);
         });
 
         return unsub;
     }, []);
 
-    return { user };
+    return { user, ready };
 }
