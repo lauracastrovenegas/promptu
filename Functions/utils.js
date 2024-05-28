@@ -1,4 +1,6 @@
 import { groupComments } from '../data/fakeData';
+import { db } from "../config/firebase";
+import { getDocs, collection, query, where } from "firebase/firestore";
 
 export const hasUserSubmittedToGroup = (group, user, groupsContests) => {
   const contestInfo = getTodaysGroupContest(group, groupsContests);
@@ -62,15 +64,15 @@ export const getCommentTimestamp = (comment) => {
   }
 }
 
-export const getGroupComments = (group) => {
-  const groupsComments = groupComments.filter(comment => comment.groupId === group.id);
-  const groupMembers = group.members;
+export const getGroupComments = async (group) => {
+  const q = query(collection(db, "group_comments"), where("groupId", "==", group));
+  const querySnapshot = await getDocs(q);
+  const comments = [];
 
-  // add user data to each comment from the members array in the group object
-  return groupsComments.map(comment => ({
-    ...comment,
-    user: groupMembers.find(user => user.id === comment.userId),
-  }));
+  querySnapshot.forEach((doc) => {
+    comments.push({ ...doc.data(), id: doc.id });
+  });
+  return comments;
 }
 
 export const getTodaysGroupContest = (group, groupContests) => {
@@ -84,5 +86,5 @@ export const getTodaysGroupContest = (group, groupContests) => {
   // To do: use this when we have real data
   const dateStamp = year + "-" + month + "-" + day;
 
-  return groupContests.find(contest => contest.groupId === group.id && contest.date === "2024-06-01");
+  return groupContests.find(contest => contest.groupId === group.groupId && contest.date === dateStamp);
 }

@@ -6,23 +6,17 @@ import theme from '../theme';
 const GroupPhotoName = ({ group }) => {
   return (
     <View style={styles.groupPicAndName}>
-      <GroupPhoto groupPhoto={group.groupPhoto} />
-      <Text style={styles.groupName} numberOfLines={1}>{group.name}</Text>
+      <GroupPhoto groupPhoto={group.photoURL} />
+      <Text style={styles.groupName} numberOfLines={1}>{group.groupName}</Text>
     </View>
   );
 };
 
 const GroupPhoto = ({ groupPhoto }) => {
-  
-  // temporary fix for groupPhoto
-  if (groupPhoto && groupPhoto.toString().split(":")[0] === "file"){
-    groupPhoto = null;
-  }
-
   return (
     <View style={styles.centerImages}>
-      {groupPhoto ?
-        <Image style={styles.groupPhoto} source={groupPhoto} />
+      {groupPhoto !== "null" ?
+        <Image style={styles.groupPhotoIcon} source={{ uri: groupPhoto }} />
         :
         <View style={styles.groupPhotoIcon}>
           <FontAwesome6 name="users" size={30} color={theme.colors.white} />

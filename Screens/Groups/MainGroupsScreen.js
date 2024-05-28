@@ -7,13 +7,14 @@ import { useAppContext } from "../../AppContext";
 /* This component is the Main Groups Screen of the app opened by default */
 const MainGroupsScreen = ({ navigation }) => {
   const { state, isLoading } = useAppContext();
+
   return (
     <ScrollView style={{ backgroundColor: theme.colors.white }}>
       {isLoading ? <Text>Loading...</Text>
         : <View style={styles.screen}>
           {state.groupsData.map(group => (
             <TouchableOpacity
-              key={group.id}
+              key={group.groupId}
               onPress={() => {
                 navigation.navigate('Group Screen', {
                   group,

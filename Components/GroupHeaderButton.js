@@ -10,8 +10,8 @@ const GroupHeaderButton = ({ group, onPress }) => {
       onPress={onPress}
       activeOpacity={onPress ? 0.2 : 1} // this disabled the animation if onPress is not defined
     >
-      <GroupPhoto groupPhoto={group.groupPhoto} />
-      <Text style={styles.groupNameText}>{group.name}</Text>
+      <GroupPhoto groupPhoto={group.photoURL} />
+      <Text style={styles.groupNameText}>{group.groupName}</Text>
       {onPress ?
         <FontAwesome6
           name="chevron-right"
@@ -26,7 +26,7 @@ const GroupPhoto = ({ groupPhoto }) => {
   return (
     <View style={{ marginRight: 5 }}>
       {groupPhoto ?
-        <Image style={styles.groupPhoto} source={groupPhoto} />
+        <Image style={styles.groupPhoto} source={{ uri: groupPhoto }} />
         :
         <View style={styles.groupPhotoIcon}>
           <FontAwesome6 name="users" size={9} color={theme.colors.white} />

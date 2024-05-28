@@ -85,8 +85,6 @@ function App() {
     return null;
   }
 
-  console.log("user: ", user)
-
   if (user) {
     return (
       <AppProvider currentUser={user}>

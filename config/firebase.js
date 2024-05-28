@@ -1,7 +1,7 @@
 import { initializeApp, getApp, getApps } from "firebase/app";
 import { initializeAuth, getReactNativePersistence, getAuth } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, getDocs, updateDoc, collection, query, where } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -40,11 +40,103 @@ export const getUserData = async (uid) => {
       return userDoc.data();
     } else {
       console.log("No user document exists.");
+      return null;
     }
   } catch (error) {
     console.log("Error getting document: ", error.message);
+    return null;
+  }
+ };
+
+ export const getGroupData = async (uid) => {
+  try {
+    const q = query(collection(db, "groups"), where("members", "array-contains-any", [uid]));
+    const querySnapshot = await getDocs(q);
+    let allMembers = [];
+    const groupsData = [];
+
+    querySnapshot.forEach(async (groupDoc) => {
+      const groupData = groupDoc.data();
+      const members = groupData.members;
+
+      groupsData.push(groupData);
+      
+      members.forEach((member) => {
+        if (!allMembers.includes(member)) {
+          allMembers.push(member);
+        }
+      })
+    });
+
+    const membersData = await Promise.all(Array.from(allMembers).map(async (userId) => {
+      return await getUserData(userId);
+    }));
+
+    const fullGroupData = groupsData.map((groupData) => {
+      const membersWithPhotos = groupData.members.map((userId) => {
+        for (let i = 0; i < membersData.length; i++) {
+          const member = membersData[i];
+          if (member.uid === userId) {
+            return member;
+          }
+        }
+        return null;
+      });
+
+      return {...groupData, members: membersWithPhotos };
+    });
+
+    return fullGroupData;
+  } catch (error) {
+    console.log("Error getting document: ", error.message);
+    return null;
   }
  };
  
+ export const getGroupContestData = async (groupIds) => {
+  try {
+    const q = query(collection(db, "group_contests"), where("groupId", "in", groupIds));
+    const querySnapshot = await getDocs(q);
+    const groupContestData = [];
+
+    querySnapshot.forEach((groupContestDoc) => {
+      groupContestData.push(groupContestDoc.data());
+    });
+
+    return groupContestData
+  } catch (error) {
+    console.log("Error getting document: ", error.message);
+    return null;
+  }
+ };
+
+ export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, uid) => {
+  const newSubmission = {
+    photo: photo,
+    caption: caption,
+    userId: uid,
+  };
+
+
+  try {
+    const groupContestDocRef = doc(db, "group_contests", groupId);
+    const groupContestDoc = await getDoc(groupContestDocRef);
+
+    if (groupContestDoc.exists()) {
+      const groupContestData = groupContestDoc.data();
+
+      await updateDoc(groupContestDocRef, {
+        submissions: [...groupContestData.submissions, newSubmission]
+      });
+
+      return { ...newSubmission, id: groupId};
+    } else {
+      return null;
+    }
+    
+  } catch (error) {
+    console.log("Error getting document: ", error.message);
+  }
+ }
 
 export { db, auth, app, storage };

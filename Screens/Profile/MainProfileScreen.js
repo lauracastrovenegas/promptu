@@ -9,7 +9,6 @@ const MainProfileScreen = () => {
   const { state, isLoading } = useAppContext();
 
   const user = state.userData;
-  console.log("USER IN THE PROFILE MAIN PAGE: ", user)
 
   return (
     <ScrollView style={{ backgroundColor: theme.colors.white }}>
@@ -25,7 +24,7 @@ const MainProfileScreen = () => {
                 <Text style={styles.sectionTitle}>Your Groups</Text>
                 <View style={styles.groups}>
                   {state.groupsData.map(group => (
-                    <GroupPhotoName key={group.id} group={group} />
+                    <GroupPhotoName key={group.groupId} group={group} />
                   ))}
                 </View>
               </View>

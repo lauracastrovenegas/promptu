@@ -7,13 +7,35 @@ import Button from "../../Components/Button";
 import theme from '../../theme';
 
 /* This component is the Join Group Screen  */
-const JoinGroupScreen = ({ route }) => {
-  const { state, isLoading } = useAppContext();
+const JoinGroupScreen = ({ groupId }) => {
+  const { state } = useAppContext();
+  const [group, setGroup] = React.useState(null);
 
-  // test value, to be replaced later
-  const group = state.groupsData[0];
+  if (!group) {
+    return null;
+  }
 
-  const handleJoinGroup = () => {};
+  async function handleJoinGroup() {
+    try {
+      const docRef = doc(db, "groups", groupId);
+      const groupDoc = await getDoc(docRef);
+
+      if (groupDoc.exists()) {
+        const groupData = groupId.data();
+        setGroup(groupData);
+
+        const requests = groupData.memberRequests;
+
+        await updateDoc(docRef, {
+          memberRequests: [...requests, state.userData.uid]
+        });
+      } else {
+        console.log("No group document exists.");
+      }
+    } catch (error) {
+      Alert.alert("Error Requesting to Join Group", error.message);
+    }
+  }
 
   return (
       <View style={styles.screen}>

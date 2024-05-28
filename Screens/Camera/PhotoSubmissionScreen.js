@@ -5,10 +5,10 @@ import Button from '../../Components/Button';
 import DropdownMenu from '../../Components/DropdownMenu';
 import theme from '../../theme';
 import { useAppContext } from '../../AppContext';
-import { hasUserSubmittedToGroup, getTodaysGroupContest } from '../../Functions/utils';
+import { getTodaysGroupContest, hasUserSubmittedToGroup,  } from '../../Functions/utils';
 
 const PhotoSubmissionScreen = ({ route, navigation }) => {
-  const { state, dispatch } = useAppContext();
+  const { state, dispatch, addSubmissionToGroup } = useAppContext();
 
   const [caption, onChangeCaption] = React.useState('');
   const [selectedGroup, setSelectedGroup] = React.useState(route.params.group ?? null);
@@ -53,16 +53,8 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
       currentContestInfo.submissions = currentContestInfo.submissions.filter(submission => submission.userId !== state.userData.id);
     }
 
-    // Add the photo to the group's submission array
-    currentContestInfo.submissions.push({
-      id: currentContestInfo.submissions.length + 1,
-      photo: route.params.photo,
-      caption: caption,
-      userId: state.userData.id,
-    });
-
-    dispatch({ type: 'UPDATE_GROUPS_DATA', payload: currentContestInfo });
-    alert(`Photo submitted to ${selectedGroup.name}!`);
+    addSubmissionToGroup(selectedGroup.groupId, route.params.photo.uri, caption, state.userData.uid);
+    alert(`Photo submitted to ${selectedGroup.groupName}!`);
 
     // go to the camera screen
     navigation.navigate('Main Camera Screen');
