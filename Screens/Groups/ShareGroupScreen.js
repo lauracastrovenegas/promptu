@@ -11,11 +11,8 @@ import * as Clipboard from 'expo-clipboard';
 const ShareGroupScreen = ({ route }) => {
   const { state, isLoading } = useAppContext();
   const group = route.params.groupData;
-
-  function createLink() {
-    return "https://promptu.com/1234567";
-  }
-
+  const inviteLink = route.params.inviteLink; // Get invite link from params
+  console.log(inviteLink)
   return (
       <ScrollView style={{ backgroundColor: theme.colors.white }}>
           {isLoading ? <Text>Loading...</Text>
@@ -23,7 +20,7 @@ const ShareGroupScreen = ({ route }) => {
               <Text style={styles.groupName}>{group.groupName}</Text>
               <GroupPhoto groupPhoto={group.photoURL} />
               <Text style={styles.linkDescription}>Get friends to join by sharing the link below:</Text>
-              <GroupLink link={createLink()} />
+              <GroupLink link={inviteLink} />
               <Text style={styles.memberReqsTitle}>Member Requests</Text>
               <View style={styles.requests}>
                 {group.memberRequests.map((user, index) => (

@@ -8,7 +8,7 @@ import theme from '../../theme';
 import { storage, db } from "../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, getDoc, addDoc, updateDoc, collection } from "firebase/firestore";
-
+import * as Linking from 'expo-linking';
 /* This component is the Create Group Screen  */
 const CreateGroupScreen = ({ navigation }) => {
   const [group, onChangeGroup] = React.useState('');
@@ -76,9 +76,10 @@ const CreateGroupScreen = ({ navigation }) => {
           const groupContestData = await fetchGroupContestData(groupIds);
           dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: groupContestData });
           dispatch({ type: 'SET_GROUPS_DATA', payload: allGroupData });
+          const inviteLink = Linking.createURL(`group-invite/${groupId}`);
 
           // go to the group screen
-          navigation.navigate('Share Group Page', { groupData });
+          navigation.navigate('Share Group Page', { groupData, inviteLink });
         } else {
           console.log("No group document exists.");
         }

@@ -81,10 +81,13 @@ export const getTodaysGroupContest = (group, groupContests) => {
 
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
-  const day = today.getDate();
+  let day = today.getDate();
 
+    if (group.groupId == "1bzeXkFjhYncJl3vzSO7") {
+    day -= 2; 
+  }
+  // console.log("group: ", group)
   // To do: use this when we have real data
   const dateStamp = year + "-" + month + "-" + day;
-
   return groupContests.find(contest => contest.groupId === group.groupId && contest.date === dateStamp);
 }

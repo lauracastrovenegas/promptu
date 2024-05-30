@@ -43,7 +43,7 @@ export const getUserData = async (uid) => {
       return null;
     }
   } catch (error) {
-    console.log("Error getting document: ", error.message);
+    console.log("Error getting document in getUserData: ", error.message);
     return null;
   }
  };
@@ -88,7 +88,7 @@ export const getUserData = async (uid) => {
 
     return fullGroupData;
   } catch (error) {
-    console.log("Error getting document: ", error.message);
+    console.log("Error getting document in fullGroupData: ", error.message);
     return null;
   }
  };
@@ -105,7 +105,7 @@ export const getUserData = async (uid) => {
 
     return groupContestData
   } catch (error) {
-    console.log("Error getting document: ", error.message);
+    console.log("Error getting document in getGroupContestData: ", error.message);
     return null;
   }
  };
@@ -135,7 +135,7 @@ export const getUserData = async (uid) => {
     }
     
   } catch (error) {
-    console.log("Error getting document: ", error.message);
+    console.log("Error getting document in UpdateGroupContestWithSubmission: ", error.message);
   }
  }
 

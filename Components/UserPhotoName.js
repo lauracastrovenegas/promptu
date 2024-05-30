@@ -1,30 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, View, Image } from 'react-native';
-import { getUserData } from '../config/firebase';
+import { db, getUserData } from '../config/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const UserPhotoName = ({ user }) => {
-  const [userData, setUserData] = React.useState(null);
-
-  if (!userData) {
-    return null;
-  }
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-      const fetchAndSetUserData = async (uid) => {
-        const userDoc = await getDoc(doc(db, 'users', uid));
-        if (userDoc.exists()) {
-          setUserData(userDoc.data());
-        }
+    const fetchAndSetUserData = async (uid) => {
+      const userDoc = await getDoc(doc(db, 'users', uid));
+      if (userDoc.exists()) {
+        setUserData(userDoc.data());
       }
-      if (!userData) {
-        fetchAndSetUserData(user.uid);
-      }
-  }, []);
+    };
+
+    if (user && !userData) {
+      fetchAndSetUserData(user);
+    }
+  }, [user, userData]);
 
   return (
     <View style={styles.userPicAndName}>
-      <UserPhoto userPhoto={userData.photo} />
-      <Text style={styles.userName} numberOfLines={1}>{userData.name}</Text>
+      {userData ? (
+        <View>
+          <UserPhoto userPhoto={userData.photoURL} />
+          <Text style={styles.userName} numberOfLines={1}>{userData.displayName}</Text>
+        </View>
+      ) : (
+        <Text>Loading...</Text>
+      )}
     </View>
   );
 };
@@ -32,7 +36,7 @@ const UserPhotoName = ({ user }) => {
 const UserPhoto = ({ userPhoto }) => {
   return (
     <View style={styles.centerImages}>
-        <Image style={styles.userPhoto} source={{ uri : groupPhoto}} />
+      <Image style={styles.userPhoto} source={{ uri: userPhoto }} />
     </View>
   );
 };
