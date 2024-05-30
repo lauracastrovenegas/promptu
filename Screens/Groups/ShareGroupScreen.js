@@ -10,7 +10,13 @@ import * as Clipboard from 'expo-clipboard';
 /* This component is the Share Group Screen  */
 const ShareGroupScreen = ({ route }) => {
   const { state, isLoading } = useAppContext();
-  const group = route.params.groupData;
+  let group = null;
+  if (route.params.groupData) {
+    group = route.params.groupData
+  }
+
+  group = route.params.group;
+
   const inviteLink = route.params.inviteLink; // Get invite link from params
   console.log(inviteLink)
   return (
@@ -27,6 +33,7 @@ const ShareGroupScreen = ({ route }) => {
                         <MemberRequestCard
                             key={index}
                             user={user}
+                            group={group}
                         />
                     ))}
               </View>

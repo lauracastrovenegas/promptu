@@ -27,8 +27,8 @@ const GroupsTab = ({ route, navigation }) => {
       const { path, queryParams } = Linking.parse(url);
       const groupId = path.split('/')[1]; // Split the path by '/' and get the second part
       // Handle the URL as needed
-      if (path ===  `group-invite/${groupId}`) {
-        navigation.navigate('Join Group Page', { groupId: groupId }); 
+      if (path === `group-invite/${groupId}`) {
+        navigation.navigate('Join Group Page', { groupId: groupId });
       }
     };
 
@@ -71,7 +71,10 @@ const GroupsTab = ({ route, navigation }) => {
         component={GroupScreen}
         options={({ route, navigation }) => ({
           headerTitle: () => (
-            <GroupHeaderButton group={route.params.group} onPress={() => alert('This opens the group settings button!')} />
+            <GroupHeaderButton
+              group={route.params.group}
+              onPress={() => navigation.navigate('Share Group Page', { group: route.params.group })}
+            />
           ),
           headerLeft: () => (
             <TouchableOpacity
@@ -81,7 +84,7 @@ const GroupsTab = ({ route, navigation }) => {
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
         })}
@@ -102,7 +105,7 @@ const GroupsTab = ({ route, navigation }) => {
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
         })} />
@@ -116,13 +119,13 @@ const GroupsTab = ({ route, navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity
-                onPress={() => navigation.goBack()}
+              onPress={() => navigation.goBack()}
             >
               <FontAwesome6
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
         })} />
@@ -132,60 +135,60 @@ const GroupsTab = ({ route, navigation }) => {
         options={({ route, navigation }) => ({
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
-            ),
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-              >
-                <FontAwesome6
-                  name="chevron-left"
-                  size={20}
-                  color={theme.colors.black}
-                  style={styles.icon}/>
-              </TouchableOpacity>
-            ),
-          })}
-        />
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon} />
+            </TouchableOpacity>
+          ),
+        })}
+      />
       <Stack.Screen
         name="Second Voting Screen"
         component={SecondVotingScreen}
         options={({ route, navigation }) => ({
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
-            ),
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-              >
-                <FontAwesome6
-                  name="chevron-left"
-                  size={20}
-                  color={theme.colors.black}
-                  style={styles.icon}/>
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon} />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
         name="Waiting Screen"
         component={WaitingScreen}
         options={({ route, navigation }) => ({
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
-            ),
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-              >
-                <FontAwesome6
-                  name="chevron-left"
-                  size={20}
-                  color={theme.colors.black}
-                  style={styles.icon}/>
-              </TouchableOpacity>
-            ),
-          })}
-        />
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon} />
+            </TouchableOpacity>
+          ),
+        })}
+      />
       {/* Join Groups Page is the screen that allows users to join groups. */}
       <Stack.Screen
         name="Join Group Page"
@@ -197,15 +200,15 @@ const GroupsTab = ({ route, navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.navigate("Groups Screen")}
-              >
+            >
               <FontAwesome6
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
-      })} />
+        })} />
       <Stack.Screen
         name="Winner Announcement Screen"
         component={WinnerAnnouncementScreen}
@@ -221,7 +224,7 @@ const GroupsTab = ({ route, navigation }) => {
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
         })} />
@@ -240,7 +243,7 @@ const GroupsTab = ({ route, navigation }) => {
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
         })}
