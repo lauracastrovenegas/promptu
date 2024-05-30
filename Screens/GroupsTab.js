@@ -9,9 +9,11 @@ import JoinGroupScreen from './Groups/JoinGroupScreen';
 import { FontAwesome6 } from "@expo/vector-icons";
 import theme from "../theme";
 import GroupHeaderButton from '../Components/GroupHeaderButton';
-import WinnerAnnouncementScreen from './Groups/Voting Flow/WinnerAnnouncementScreen';
-import ChoosePromptScreen from './Groups/Voting Flow/ChoosePromptScreen';
-import VotingScreen from './Groups/Voting Flow/VotingScreen';
+import WinnerAnnouncementScreen from './Groups/VotingFlow/WinnerAnnouncementScreen.js';
+import ChoosePromptScreen from './Groups/VotingFlow/ChoosePromptScreen';
+import FirstVotingScreen from './Groups/VotingFlow/FirstVotingScreen';
+import SecondVotingScreen from './Groups/VotingFlow/SecondVotingScreen';
+import WaitingScreen from './Groups/VotingFlow/WaitingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -105,8 +107,48 @@ const GroupsTab = ({ route }) => {
           ),
         })} />
       <Stack.Screen
-        name="Voting Screen"
-        component={VotingScreen}
+        name="First Voting Screen"
+        component={FirstVotingScreen}
+        options={({ route, navigation }) => ({
+          headerTitle: () => (
+            <GroupHeaderButton group={route.params.group} />
+            ),
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+              >
+                <FontAwesome6
+                  name="chevron-left"
+                  size={20}
+                  color={theme.colors.black}
+                  style={styles.icon}/>
+              </TouchableOpacity>
+            ),
+          })}
+        />
+      <Stack.Screen
+        name="Second Voting Screen"
+        component={SecondVotingScreen}
+        options={({ route, navigation }) => ({
+          headerTitle: () => (
+            <GroupHeaderButton group={route.params.group} />
+            ),
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+              >
+                <FontAwesome6
+                  name="chevron-left"
+                  size={20}
+                  color={theme.colors.black}
+                  style={styles.icon}/>
+              </TouchableOpacity>
+            ),
+          })}
+        />
+        <Stack.Screen
+        name="Waiting Screen"
+        component={WaitingScreen}
         options={({ route, navigation }) => ({
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
