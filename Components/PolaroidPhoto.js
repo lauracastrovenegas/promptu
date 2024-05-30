@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import theme from '../theme';
 import submission1 from "../assets/fakeSubmissionPhotos/submission1.jpeg";
 
-const PolaroidPhoto = ({ image, caption, small }) => {
+const PolaroidPhoto = ({ image, caption, small, selectedValue }) => {
 
   return (
-    <View style={[styles.container].concat(small ? styles.containerSmall : {})}>
+    <View style={[styles.container].concat(small ? styles.containerSmall : {}).concat(selectedValue === 1 || selectedValue === 2 ? styles.selected : {})}>
       <Image 
         source={image ? image : submission1} 
         style={[styles.image].concat(small ? styles.imageSmall : {})} />
@@ -49,6 +49,10 @@ const styles = StyleSheet.create({
   },
   captionSmall: {
     fontSize: 12,
+  },
+  selected: {
+    borderColor: theme.colors.purple,
+    borderWidth: 2,
   },
 });
 

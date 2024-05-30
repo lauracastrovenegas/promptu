@@ -35,7 +35,7 @@ const GroupScreen = ({ route, navigation }) => {
       case 0:
         return <DailyPromptInfoBox group={group} userData={state.userData} contestData={state.groupsContestData} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
       case 1:
-        return <VotingBox group={group} contestData={state.groupsContestData} onSubmit={() => navigation.navigate('Voting Screen', { group })} />;
+        return <VotingBox group={group} contestData={state.groupsContestData} onSubmit={() => navigation.navigate('First Voting Screen', { group })} />;
       case 2:
         return <ResultsBox group={group} />;
     }
