@@ -13,6 +13,7 @@ const SingleInput = ({ placeholder, onChangeText, text, showSecureIcon }) => {
           value={text}
           placeholder={placeholder}
           placeholderTextColor="#7C8BA0"
+          autoCapitalize='none'
         />
       </View>
     </SafeAreaView>
