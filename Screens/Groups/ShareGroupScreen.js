@@ -13,15 +13,22 @@ const ShareGroupScreen = ({ route }) => {
   let group = null;
   if (route.params.groupData) {
     group = route.params.groupData
+  } else {
+    group = route.params.group;
   }
+  console.log("group: ", group)
 
-  group = route.params.group;
+  let inviteLink = null;
 
-  const inviteLink = route.params.inviteLink; // Get invite link from params
+  if (!group.inviteLink) {
+    inviteLink = route.params.inviteLink; // Get invite link from params
+  } else {
+    inviteLink = group.inviteLink;
+  }
   console.log(inviteLink)
   return (
       <ScrollView style={{ backgroundColor: theme.colors.white }}>
-          {isLoading ? <Text>Loading...</Text>
+          {isLoading || !group ? <Text>Loading...</Text>
           : <View style={styles.screen}>
               <Text style={styles.groupName}>{group.groupName}</Text>
               <GroupPhoto groupPhoto={group.photoURL} />

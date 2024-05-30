@@ -21,6 +21,20 @@ const handleApproval = async (user, groupDocRef, setIsInMemberRequests) => {
   }
 };
 
+const handleRejection = async (user, groupDocRef, setIsInMemberRequests) => {
+  try {
+    // Update the group document
+    await updateDoc(groupDocRef, {
+      memberRequests: arrayRemove(user),
+    });
+
+    console.log("User was rejected and not added to members!");
+    setIsInMemberRequests(false); // Update the state to remove the card
+  } catch (error) {
+    console.error("Error approving user: ", error);
+  }
+}
+
 const MemberRequestCard = ({ user, group }) => {
   const [isInMemberRequests, setIsInMemberRequests] = useState(null);
 
@@ -33,6 +47,7 @@ const MemberRequestCard = ({ user, group }) => {
 
         if (groupDocSnap.exists()) {
           const groupData = groupDocSnap.data();
+          console.log(groupData.memberRequests)
           // Check if the user is still in member requests
           if (!groupData.memberRequests.includes(user)) {
             setIsInMemberRequests(false);
@@ -74,8 +89,8 @@ const MemberRequestCard = ({ user, group }) => {
             style={styles.options}
             title="Reject"
             onPress={() => {
-              console.log("Rejected!");
-              setIsInMemberRequests(false); // Update the state to remove the card
+              const groupDocRef = doc(db, "groups", group.groupId);
+              handleRejection(user, groupDocRef, setIsInMemberRequests);
             }}
           />
         </View>
