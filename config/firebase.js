@@ -134,7 +134,6 @@ export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, 
     userId: uid,
   };
 
-
   try {
     const groupContestDocRef = doc(db, "group_contests", groupId);
     const groupContestDoc = await getDoc(groupContestDocRef);

@@ -87,6 +87,21 @@ export const getTodaysDateStamp = () => {
   return dateStamp;
 }
 
+export const getTomorrowsDateStamp = () => {
+  const today = new Date();
+    
+  // Add one day to the current date
+  today.setDate(today.getDate() + 1);
+
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+
+  // To do: use this when we have real data
+  const dateStamp = year + "-" + month + "-" + day;
+  return dateStamp;
+}
+
 export const getTodaysGroupContest = (group, groupContests) => {
   if (groupContests === null) return {};
 

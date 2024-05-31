@@ -9,6 +9,8 @@ import { storage, db, getGroupData, getGroupContestData } from "../../config/fir
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, getDoc, addDoc, updateDoc, collection } from "firebase/firestore";
 import * as Linking from 'expo-linking';
+import { getTodaysDateStamp } from "../../Functions/utils";
+
 /* This component is the Create Group Screen  */
 const CreateGroupScreen = ({ navigation }) => {
   const [group, onChangeGroup] = useState('');
@@ -55,19 +57,12 @@ const CreateGroupScreen = ({ navigation }) => {
         } catch (error) {
           Alert.alert("Error setting group image", error.message);
         }
- */
+        */
       } catch (error) {
         Alert.alert("Error Creating Group", error.message);
       }
 
-      const today = new Date();
-
-      const year = today.getFullYear();
-      const month = today.getMonth() + 1;
-      const day = today.getDate();
-
-      // To do: use this when we have real data
-      const dateStamp = year + "-" + month + "-" + day;
+      const dateStamp = getTodaysDateStamp();
 
       try {
         // create group contest for the first day
