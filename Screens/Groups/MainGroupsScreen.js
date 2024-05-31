@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, StyleSheet, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, StyleSheet, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import theme from "../../theme";
 import GroupCard from "../../Components/GroupCard";
 import { useAppContext } from "../../AppContext";
@@ -9,7 +9,7 @@ import { getTodaysGroupContest } from "../../Functions/utils";
 const MainGroupsScreen = ({ navigation }) => {
   const { state, isLoading } = useAppContext();
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
   }
 
   return (

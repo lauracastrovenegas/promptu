@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollView, Text, StyleSheet, View, KeyboardAvoidingView, Alert } from "react-native";
 import theme from "../../theme";
 import InputImage from "../../Components/InputImage";
@@ -20,7 +20,6 @@ const SignupScreen = ({ navigation }) => {
     const [hasGalleryPermission, setHasGalleryPermission] = useState(false);
     const [image, setImage] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
-
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);

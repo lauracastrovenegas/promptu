@@ -138,7 +138,7 @@ function App() {
     return (
       <NavigationContainer>
         <Stack.Navigator
-          screenOptions={{ headerShown: false }}
+          screenOptions={{ headerShown: false, animation: 'none'  }}
           initialRouteName="Welcome"
         >
           <Stack.Screen name="Welcome" component={WelcomeScreen} />

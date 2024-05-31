@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Button from '../../../Components/Button';
 import PolaroidPhoto from '../../../Components/PolaroidPhoto';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
@@ -10,7 +10,7 @@ import { useAppContext } from "../../../AppContext";
 const FirstVotingScreen = ({ route, navigation }) => {
   const { state, isLoading, dispatch } = useAppContext();
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
   }
 
   const group = route.params.group;

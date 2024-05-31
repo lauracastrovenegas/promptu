@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, Image, TextInput, Alert, View } from 'react-native';
+import { Text, StyleSheet, Image, TextInput, Alert, View, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Button from '../../Components/Button';
 import DropdownMenu from '../../Components/DropdownMenu';
@@ -11,7 +11,7 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
   const { state, isLoading, dispatch, addSubmissionToGroup } = useAppContext();
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
   }
 
   const [caption, onChangeCaption] = useState('');

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, ActivityIndicator } from 'react-native';
 import { FontAwesome6 } from '@expo/vector-icons';
 import theme from '../theme';
 import { getTodaysGroupContest } from '../Functions/utils';
@@ -9,7 +9,7 @@ const MemberListBubbles = ({ group }) => {
   const { state, isLoading } = useAppContext();
 
   if (isLoading) {
-    return null;
+    return <View><ActivityIndicator/></View>;
   }
 
   const memberSubmissions = getMemberSubmissions();

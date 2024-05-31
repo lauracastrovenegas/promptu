@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollView, Text, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView } from "react-native";
 import theme from "../../theme";
 import SingleInput from "../../Components/SingleInput";

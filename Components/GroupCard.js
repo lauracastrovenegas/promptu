@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, ActivityIndicator } from 'react-native';
 import CardContainer from './CardContainer';
 import theme from '../theme';
 import MemberListBubbles from './MemberListBubbles';
@@ -12,7 +12,7 @@ const GroupCard = ({ groupContests, group }) => {
   const { isLoading } = useAppContext();
 
   if (isLoading) {
-    return null;
+    return <View><ActivityIndicator/></View>;
   }
 
  const constestInfo = getTodaysGroupContest(group, groupContests);
