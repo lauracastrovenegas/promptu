@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { FontAwesome6 } from '@expo/vector-icons';
 import theme from '../theme';
@@ -15,10 +15,10 @@ const MemberListBubbles = ({ group, groupContests }) => {
     const submissions = constestInfo.submissions;
 
     const memberSubmissions = members.map(member => {
-      const memberSubmission = submissions.find(submission => submission.userId === member.id);
+      const memberSubmission = submissions.find(submission => submission.userId === member.uid);
 
       return {
-        userPhoto: member.photo,
+        userPhoto: member.photoURL,
         hasSubmitted: memberSubmission ? true : false
       };
     });
@@ -44,7 +44,7 @@ export default MemberListBubbles;
 const UserBubble = ({ userPhoto, hasSubmitted }) => {
   return (
     <View>
-      <Image style={styles.userPhoto} source={userPhoto} />
+      <Image style={styles.userPhoto} source={userPhoto ? { uri: userPhoto } : require('../assets/default_profile_picture.png')} />
       {hasSubmitted && <FontAwesome6 style={styles.check} name="check" size={12} color={theme.colors.green} />}
     </View>
   );

@@ -14,11 +14,31 @@ import ChoosePromptScreen from './Groups/VotingFlow/ChoosePromptScreen';
 import FirstVotingScreen from './Groups/VotingFlow/FirstVotingScreen';
 import SecondVotingScreen from './Groups/VotingFlow/SecondVotingScreen';
 import WaitingScreen from './Groups/VotingFlow/WaitingScreen';
+import * as Linking from 'expo-linking';
 
 const Stack = createNativeStackNavigator();
 
 /* This component defines the possible screens that can be accessed from the Groups Tab */
-const GroupsTab = ({ route }) => {
+const GroupsTab = ({ route, navigation }) => {
+  React.useEffect(() => {
+    const handleUrl = (event) => {
+      const url = event.url;
+      console.log('URL received: ', url);
+      const { path, queryParams } = Linking.parse(url);
+      const groupId = path.split('/')[1]; // Split the path by '/' and get the second part
+      // Handle the URL as needed
+      if (path === `group-invite/${groupId}`) {
+        navigation.navigate('Join Group Page', { groupId: groupId });
+      }
+    };
+
+    const subscription = Linking.addEventListener('url', handleUrl);
+
+    // Cleanup the event listener
+    return () => {
+      subscription.remove();
+    };
+  }, []);
   return (
     <Stack.Navigator initialRouteName="Groups Screen">
       {/* Groups Page is the default screen that will be shown when the user clicks on the Groups Tab. It displays a list of all groups the user is a part of. */}
@@ -51,7 +71,10 @@ const GroupsTab = ({ route }) => {
         component={GroupScreen}
         options={({ route, navigation }) => ({
           headerTitle: () => (
-            <GroupHeaderButton group={route.params.group} onPress={() => alert('This opens the group settings button!')} />
+            <GroupHeaderButton
+              group={route.params.group}
+              onPress={() => navigation.navigate('Share Group Page', { group: route.params.group })}
+            />
           ),
           headerLeft: () => (
             <TouchableOpacity
@@ -61,7 +84,7 @@ const GroupsTab = ({ route }) => {
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
         })}
@@ -82,7 +105,7 @@ const GroupsTab = ({ route }) => {
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
         })} />
@@ -96,13 +119,13 @@ const GroupsTab = ({ route }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity
-                onPress={() => navigation.goBack()}
+              onPress={() => navigation.goBack()}
             >
               <FontAwesome6
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
         })} />
@@ -112,60 +135,60 @@ const GroupsTab = ({ route }) => {
         options={({ route, navigation }) => ({
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
-            ),
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-              >
-                <FontAwesome6
-                  name="chevron-left"
-                  size={20}
-                  color={theme.colors.black}
-                  style={styles.icon}/>
-              </TouchableOpacity>
-            ),
-          })}
-        />
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon} />
+            </TouchableOpacity>
+          ),
+        })}
+      />
       <Stack.Screen
         name="Second Voting Screen"
         component={SecondVotingScreen}
         options={({ route, navigation }) => ({
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
-            ),
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-              >
-                <FontAwesome6
-                  name="chevron-left"
-                  size={20}
-                  color={theme.colors.black}
-                  style={styles.icon}/>
-              </TouchableOpacity>
-            ),
-          })}
-        />
-        <Stack.Screen
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon} />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
         name="Waiting Screen"
         component={WaitingScreen}
         options={({ route, navigation }) => ({
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
-            ),
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-              >
-                <FontAwesome6
-                  name="chevron-left"
-                  size={20}
-                  color={theme.colors.black}
-                  style={styles.icon}/>
-              </TouchableOpacity>
-            ),
-          })}
-        />
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon} />
+            </TouchableOpacity>
+          ),
+        })}
+      />
       {/* Join Groups Page is the screen that allows users to join groups. */}
       <Stack.Screen
         name="Join Group Page"
@@ -177,15 +200,15 @@ const GroupsTab = ({ route }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => navigation.navigate("Groups Screen")}
-              >
+            >
               <FontAwesome6
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
-      })} />
+        })} />
       <Stack.Screen
         name="Winner Announcement Screen"
         component={WinnerAnnouncementScreen}
@@ -201,7 +224,7 @@ const GroupsTab = ({ route }) => {
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
         })} />
@@ -220,7 +243,7 @@ const GroupsTab = ({ route }) => {
                 name="chevron-left"
                 size={20}
                 color={theme.colors.black}
-                style={styles.icon}/>
+                style={styles.icon} />
             </TouchableOpacity>
           ),
         })}

@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { user, groups, groupContests } from "./data/fakeData";
-import { getUserData } from './config/firebase';
+import { getUserData, getGroupData, getGroupContestData, UpdateGroupContestWithSubmission } from './config/firebase';
 import { signOut } from 'firebase/auth'; // Import signOut from Firebase auth
-import { auth } from './config/firebase';
+import { auth, storage } from './config/firebase';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 const AppContext = createContext();
 
 
@@ -45,8 +46,8 @@ const appReducer = (state, action) => {
    case 'UPDATE_GROUPS_DATA':
      return {
        ...state,
-       groupsData: state.groupsData.map(group =>
-         group.id === action.payload.id ? { ...group, ...action.payload.data } : group
+       groupsContestData: state.groupsContestData.map(group =>
+         group.groupId === action.payload.id ? { ...group, submissions: [...group.submissions, action.payload ] } : group
        ),
      };
    case 'SET_GROUPS_CONTEST_DATA':
@@ -98,18 +99,38 @@ export const AppProvider = ({ children, currentUser }) => {
  // }, []);
 
 
- function fetchGroupData() {
-   // use the fake data for now
-   return groups;
+ const fetchGroupData = async (uid) => {
+  try {
+    const groupData = await getGroupData(uid);
+    return groupData;
+  } catch (err) {
+    console.log("Error fetching group data: ", err.message);
+    return null;
+  }
  }
 
 
- function fetchGroupContestData() {
-   // use the fake data for now
-   return groupContests;
+ const fetchGroupContestData = async (groupIds) => {
+  try {
+    const groupContestData = await getGroupContestData(groupIds);
+    return groupContestData;
+  } catch (err) {
+    console.log("Error fetching group contest data: ", err.message);
+    return null;
+  }
  }
 
+ const addSubmissionToGroup = async (groupId, photo, caption, uid) => {
+  const response = await fetch(photo);
+  const blob = await response.blob();
+  const storageRef = ref(storage, `submission_pictures/${groupId}_${uid}`);
+  await uploadBytes(storageRef, blob);
+  let photoURL = await getDownloadURL(storageRef);
 
+  const currentContestInfo = await UpdateGroupContestWithSubmission(groupId, photoURL, caption, uid);
+  dispatch({ type: 'UPDATE_GROUPS_DATA', payload: currentContestInfo });
+ }
+ 
  const handleLogout = async () => {
    try {
      await signOut(auth);
@@ -129,10 +150,10 @@ export const AppProvider = ({ children, currentUser }) => {
 
      if (currentUser) {
        const userData = await fetchUserData(currentUser.uid);
-       console.log(userData)
-       const groupData = fetchGroupData();
-       const groupContestData = fetchGroupContestData();
+       const groupData = await fetchGroupData(currentUser.uid);
 
+       const groupIds = groupData.map((groupDoc) => { return groupDoc.groupId; });
+       const groupContestData = await fetchGroupContestData(groupIds);
 
        dispatch({ type: 'SET_USER_DATA', payload: userData });
        dispatch({ type: 'SET_GROUPS_DATA', payload: groupData });
@@ -141,6 +162,8 @@ export const AppProvider = ({ children, currentUser }) => {
      } else {
        // No user logged in, clear user data from state
        dispatch({ type: 'SET_USER_DATA', payload: null });
+       dispatch({ type: 'SET_GROUPS_DATA', payload: [] });
+       dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: [] });
        setIsLoading(false);
      }
    };
@@ -151,7 +174,7 @@ export const AppProvider = ({ children, currentUser }) => {
 
 
  return (
-   <AppContext.Provider value={{ state, dispatch, isLoading, handleLogout }}>
+   <AppContext.Provider value={{ state, dispatch, isLoading, handleLogout, addSubmissionToGroup, fetchGroupData, fetchGroupContestData }}>
      {children}
    </AppContext.Provider>
  );

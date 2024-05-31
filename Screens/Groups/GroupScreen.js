@@ -4,7 +4,7 @@ import theme from "../../theme";
 import MemberListBubbles from "../../Components/MemberListBubbles";
 import CardContainer from "../../Components/CardContainer";
 import Button from "../../Components/Button";
-import { hasUserSubmittedToGroup, getTodaysGroupContest } from "../../Functions/utils";
+import { hasUserSubmittedToGroup,  } from "../../Functions/utils";
 import { useAppContext } from "../../AppContext";
 import Countdown from "../../Components/Countdown";
 import CommentSection from "../../Components/CommentSection";
@@ -54,7 +54,7 @@ const GroupScreen = ({ route, navigation }) => {
 export default GroupScreen;
 
 const DailyPromptInfoBox = ({ group, userData, contestData, onSubmit }) => {
-  const constestInfo = getTodaysGroupContest(group, contestData);
+  const constestInfo = (group, contestData);
 
   return (
     <CardContainer>

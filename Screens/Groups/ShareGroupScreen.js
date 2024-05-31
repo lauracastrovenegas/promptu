@@ -10,25 +10,37 @@ import * as Clipboard from 'expo-clipboard';
 /* This component is the Share Group Screen  */
 const ShareGroupScreen = ({ route }) => {
   const { state, isLoading } = useAppContext();
-  const group = route.params.groupData;
+  let group = null;
+  if (route.params.groupData) {
+    group = route.params.groupData
+  } else {
+    group = route.params.group;
+  }
+  console.log("group: ", group)
 
-  // test value, to be replaced later
-  const requests = state.groupsData[0].members;
+  let inviteLink = null;
 
+  if (!group.inviteLink) {
+    inviteLink = route.params.inviteLink; // Get invite link from params
+  } else {
+    inviteLink = group.inviteLink;
+  }
+  console.log(inviteLink)
   return (
       <ScrollView style={{ backgroundColor: theme.colors.white }}>
-          {isLoading ? <Text>Loading...</Text>
+          {isLoading || !group ? <Text>Loading...</Text>
           : <View style={styles.screen}>
-              <Text style={styles.groupName}>{group.name}</Text>
-              <GroupPhoto groupPhoto={group.groupPhoto} />
+              <Text style={styles.groupName}>{group.groupName}</Text>
+              <GroupPhoto groupPhoto={group.photoURL} />
               <Text style={styles.linkDescription}>Get friends to join by sharing the link below:</Text>
-              <GroupLink link={"https://promptu.com/1234567"} />
+              <GroupLink link={inviteLink} />
               <Text style={styles.memberReqsTitle}>Member Requests</Text>
               <View style={styles.requests}>
-                {requests.map((user, index) => (
+                {group.memberRequests.map((user, index) => (
                         <MemberRequestCard
                             key={index}
                             user={user}
+                            group={group}
                         />
                     ))}
               </View>

@@ -3,6 +3,7 @@
     "name": "promptu",
     "owner": "cs278-promptu",
     "slug": "promptu",
+    "scheme": "promptu",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/promptu_logo.png",

@@ -17,7 +17,7 @@ const DropdownMenu = ({ items, selectedItem, setSelectedItem }) => {
         placeholder="Select a group to submit to..."
         data={items}
         maxHeight={300}
-        labelField="name"
+        labelField="groupName"
         valueField="id"
         value={selectedItem ? selectedItem.id : null}
         onFocus={() => setIsFocus(true)}

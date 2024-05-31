@@ -6,36 +6,42 @@ import MemberListBubbles from './MemberListBubbles';
 import GroupPhotoName from './GroupPhotoName';
 import { getTodaysGroupContest } from '../Functions/utils';
 
-const GroupCard = ({ groupContests, group }) => {
-  const constestInfo = getTodaysGroupContest(group, groupContests);
 
-  return (
-    <CardContainer>
-      <View style={styles.row}>
-        <GroupPhotoName group={group} />
-        <View style={styles.promptAndMembers}>
-          <Text style={styles.prompt}>{constestInfo.prompt}</Text>
-          <MemberListBubbles group={group} groupContests={groupContests} />
-        </View>
-      </View>
-    </CardContainer>
-  );
+const GroupCard = ({ groupContests, group }) => {
+ const constestInfo = getTodaysGroupContest(group, groupContests);
+ console.log("memebrs: ", group.members)
+ return (
+   <CardContainer>
+     <View style={styles.row}>
+       <GroupPhotoName group={group} />
+       <View style={styles.promptAndMembers}>
+         <Text style={styles.prompt}>{constestInfo.prompt}</Text>
+         <MemberListBubbles group={group} groupContests={groupContests} />
+       </View>
+     </View>
+   </CardContainer>
+ );
 };
 
+
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    gap: 20,
-  },
-  promptAndMembers: {
-    flex: 3,
-    justifyContent: 'center',
-  },
-  prompt: {
-    textAlign: 'center',
-    marginBottom: 'auto',
-    fontSize: 16,
-  }
+ row: {
+   flexDirection: 'row',
+   gap: 20,
+ },
+ promptAndMembers: {
+   flex: 3,
+   justifyContent: 'center',
+ },
+ prompt: {
+   textAlign: 'center',
+   marginBottom: 'auto',
+   fontSize: 16,
+ }
 });
 
+
 export default GroupCard;
+
+
+

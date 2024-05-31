@@ -19,9 +19,32 @@ import 'react-native-reanimated';
 import useAuth from "./hooks/useAuth";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { auth } from "./config/firebase";
+import * as Linking from 'expo-linking';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const linking = {
+  prefixes: [Linking.createURL('/')],
+  config: {
+    screens: {
+      Tab: {
+        screens: {
+          Profile: 'profile',
+          Groups: {
+            screens: {
+              'Groups Screen': 'groups',
+              // 'Group Screen': 'groups/:groupId', // assuming groupId is a parameter
+              'Create Group Page': 'groups/create',
+              'Share Group Page': 'groups/share',
+              'Join Group Page': 'group-invite/:groupId',
+            },
+          },
+          Camera: 'camera',
+        },
+      },
+    },
+  },
+};
 /* Automatically shows splash screen on start
 It is hidden in useSplashScreen hook when everything
 is loaded in */
@@ -71,6 +94,7 @@ const tabIcons = {
 function App() {
   const { user, authReady } = useAuth();
 
+
   let [fontsLoaded] = useFonts({
     Inter_400Regular, Inter_700Bold, Inter_900Black,
     PatrickHandSC_400Regular
@@ -85,12 +109,10 @@ function App() {
     return null;
   }
 
-  console.log("user: ", user)
-
   if (user) {
     return (
       <AppProvider currentUser={user}>
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
           <Tab.Navigator
             initialRouteName="Groups"
             screenOptions={({ route }) => ({
@@ -122,15 +144,15 @@ function App() {
             initialRouteName="Welcome"
           >
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen 
-              name="Signup" 
+            <Stack.Screen
+              name="Signup"
               // Pass setOnSubmit as a prop to Signup component
               children={({ navigation }) => (
-                <SignupScreen 
-                  navigation={navigation} 
+                <SignupScreen
+                  navigation={navigation}
                 />
               )}
-            />            
+            />
             <Stack.Screen name="Login" component={LoginScreen} />
           </Stack.Navigator>
         </NavigationContainer>
