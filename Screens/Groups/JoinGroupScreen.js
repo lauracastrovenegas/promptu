@@ -1,6 +1,6 @@
 import React from "react";
-import { useEffect } from "react";
-import { Text, Image, View, StyleSheet, ScrollView, Alert } from "react-native";
+import { useEffect, useState } from "react";
+import { Text, Image, View, StyleSheet, Alert } from "react-native";
 import { useAppContext } from "../../AppContext";
 import CardContainer from '../../Components/CardContainer';
 import UserPhotoName from '../../Components/UserPhotoName';
@@ -14,7 +14,7 @@ import { db } from "../../config/firebase";
 /* This component is the Join Group Screen  */
 const JoinGroupScreen = () => {
   const { state } = useAppContext();
-  const [group, setGroup] = React.useState(null);
+  const [group, setGroup] = useState(null);
   const route = useRoute();
   const navigation = useNavigation();
 

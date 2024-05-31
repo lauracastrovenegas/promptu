@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Button from '../../../Components/Button';
 import PolaroidPhoto from '../../../Components/PolaroidPhoto';
@@ -8,10 +8,14 @@ import theme from '../../../theme';
 import { useAppContext } from "../../../AppContext";
 
 const SecondVotingScreen = ({ route, navigation }) => {
-  const { state } = useAppContext();
+  const { state, isLoading } = useAppContext();
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+  
   const group = route.params.group;
   const topChoice = route.params.topChoice;
-  const [selectedSubmission, setSelectedSubmission] = React.useState(null);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   const contest = getTodaysGroupContest(group, state.groupsContestData);
   const submissions = contest.submissions.filter(submission => submission.id !== topChoice);

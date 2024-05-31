@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import addGroupPicture from "../assets/add_group_picture.png";
 import addProfilePicture from "../assets/add_profile_picture.png";
@@ -6,9 +6,9 @@ import editIcon from "../assets/edit_icon.png";
 import * as ImagePicker from "expo-image-picker";
 
 const InputImage = ({ image, setImage, profile }) => {
-    const [hasGalleryPermission, setHasGalleryPermission] = React.useState(false);
+    const [hasGalleryPermission, setHasGalleryPermission] = useState(false);
 
-    React.useEffect(() => {
+    useEffect(() => {
         (async () => {
             const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
             setHasGalleryPermission(galleryStatus.status === 'granted');

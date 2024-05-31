@@ -64,8 +64,8 @@ export const getCommentTimestamp = (comment) => {
   }
 }
 
-export const getGroupComments = async (group) => {
-  const q = query(collection(db, "group_comments"), where("groupId", "==", group));
+export const getGroupComments = async (groupId) => {
+  const q = query(collection(db, "group_comments"), where("groupId", "==", groupId));
   const querySnapshot = await getDocs(q);
   const comments = [];
 
@@ -75,19 +75,22 @@ export const getGroupComments = async (group) => {
   return comments;
 }
 
-export const getTodaysGroupContest = (group, groupContests) => {
-  // get today's date
+export const getTodaysDateStamp = () => {
   const today = new Date();
 
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
-  let day = today.getDate();
+  const day = today.getDate();
 
-    if (group.groupId == "1bzeXkFjhYncJl3vzSO7") {
-    day -= 3; 
-  }
-  console.log("group: ", group)
   // To do: use this when we have real data
   const dateStamp = year + "-" + month + "-" + day;
-  return groupContests.find(contest => contest.groupId === group.groupId && contest.date === dateStamp);
+  return dateStamp;
+}
+
+export const getTodaysGroupContest = (group, groupContests) => {
+  if (groupContests === null) return {};
+
+  // get today's date
+  const dateStamp = getTodaysDateStamp();
+  return groupContests.find(contest => contest.groupId === group.id && contest.date === dateStamp);
 }

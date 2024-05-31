@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, Image, TextInput, Alert, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Button from '../../Components/Button';
@@ -8,11 +8,15 @@ import { useAppContext } from '../../AppContext';
 import { getTodaysGroupContest, hasUserSubmittedToGroup,  } from '../../Functions/utils';
 
 const PhotoSubmissionScreen = ({ route, navigation }) => {
-  const { state, dispatch, addSubmissionToGroup } = useAppContext();
+  const { state, isLoading, dispatch, addSubmissionToGroup } = useAppContext();
 
-  const [caption, onChangeCaption] = React.useState('');
-  const [selectedGroup, setSelectedGroup] = React.useState(route.params.group ?? null);
-  const [contestInfo, setContestInfo] = React.useState(null);
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  const [caption, onChangeCaption] = useState('');
+  const [selectedGroup, setSelectedGroup] = useState(route.params.group ?? null);
+  const [contestInfo, setContestInfo] = useState(null);
 
   useEffect(() => {
     if (selectedGroup) {
@@ -53,7 +57,7 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
       currentContestInfo.submissions = currentContestInfo.submissions.filter(submission => submission.userId !== state.userData.id);
     }
 
-    addSubmissionToGroup(selectedGroup.groupId, route.params.photo.uri, caption, state.userData.uid);
+    addSubmissionToGroup(selectedGroup.id, route.params.photo.uri, caption, state.userData.uid);
     alert(`Photo submitted to ${selectedGroup.groupName}!`);
 
     // go to the camera screen

@@ -94,7 +94,6 @@ const tabIcons = {
 function App() {
   const { user, authReady } = useAuth();
 
-
   let [fontsLoaded] = useFonts({
     Inter_400Regular, Inter_700Bold, Inter_900Black,
     PatrickHandSC_400Regular
@@ -137,30 +136,26 @@ function App() {
     );
   } else {
     return (
-      <AppProvider>
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName="Welcome"
-          >
-            <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen
-              name="Signup"
-              // Pass setOnSubmit as a prop to Signup component
-              children={({ navigation }) => (
-                <SignupScreen
-                  navigation={navigation}
-                />
-              )}
-            />
-            <Stack.Screen name="Login" component={LoginScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </AppProvider>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="Welcome"
+        >
+          <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen
+            name="Signup"
+            // Pass setOnSubmit as a prop to Signup component
+            children={({ navigation }) => (
+              <SignupScreen
+                navigation={navigation}
+              />
+            )}
+          />
+          <Stack.Screen name="Login" component={LoginScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
-
-
 };
 /* 
 

@@ -23,8 +23,9 @@ const MainProfileScreen = () => {
               <View style={{ display: 'flex' }}>
                 <Text style={styles.sectionTitle}>Your Groups</Text>
                 <View style={styles.groups}>
-                  {state.groupsData.map(group => (
-                    <GroupPhotoName key={group.groupId} group={group} />
+                {state.groupsData.length === 0 && <Text style={styles.noGroups}>You are not a part of any groups yet. Create or join a group to get started!</Text>}
+                  {state.groupsData.length > 0 && state.groupsData.map(group => (
+                    <GroupPhotoName key={group.id} group={group} />
                   ))}
                 </View>
               </View>
@@ -68,5 +69,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 20,
     flexWrap: 'wrap',
+  },
+  noGroups: {
+    fontSize: 16,
+    color: theme.colors.gray,
   },
 });

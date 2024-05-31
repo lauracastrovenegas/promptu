@@ -42,7 +42,7 @@ const MemberRequestCard = ({ user, group }) => {
     const fetchGroupDocument = async () => {
       try {
         // Get the group document from Firestore
-        const groupDocRef = doc(db, "groups", group.groupId);
+        const groupDocRef = doc(db, "groups", group.id);
         const groupDocSnap = await getDoc(groupDocRef);
 
         if (groupDocSnap.exists()) {
@@ -61,7 +61,7 @@ const MemberRequestCard = ({ user, group }) => {
     };
 
     fetchGroupDocument();
-  }, [group.groupId, user]);
+  }, [group.id, user]);
 
   if (!isInMemberRequests) {
     return null; // Return null to hide the component
@@ -79,7 +79,7 @@ const MemberRequestCard = ({ user, group }) => {
           <Button
             title="Approve"
             onPress={() => {
-              const groupDocRef = doc(db, "groups", group.groupId);
+              const groupDocRef = doc(db, "groups", group.id);
               handleApproval(user, groupDocRef, setIsInMemberRequests);
             }}
           />
@@ -89,7 +89,7 @@ const MemberRequestCard = ({ user, group }) => {
             style={styles.options}
             title="Reject"
             onPress={() => {
-              const groupDocRef = doc(db, "groups", group.groupId);
+              const groupDocRef = doc(db, "groups", group.id);
               handleRejection(user, groupDocRef, setIsInMemberRequests);
             }}
           />

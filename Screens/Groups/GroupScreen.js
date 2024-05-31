@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import theme from "../../theme";
 import MemberListBubbles from "../../Components/MemberListBubbles";
 import CardContainer from "../../Components/CardContainer";
 import Button from "../../Components/Button";
-import { hasUserSubmittedToGroup,  } from "../../Functions/utils";
+import { hasUserSubmittedToGroup, getTodaysGroupContest } from "../../Functions/utils";
 import { useAppContext } from "../../AppContext";
 import Countdown from "../../Components/Countdown";
 import CommentSection from "../../Components/CommentSection";
@@ -14,9 +14,10 @@ import user2 from "../../assets/fakeProfilePhotos/user2.png";
 /* This component is the Individual Group Screen  */
 const GroupScreen = ({ route, navigation }) => {
   const { state } = useAppContext();
-  const [votingStage, setVotingStage] = React.useState(0);
+  const [votingStage, setVotingStage] = useState(0);
 
   const group = route.params.group;
+  const contestInfo = route.params.contestInfo;
 
   useEffect(() => {
     // after five seconds, move to the next stage
@@ -33,9 +34,9 @@ const GroupScreen = ({ route, navigation }) => {
   function getBox() {
     switch (votingStage) {
       case 0:
-        return <DailyPromptInfoBox group={group} userData={state.userData} contestData={state.groupsContestData} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
+        return <DailyPromptInfoBox group={group} userData={state.userData} contestInfo={contestInfo} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
       case 1:
-        return <VotingBox group={group} contestData={state.groupsContestData} onSubmit={() => navigation.navigate('First Voting Screen', { group })} />;
+        return <VotingBox group={group} contestInfo={contestInfo} onSubmit={() => navigation.navigate('First Voting Screen', { group })} />;
       case 2:
         return <ResultsBox group={group} />;
     }
@@ -53,18 +54,17 @@ const GroupScreen = ({ route, navigation }) => {
 
 export default GroupScreen;
 
-const DailyPromptInfoBox = ({ group, userData, contestData, onSubmit }) => {
-  const constestInfo = (group, contestData);
-
+const DailyPromptInfoBox = ({ group, userData, contestInfo, onSubmit }) => {
+  const { state } = useAppContext();
   return (
     <CardContainer>
       <View style={styles.cardContents}>
         <Text style={styles.promptTitle}>Today's Prompt</Text>
-        <Text style={styles.prompt}>{constestInfo.prompt}</Text>
+        <Text style={styles.prompt}>{contestInfo ? contestInfo.prompt : ""}</Text>
         <Countdown style={styles.countdown} deadline={group.votingTime} />
-        <MemberListBubbles group={group} groupContests={contestData} />
+        <MemberListBubbles group={group} groupContests={state.groupsContestData} />
         <Button
-          title={`${hasUserSubmittedToGroup(group, userData, contestData) ? "Resubmit" : "Submit"} Your Photo`}
+          title={`${hasUserSubmittedToGroup(group, userData, state.groupsContestData) ? "Resubmit" : "Submit"} Your Photo`}
           onPress={onSubmit}
         />
       </View>
@@ -72,12 +72,12 @@ const DailyPromptInfoBox = ({ group, userData, contestData, onSubmit }) => {
   );
 }
 
-const VotingBox = ({ group, contestData, onSubmit }) => {
+const VotingBox = ({ group, onSubmit }) => {
   return (
     <CardContainer>
       <View style={styles.cardContents}>
         <Text style={styles.largePromptTitle}>It's time to vote!</Text>
-        <MemberListBubbles group={group} groupContests={contestData} />
+        <MemberListBubbles group={group} />
         <Button
           title="Vote"
           onPress={onSubmit}
@@ -99,7 +99,7 @@ const ResultsBox = ({ group }) => {
           <Text style={styles.prompt}>Stacy</Text>
         </View>
         <View style={{ flex: 1 }}>
-          <PolaroidPhoto small/>
+          <PolaroidPhoto small />
         </View>
       </View>
     </CardContainer>
@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.patrickHand,
   },
   image: {
-    width: 80, 
-    height: 80, 
+    width: 80,
+    height: 80,
     borderRadius: 100
   },
   centerImage: {

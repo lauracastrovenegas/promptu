@@ -13,10 +13,10 @@ const CommentSection = ({ group }) => {
 
   useEffect(() => {
     const fetchAndSetComments = async () => {
-      const comments = await getGroupComments(group.groupId);
+      const comments = await getGroupComments(group.id);
       setComments(comments);
     };
-     
+
     fetchAndSetComments();
   }, []);
 
@@ -27,7 +27,7 @@ const CommentSection = ({ group }) => {
 
     try {
       const docRef = await addDoc(collection(db, "group_comments"), {  // generates ID for you
-        groupId: group.groupId,
+        groupId: group.id,
         user: state.userData,
         createdAt: timestamp,
         text: comment,
@@ -58,9 +58,9 @@ const CommentSection = ({ group }) => {
           ))}
         </View>
       </ScrollView>
-      <CommentTextInput 
-        groupName={group.groupName} 
-        onSend={onSend}/>
+      <CommentTextInput
+        groupName={group.groupName}
+        onSend={onSend} />
     </View>
   );
 };
@@ -70,7 +70,7 @@ export default CommentSection;
 const Comment = ({ comment }) => {
   return (
     <View style={styles.commentContainer}>
-      <Image source={comment.user.photoURL ? {uri: comment.user.photoURL} : require('../assets/default_profile_picture.png')} style={styles.profilePic} />
+      <Image source={comment.user.photoURL ? { uri: comment.user.photoURL } : require('../assets/default_profile_picture.png')} style={styles.profilePic} />
       <View style={styles.content}>
         <View style={styles.row}>
           <Text style={styles.userName}>{comment.user.displayName}</Text>
@@ -100,9 +100,9 @@ const CommentTextInput = ({ groupName, onSend }) => {
         onChangeText={setComment}
         value={comment} />
       <TouchableOpacity style={styles.sendButton} onPress={onSendComment}>
-        <FontAwesome6 
-          name="arrow-up" 
-          size={20} 
+        <FontAwesome6
+          name="arrow-up"
+          size={20}
           color={theme.colors.white} />
       </TouchableOpacity>
     </View>

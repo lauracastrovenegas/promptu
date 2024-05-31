@@ -46,9 +46,9 @@ export const getUserData = async (uid) => {
     console.log("Error getting document in getUserData: ", error.message);
     return null;
   }
- };
+};
 
- export const getGroupData = async (uid) => {
+export const getGroupData = async (uid) => {
   try {
     const q = query(collection(db, "groups"), where("members", "array-contains-any", [uid]));
     const querySnapshot = await getDocs(q);
@@ -57,10 +57,12 @@ export const getUserData = async (uid) => {
 
     querySnapshot.forEach(async (groupDoc) => {
       const groupData = groupDoc.data();
+      groupData.id = groupDoc.id;
+
       const members = groupData.members;
 
       groupsData.push(groupData);
-      
+
       members.forEach((member) => {
         if (!allMembers.includes(member)) {
           allMembers.push(member);
@@ -83,34 +85,49 @@ export const getUserData = async (uid) => {
         return null;
       });
 
-      return {...groupData, members: membersWithPhotos };
+      return { ...groupData, members: membersWithPhotos };
     });
 
     return fullGroupData;
   } catch (error) {
     console.log("Error getting document in fullGroupData: ", error.message);
-    return null;
+    return [];
   }
- };
- 
- export const getGroupContestData = async (groupIds) => {
+};
+
+export const getGroupContestData = async (groupIds) => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+  const dateStamp = year + "-" + month + "-" + day;
+
   try {
-    const q = query(collection(db, "group_contests"), where("groupId", "in", groupIds));
+    if (groupIds.length === 0) {
+      return [];
+    }
+
+    const q = query(collection(db, "group_contests"), where("groupId", "in", groupIds), where("date", "==", dateStamp))
     const querySnapshot = await getDocs(q);
     const groupContestData = [];
 
     querySnapshot.forEach((groupContestDoc) => {
-      groupContestData.push(groupContestDoc.data());
+      const groupContest = groupContestDoc.data();
+      groupContest.id = groupContestDoc.id;
+
+      groupContestData.push(groupContest);
     });
+
+    console.log("groupContestData: ", groupContestData);
 
     return groupContestData
   } catch (error) {
     console.log("Error getting document in getGroupContestData: ", error.message);
-    return null;
+    return [];
   }
- };
+};
 
- export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, uid) => {
+export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, uid) => {
   const newSubmission = {
     photo: photo,
     caption: caption,
@@ -129,14 +146,14 @@ export const getUserData = async (uid) => {
         submissions: [...groupContestData.submissions, newSubmission]
       });
 
-      return { ...newSubmission, id: groupId};
+      return { ...newSubmission, id: groupId };
     } else {
       return null;
     }
-    
+
   } catch (error) {
     console.log("Error getting document in UpdateGroupContestWithSubmission: ", error.message);
   }
- }
+}
 
 export { db, auth, app, storage };

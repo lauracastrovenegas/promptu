@@ -5,11 +5,17 @@ import theme from '../theme';
 import MemberListBubbles from './MemberListBubbles';
 import GroupPhotoName from './GroupPhotoName';
 import { getTodaysGroupContest } from '../Functions/utils';
+import { useAppContext } from '../AppContext';
 
 
 const GroupCard = ({ groupContests, group }) => {
+  const { isLoading } = useAppContext();
+
+  if (isLoading) {
+    return null;
+  }
+
  const constestInfo = getTodaysGroupContest(group, groupContests);
- console.log("memebrs: ", group.members)
  return (
    <CardContainer>
      <View style={styles.row}>

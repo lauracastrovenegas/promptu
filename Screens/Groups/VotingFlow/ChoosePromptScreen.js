@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Button from '../../../Components/Button';
@@ -12,8 +12,8 @@ const prompts = [
 ];
 
 const ChoosePromptScreen = ({ navigation }) => {
-  const [selectedPrompt, setSelectedPrompt] = React.useState('');
-  const [customPrompt, setCustomPrompt] = React.useState('');
+  const [selectedPrompt, setSelectedPrompt] = useState('');
+  const [customPrompt, setCustomPrompt] = useState('');
 
   function setPrompt(prompt) {
     setSelectedPrompt(prompt);
@@ -49,7 +49,7 @@ const ChoosePromptScreen = ({ navigation }) => {
       <Button
         title="Continue"
         onPress={() => {
-          navigation.pop(3);
+          navigation.pop(5); // Pop back to the group screen
         }} />
     </View>
   );

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainGroupsScreen from './Groups/MainGroupsScreen';
@@ -20,7 +20,7 @@ const Stack = createNativeStackNavigator();
 
 /* This component defines the possible screens that can be accessed from the Groups Tab */
 const GroupsTab = ({ route, navigation }) => {
-  React.useEffect(() => {
+  useEffect(() => {
     const handleUrl = (event) => {
       const url = event.url;
       console.log('URL received: ', url);

@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, Text, StyleSheet, View, KeyboardAvoidingView, Alert } from "react-native";
 import theme from "../../theme";
-import { useAppContext } from "../../AppContext";
 import InputImage from "../../Components/InputImage";
 import SingleInput from "../../Components/SingleInput";
 import ThirdPartyAuth from "../../Components/ThirdPartyAuth";
@@ -14,28 +13,27 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 
 const SignupScreen = ({ navigation }) => {
-    const { state, isLoading } = useAppContext();
-    const [name, onChangeName] = React.useState('');
-    const [email, onChangeEmail] = React.useState('');
-    const [password, onChangePassword] = React.useState('');
-    const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
-    const [hasGalleryPermission, setHasGalleryPermission] = React.useState(false);
-    const [image, setImage] = React.useState(null);
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [name, onChangeName] = useState('');
+    const [email, onChangeEmail] = useState('');
+    const [password, onChangePassword] = useState('');
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const [hasGalleryPermission, setHasGalleryPermission] = useState(false);
+    const [image, setImage] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
 
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         (async () => {
             const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
             setHasGalleryPermission(galleryStatus.status === 'granted');
         })();
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (name !== '' && email !== '' && password !== '') {
             setIsButtonDisabled(false);
         } else {
@@ -85,37 +83,35 @@ const SignupScreen = ({ navigation }) => {
     return (
         <KeyboardAvoidingView style={{ flex: 10 }} behavior="padding" keyboardVerticalOffset={10}>
             <ScrollView style={{ backgroundColor: theme.colors.white }}>
-                {isLoading ? <Text>Loading...</Text> :
-                    <View style={styles.screen}>
-                        <View style={styles.container}>
-                            <Text style={styles.title}>promptu</Text>
-                            <View style={styles.topSection}>
-                                <InputImage image={image} setImage={setImage} profile={true} />
-                                <View style={styles.form}>
-                                    <ThirdPartyAuth title="Sign up with Google" />
+                <View style={styles.screen}>
+                    <View style={styles.container}>
+                        <Text style={styles.title}>promptu</Text>
+                        <View style={styles.topSection}>
+                            <InputImage image={image} setImage={setImage} profile={true} />
+                            <View style={styles.form}>
+                                <ThirdPartyAuth title="Sign up with Google" />
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
+                                <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
+                                <View>
+                                    <Text style={{ fontFamily: "Poppins_400Regular", width: 50, textAlign: 'center' }}>Or</Text>
                                 </View>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
-                                    <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
-                                    <View>
-                                        <Text style={{ fontFamily: "Poppins_400Regular", width: 50, textAlign: 'center' }}>Or</Text>
-                                    </View>
-                                    <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
-                                </View>
-                                <View style={styles.form}>
-                                    <SingleInput placeholder="Full Name" onChangeText={onChangeName} text={name} passwordBool={false} />
-                                    <SingleInput placeholder="Email" onChangeText={onChangeEmail} text={email} passwordBool={false} />
-                                    <SingleInputSecure placeholder="Password" onChangeText={onChangePassword} text={password} showPassword={showPassword} toggleShowPassword={toggleShowPassword} />
-                                </View>
+                                <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
+                            </View>
+                            <View style={styles.form}>
+                                <SingleInput placeholder="Full Name" onChangeText={onChangeName} text={name} passwordBool={false} />
+                                <SingleInput placeholder="Email" onChangeText={onChangeEmail} text={email} passwordBool={false} />
+                                <SingleInputSecure placeholder="Password" onChangeText={onChangePassword} text={password} showPassword={showPassword} toggleShowPassword={toggleShowPassword} />
                             </View>
                         </View>
-                        <View style={styles.bottomSection}>
-                            <Button title="Create Account" disabled={isButtonDisabled} onPress={handleSubmit} />
-                            <Text style={styles.signupText}>
-                                Do you have an account? <Text style={{ color: theme.colors.purple }} onPress={() => navigation.navigate('Login')}>Sign in</Text>
-                            </Text>
-                        </View>
                     </View>
-                }
+                    <View style={styles.bottomSection}>
+                        <Button title="Create Account" disabled={isButtonDisabled} onPress={handleSubmit} />
+                        <Text style={styles.signupText}>
+                            Do you have an account? <Text style={{ color: theme.colors.purple }} onPress={() => navigation.navigate('Login')}>Sign in</Text>
+                        </Text>
+                    </View>
+                </View>
             </ScrollView>
         </KeyboardAvoidingView>
     );

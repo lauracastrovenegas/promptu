@@ -1,17 +1,11 @@
 import React from "react";
-import { ScrollView, Text, StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import theme from "../../theme";
-import { useAppContext } from "../../AppContext";
 import logo from "../../assets/promptu_logo_app.png"
 import Button from "../../Components/Button";
 import WhiteButton from "../../Components/WhiteButton";
 
-
-
 const WelcomeScreen = ({ navigation }) => {
-    const { state, isLoading } = useAppContext();
-
-    const user = state.userData;
     return (
         <View style={styles.screen}>
             <View style={styles.topSection}>

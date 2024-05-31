@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet, Image, View } from 'react-native';
 import theme from '../theme';
 import google from '../assets/google_icon.png';
 
 
 const ThirdPartyAuth = ({ title, onPress, disabled }) => {
-    const [text, onChangeText] = React.useState('');
+    const [text, onChangeText] = useState('');
     return (
         <TouchableOpacity onPress={onPress} disabled={disabled} style={disabled ? styles.buttonDisabled : styles.button}>
             <View style={styles.contents}>

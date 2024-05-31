@@ -3,15 +3,21 @@ import { StyleSheet, View, Image } from 'react-native';
 import { FontAwesome6 } from '@expo/vector-icons';
 import theme from '../theme';
 import { getTodaysGroupContest } from '../Functions/utils';
+import { useAppContext } from '../AppContext';
 
-const MemberListBubbles = ({ group, groupContests }) => {
+const MemberListBubbles = ({ group }) => {
+  const { state, isLoading } = useAppContext();
+
+  if (isLoading) {
+    return null;
+  }
 
   const memberSubmissions = getMemberSubmissions();
 
   // Goes through all members and the submissions and returns whether each member has submitted or not
   function getMemberSubmissions() {
     const members = group.members;
-    const constestInfo  = getTodaysGroupContest(group, groupContests);
+    const constestInfo  = getTodaysGroupContest(group, state.groupsContestData);
     const submissions = constestInfo.submissions;
 
     const memberSubmissions = members.map(member => {

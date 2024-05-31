@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, Text, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView } from "react-native";
 import theme from "../../theme";
-import { useAppContext } from "../../AppContext";
 import SingleInput from "../../Components/SingleInput";
 import ThirdPartyAuth from "../../Components/ThirdPartyAuth";
 import Button from "../../Components/Button";
@@ -11,15 +10,14 @@ import { auth } from "../../config/firebase";
 
 /* This component is the Login Screen */
 const LoginScreen = ({ navigation }) => {
-    const { state, isLoading } = useAppContext();
-    const [email, onChangeEmail] = React.useState('');
-    const [password, onChangePassword] = React.useState('');
-    const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
-    const [isFormValid, setFormValid] = React.useState(false);
-    const [formErrors, setFormErrors] = React.useState('');
+    const [email, onChangeEmail] = useState('');
+    const [password, onChangePassword] = useState('');
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const [isFormValid, setFormValid] = useState(false);
+    const [formErrors, setFormErrors] = useState('');
 
     // State variable to track password visibility 
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     // Function to toggle the password visibility state 
     const toggleShowPassword = () => {
@@ -39,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
     }
 
     // Function to check if all fields are filled and set the button disabled state accordingly
-    React.useEffect(() => {
+    useEffect(() => {
         if (email !== '' && password !== '') {
             setIsButtonDisabled(false);
         } else {
@@ -50,61 +48,60 @@ const LoginScreen = ({ navigation }) => {
 
     return (
         <KeyboardAvoidingView style={styles.screen} behavior="padding" keyboardVerticalOffset={10}>
-            {isLoading ? <Text>Loading...</Text> :
-                <ScrollView>
-                    <View style={styles.screen2}>
-                        <View style={styles.welcomeBox}>
-                            <Text style={styles.title}>promptu</Text>
-                            <Text style={styles.subtext}>Log in with the data you entered during registration.</Text>
-                        </View>
-
-                        <View style={styles.topSection}>
-
-                            <ThirdPartyAuth
-                                title="Sign in with Google">
-                            </ThirdPartyAuth>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
-                                <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
-                                <View>
-                                    <Text style={{ fontFamily: "Poppins_400Regular", width: 50, textAlign: 'center' }}>Or</Text>
-                                </View>
-                                <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
-                            </View>
-                            <View style={styles.form}>
-                                <SingleInput
-                                    placeholder="Email"
-                                    onChangeText={onChangeEmail}
-                                    text={email}
-                                    passwordBool={false}
-                                />
-                                <SingleInputSecure
-                                    placeholder="Password"
-                                    onChangeText={onChangePassword}
-                                    text={password}
-                                    showPassword={showPassword}
-                                    toggleShowPassword={toggleShowPassword}
-                                />
-                            </View>
-                            {!isFormValid ?
-                                <Text style={{ color: 'red', fontFamily: "Poppins_400Regular", width: '90%', textAlign: 'center' }}>{formErrors}</Text>
-                                :
-                                null}
-                        </View>
-                        <View style={styles.bottomSection}>
-                            <Button
-                                title="Sign in"
-                                disabled={isButtonDisabled}
-                                onPress={handleSubmit}
-                            />
-                            <TouchableOpacity onPress={() => navigation.navigate('Signup')} >
-                                <Text style={styles.signupText}>
-                                    <Text style={[styles.signupText, { color: theme.colors.black }]}>Don't have an account? </Text>
-                                    <Text style={[styles.signupText, { color: theme.colors.purple }]}> Sign up</Text>
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+            <ScrollView>
+                <View style={styles.screen2}>
+                    <View style={styles.welcomeBox}>
+                        <Text style={styles.title}>promptu</Text>
+                        <Text style={styles.subtext}>Log in with the data you entered during registration.</Text>
                     </View>
-                </ScrollView>}
+
+                    <View style={styles.topSection}>
+
+                        <ThirdPartyAuth
+                            title="Sign in with Google">
+                        </ThirdPartyAuth>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginBottom: 29, marginTop: 16 }}>
+                            <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
+                            <View>
+                                <Text style={{ fontFamily: "Poppins_400Regular", width: 50, textAlign: 'center' }}>Or</Text>
+                            </View>
+                            <View style={{ flex: 1, height: 1, backgroundColor: '#E0E5EC' }} />
+                        </View>
+                        <View style={styles.form}>
+                            <SingleInput
+                                placeholder="Email"
+                                onChangeText={onChangeEmail}
+                                text={email}
+                                passwordBool={false}
+                            />
+                            <SingleInputSecure
+                                placeholder="Password"
+                                onChangeText={onChangePassword}
+                                text={password}
+                                showPassword={showPassword}
+                                toggleShowPassword={toggleShowPassword}
+                            />
+                        </View>
+                        {!isFormValid ?
+                            <Text style={{ color: 'red', fontFamily: "Poppins_400Regular", width: '90%', textAlign: 'center' }}>{formErrors}</Text>
+                            :
+                            null}
+                    </View>
+                    <View style={styles.bottomSection}>
+                        <Button
+                            title="Sign in"
+                            disabled={isButtonDisabled}
+                            onPress={handleSubmit}
+                        />
+                        <TouchableOpacity onPress={() => navigation.navigate('Signup')} >
+                            <Text style={styles.signupText}>
+                                <Text style={[styles.signupText, { color: theme.colors.black }]}>Don't have an account? </Text>
+                                <Text style={[styles.signupText, { color: theme.colors.purple }]}> Sign up</Text>
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </ScrollView>
         </KeyboardAvoidingView>
     )
 };

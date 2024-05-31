@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Button from '../../../Components/Button';
 import PolaroidPhoto from '../../../Components/PolaroidPhoto';
@@ -8,9 +8,13 @@ import theme from '../../../theme';
 import { useAppContext } from "../../../AppContext";
 
 const FirstVotingScreen = ({ route, navigation }) => {
-  const { state, dispatch } = useAppContext();
+  const { state, isLoading, dispatch } = useAppContext();
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
   const group = route.params.group;
-  const [selectedSubmission, setSelectedSubmission] = React.useState(null);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   const contest = getTodaysGroupContest(group, state.groupsContestData);
   const submissions = contest.submissions;
@@ -30,10 +34,10 @@ const FirstVotingScreen = ({ route, navigation }) => {
         <Text style={styles.prompt}>{contest.prompt}</Text>
         <Text style={styles.purpleText}>Select your top choice!</Text>
         <ScrollView>
-          <View style={{paddingHorizontal: 10, paddingTop: 5}}>
+          <View style={{ paddingHorizontal: 10, paddingTop: 5 }}>
             {submissions.map(submission => (
               <TouchableOpacity key={submission.id} onPress={() => setSelectedSubmission(submission.id)}>
-                <PolaroidPhoto photo={submission.photo} caption={submission.caption} selectedValue={selectedSubmission === submission.id ? 1 : 0}/>
+                <PolaroidPhoto photo={submission.photo} caption={submission.caption} selectedValue={selectedSubmission === submission.id ? 1 : 0} />
               </TouchableOpacity>
             ))}
           </View>

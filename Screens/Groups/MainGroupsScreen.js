@@ -3,21 +3,27 @@ import { ScrollView, Text, StyleSheet, TouchableOpacity, View } from "react-nati
 import theme from "../../theme";
 import GroupCard from "../../Components/GroupCard";
 import { useAppContext } from "../../AppContext";
+import { getTodaysGroupContest } from "../../Functions/utils";
 
 /* This component is the Main Groups Screen of the app opened by default */
 const MainGroupsScreen = ({ navigation }) => {
   const { state, isLoading } = useAppContext();
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <ScrollView style={{ backgroundColor: theme.colors.white }}>
-      {isLoading ? <Text>Loading...</Text>
-        : <View style={styles.screen}>
+      {!isLoading && <View style={styles.screen}>
+          {state.groupsData.length === 0 && <Text style={styles.noGroups}>Create or join a group to get started!</Text>}
           {state.groupsData.map(group => (
             <TouchableOpacity
-              key={group.groupId}
+              key={group.id}
               onPress={() => {
+                const contestInfo = getTodaysGroupContest(group, state.groupsContestData);
                 navigation.navigate('Group Screen', {
                   group,
+                  contestInfo
                 });
               }}>
               <GroupCard groupContests={state.groupsContestData} group={group} />
@@ -36,5 +42,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 20,
     gap: 20,
+  },
+  noGroups: {
+    fontSize: 20,
+    color: theme.colors.gray,
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
