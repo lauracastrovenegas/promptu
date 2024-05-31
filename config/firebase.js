@@ -141,17 +141,65 @@ export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, 
     if (groupContestDoc.exists()) {
       const groupContestData = groupContestDoc.data();
 
+      const originalSubmissions = groupContestData.submissions;
+      const usersWhoSubmitted = originalSubmissions.map(submission => submission.userId);
+
+      let updatedSubmissions = [];
+      if (!usersWhoSubmitted.includes(uid)) {
+        updatedSubmissions = [...originalSubmissions, newSubmission];
+      } else {
+        originalSubmissions.forEach((submission) => {
+          if (submission.userId === uid)
+          {
+            updatedSubmissions.push(newSubmission);
+          } else {
+            updatedSubmissions.push(submission);
+          }
+        });
+      }
+
       await updateDoc(groupContestDocRef, {
-        submissions: [...groupContestData.submissions, newSubmission]
+        submissions: updatedSubmissions
       });
 
-      return { ...newSubmission, id: groupId };
+      return updatedSubmissions;
     } else {
       return null;
     }
 
   } catch (error) {
     console.log("Error getting document in UpdateGroupContestWithSubmission: ", error.message);
+  }
+}
+
+export const UpdateGroupContestWithVote = async (groupId, submissionId, numVotes) => {
+  console.log(groupId);
+  const votes = [];
+
+  for (let i = 0; i < numVotes; i++)
+  {
+    votes.push(submissionId);
+  }
+
+  try {
+    const groupContestDocRef = doc(db, "group_contests", groupId);
+    const groupContestDoc = await getDoc(groupContestDocRef);
+
+    if (groupContestDoc.exists()) {
+      const groupContestData = groupContestDoc.data();
+      const updatedVotes = [...groupContestData.votes, ...votes];
+
+      await updateDoc(groupContestDocRef, {
+        votes: updatedVotes
+      });
+
+      return updatedVotes;
+    } else {
+      return null;
+    }
+
+  } catch (error) {
+    console.log("Error getting document in UpdateGroupContestWithVote: ", error.message);
   }
 }
 

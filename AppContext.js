@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { user, groups, groupContests } from "./data/fakeData";
-import { getUserData, getGroupData, getGroupContestData, UpdateGroupContestWithSubmission } from './config/firebase';
+import { getUserData, getGroupData, getGroupContestData, UpdateGroupContestWithSubmission, UpdateGroupContestWithVote } from './config/firebase';
 import { signOut } from 'firebase/auth'; // Import signOut from Firebase auth
 import { auth, storage } from './config/firebase';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -48,7 +48,7 @@ const appReducer = (state, action) => {
       return {
         ...state,
         groupsContestData: state.groupsContestData.map(group =>
-          group.id === action.payload.id ? { ...group, submissions: [...group.submissions, action.payload] } : group
+          group.id === action.payload.id ? { ...group, submissions: action.payload } : group
         ),
       };
     case 'SET_GROUPS_CONTEST_DATA':
@@ -56,6 +56,13 @@ const appReducer = (state, action) => {
         ...state,
         groupsContestData: action.payload,
       };
+      case 'UPDATE_GROUP_CONTEST_DATA':
+        return {
+          ...state,
+          groupsContestData: state.groupsContestData.map(group =>
+            group.id === action.payload.id ? action.payload.data : group
+          ),
+        };
     case 'ADD_GROUPS_CONTEST_DATA':
       return {
         ...state,
@@ -63,6 +70,13 @@ const appReducer = (state, action) => {
           ...state.groupsContestData,
           action.payload,
         ],
+      };
+    case 'UPDATE_GROUPS_CONTEST_VOTES':
+      return {
+        ...state,
+        groupsContestData: state.groupsContestData.map(groupContest =>
+          groupContest.groupId === action.payload.groupId ? { ...groupContest, votes: action.payload.data } : groupContest
+        ),
       };
     default:
       return state;
@@ -143,6 +157,14 @@ export const AppProvider = ({ children, currentUser }) => {
     dispatch({ type: 'UPDATE_GROUPS_DATA', payload: currentContestInfo });
   }
 
+  const addVoteToGroup = async (groupId, submissionId, numVotes) => {
+    const updatedVotes = await UpdateGroupContestWithVote(groupId, submissionId, numVotes);
+
+    if (updatedVotes != null) {
+      dispatch({ type: 'UPDATE_GROUPS_CONTEST_VOTES', payload: { groupId: groupId, data: updatedVotes }});
+    }
+  }
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -155,7 +177,7 @@ export const AppProvider = ({ children, currentUser }) => {
   }
 
   return (
-    <AppContext.Provider value={{ state, dispatch, isLoading, handleLogout, addSubmissionToGroup, fetchGroupData, fetchGroupContestData }}>
+    <AppContext.Provider value={{ state, dispatch, isLoading, handleLogout, addSubmissionToGroup, fetchGroupData, fetchGroupContestData, addVoteToGroup }}>
       {children}
     </AppContext.Provider>
   );

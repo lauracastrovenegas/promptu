@@ -8,7 +8,8 @@ import theme from '../../../theme';
 import { useAppContext } from "../../../AppContext";
 
 const FirstVotingScreen = ({ route, navigation }) => {
-  const { state, isLoading, dispatch } = useAppContext();
+  const { state, isLoading, addVoteToGroup } = useAppContext();
+
   if (isLoading) {
     return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
   }
@@ -20,10 +21,7 @@ const FirstVotingScreen = ({ route, navigation }) => {
   const submissions = contest.submissions;
 
   function submitVote() {
-    const votes = contest.votes;
-
-    // submit vote here by updating contest object
-
+    addVoteToGroup(group.id, selectedSubmission, 2);
     navigation.navigate('Second Voting Screen', { group, topChoice: selectedSubmission });
   }
 
@@ -36,8 +34,8 @@ const FirstVotingScreen = ({ route, navigation }) => {
         <ScrollView>
           <View style={{ paddingHorizontal: 10, paddingTop: 5 }}>
             {submissions.map(submission => (
-              <TouchableOpacity key={submission.id} onPress={() => setSelectedSubmission(submission.id)}>
-                <PolaroidPhoto photo={submission.photo} caption={submission.caption} selectedValue={selectedSubmission === submission.id ? 1 : 0} />
+              <TouchableOpacity key={submission.userId} onPress={() => setSelectedSubmission(submission.userId)}>
+                <PolaroidPhoto image={submission.photo} caption={submission.caption} selectedValue={selectedSubmission === submission.userId ? 1 : 0} />
               </TouchableOpacity>
             ))}
           </View>

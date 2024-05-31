@@ -4,7 +4,7 @@ import { getDocs, collection, query, where } from "firebase/firestore";
 
 export const hasUserSubmittedToGroup = (group, user, groupsContests) => {
   const contestInfo = getTodaysGroupContest(group, groupsContests);
-  const memberSubmission = contestInfo.submissions.find(submission => submission.userId === user.id);
+  const memberSubmission = contestInfo.submissions.find(submission => submission.userId === user.uid);
   return memberSubmission ? true : false;
 }
 

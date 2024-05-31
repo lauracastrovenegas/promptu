@@ -8,7 +8,7 @@ const PolaroidPhoto = ({ image, caption, small, selectedValue }) => {
   return (
     <View style={[styles.container].concat(small ? styles.containerSmall : {}).concat(selectedValue === 1 || selectedValue === 2 ? styles.selected : {})}>
       <Image 
-        source={image ? image : submission1} 
+        source={image ? {uri: image} : submission1} 
         style={[styles.image].concat(small ? styles.imageSmall : {})} />
       <Text style={[styles.caption].concat(small ? styles.captionSmall : {})}>{caption ?? "This is a caption for this submission"}</Text>
     </View>
