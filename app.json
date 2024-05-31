@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "promptu",
+    "owner": "cs278-promptu",
     "slug": "promptu",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,7 +22,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,6 +39,17 @@
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b4e9e639-82eb-4793-b01a-bcb98b7aa37d"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b4e9e639-82eb-4793-b01a-bcb98b7aa37d"
+    }
   }
 }
