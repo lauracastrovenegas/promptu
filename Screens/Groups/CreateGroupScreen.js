@@ -43,7 +43,7 @@ const CreateGroupScreen = ({ navigation }) => {
         });
 
         // upload group image was not working properly
-        /* try {
+        try {
           if (image) {
             const response = await fetch(image);
             const blob = await response.blob();
@@ -57,7 +57,7 @@ const CreateGroupScreen = ({ navigation }) => {
         } catch (error) {
           Alert.alert("Error setting group image", error.message);
         }
-        */
+
       } catch (error) {
         Alert.alert("Error Creating Group", error.message);
       }

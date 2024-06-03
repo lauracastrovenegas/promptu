@@ -3,21 +3,33 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import Button from '../../../Components/Button';
 import PolaroidPhoto from '../../../Components/PolaroidPhoto';
 import theme from '../../../theme';
+import { useAppContext } from "../../../AppContext";
+import { getTodaysGroupContest } from '../../../Functions/utils';
 
 const WinnerAnnouncementScreen = ({ route, navigation }) => {
   const group = route.params.group;
+  const { state } = useAppContext();
+  const groupContest = getTodaysGroupContest(group, state.groupsContestData);
+  const winner = groupContest.winner;
+  const winnerSubmission = groupContest.submissions.filter(submission => submission.userId === winner.uid)[0];
+
+  function choosePromptOrWait() {
+    if (winner.uid === state.userData.uid) {
+      navigation.navigate('Choose Prompt Screen', { group });
+    } else {
+      navigation.navigate('Group Screen', { group });
+    }
+  }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Stacy Wins!</Text>
+      <Text style={styles.title}>{winner.displayName} Wins!</Text>
       <View style={styles.topSection}>
-        <PolaroidPhoto />
+      <PolaroidPhoto image={winnerSubmission.photo} caption={winnerSubmission.caption}/>
       </View>
       <Button
         title="Continue"
-        onPress={() => {
-          navigation.navigate('Choose Prompt Screen', { group })
-        }} />
+        onPress={choosePromptOrWait} />
     </View>
   );
 };

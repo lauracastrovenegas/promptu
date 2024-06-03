@@ -21,7 +21,6 @@ const FirstVotingScreen = ({ route, navigation }) => {
   const submissions = contest.submissions;
 
   function submitVote() {
-    addVoteToGroup(group.id, selectedSubmission, 2);
     navigation.navigate('Second Voting Screen', { group, topChoice: selectedSubmission });
   }
 

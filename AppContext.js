@@ -4,7 +4,7 @@ import { user, groups, groupContests } from "./data/fakeData";
 import { getUserData, getGroupData, getGroupContestData, UpdateGroupContestWithSubmission, UpdateGroupContestWithVote } from './config/firebase';
 import { signOut } from 'firebase/auth'; // Import signOut from Firebase auth
 import { auth, storage } from './config/firebase';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 const AppContext = createContext();
 
 
@@ -146,10 +146,14 @@ export const AppProvider = ({ children, currentUser }) => {
     }
   }
 
-  const addSubmissionToGroup = async (groupId, photo, caption, uid) => {
+  const addSubmissionToGroup = async (groupId, photo, caption, uid, hasSubmitted) => {
     const response = await fetch(photo);
     const blob = await response.blob();
     const storageRef = ref(storage, `submission_pictures/${groupId}_${uid}`);
+
+    if (hasSubmitted) {
+      await deleteObject(storageRef);
+    }
     await uploadBytes(storageRef, blob);
     let photoURL = await getDownloadURL(storageRef);
 

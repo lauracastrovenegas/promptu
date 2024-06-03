@@ -32,13 +32,17 @@ const GroupScreen = ({ route, navigation }) => {
   }, []);
 
   function getBox() {
+    if (contestInfo.hasVotingOccurred) {
+      return <ResultsBox group={group} contestInfo={contestInfo} />;
+    }
+
     switch (votingStage) {
       case 0:
         return <DailyPromptInfoBox group={group} userData={state.userData} contestInfo={contestInfo} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
       case 1:
         return <VotingBox group={group} contestInfo={contestInfo} onSubmit={() => navigation.navigate('First Voting Screen', { group })} />;
       case 2:
-        return <ResultsBox group={group} />;
+        return <ResultsBox group={group} contestInfo={contestInfo} />;
     }
   }
 
@@ -87,19 +91,19 @@ const VotingBox = ({ group, onSubmit }) => {
   );
 }
 
-const ResultsBox = ({ group }) => {
+const ResultsBox = ({ group, contestInfo }) => {
   return (
     <CardContainer>
       <View style={styles.cardContentsRow}>
         <View style={styles.winner}>
           <Text style={styles.promptTitle}>Today's Winner</Text>
           <View style={styles.centerImage}>
-            <Image source={user2} style={styles.image} />
+            <Image source={contestInfo.winner.photoURL ? { uri: contestInfo.winner.photoURL} : require('../../assets/default_profile_picture.png')} style={styles.image} />
           </View>
-          <Text style={styles.prompt}>Stacy</Text>
+          <Text style={styles.prompt}>{contestInfo.winner.displayName}</Text>
         </View>
         <View style={{ flex: 1 }}>
-          <PolaroidPhoto small />
+          <PolaroidPhoto small image={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].photo} caption={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].caption} />
         </View>
       </View>
     </CardContainer>

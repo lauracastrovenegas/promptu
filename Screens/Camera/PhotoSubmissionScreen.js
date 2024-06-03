@@ -54,10 +54,10 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
       }
 
       // remove the existing submission
-      currentContestInfo.submissions = currentContestInfo.submissions.filter(submission => submission.userId !== state.userData.id);
+      currentContestInfo.submissions = currentContestInfo.submissions.filter(submission => submission.userId !== state.userData.uid);
     }
 
-    addSubmissionToGroup(selectedGroup.id, route.params.photo.uri, caption, state.userData.uid);
+    addSubmissionToGroup(selectedGroup.id, route.params.photo.uri, caption, state.userData.uid, userHasSubmittedAlready);
     alert(`Photo submitted to ${selectedGroup.groupName}!`);
 
     // go to the camera screen

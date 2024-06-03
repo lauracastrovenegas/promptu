@@ -19,11 +19,12 @@ const SecondVotingScreen = ({ route, navigation }) => {
   const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   const contest = getTodaysGroupContest(group, state.groupsContestData);
-  const submissions = contest.submissions.filter(submission => submission.id !== topChoice);
+  const submissions = contest.submissions.filter(submission => submission.userId !== topChoice);
 
-  function submitVote() {
+  async function submitVote() {
     // topChoice, secondChoice: selectedSubmission
-    addVoteToGroup(group.id, selectedSubmission, 1);
+    await addVoteToGroup(group.id, topChoice, 2);
+    await addVoteToGroup(group.id, selectedSubmission, 1);
     navigation.navigate('Waiting Screen', { group });
   }
 
