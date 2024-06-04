@@ -7,7 +7,7 @@ const GroupPhotoName = ({ group }) => {
   return (
     <View style={styles.groupPicAndName}>
       <GroupPhoto groupPhoto={group.photoURL} />
-      <Text style={styles.groupName} numberOfLines={1}>{group.groupName}</Text>
+      <Text style={styles.groupName}>{group.groupName}</Text>
     </View>
   );
 };
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     textAlign: 'center',
+    width: 120,
   },
   groupPicAndName: {
     gap: 5,

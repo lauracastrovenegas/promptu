@@ -77,6 +77,7 @@ const MemberRequestCard = ({ user, group }) => {
         )}
         <View style={styles.options}>
           <Button
+            small
             title="Approve"
             onPress={() => {
               const groupDocRef = doc(db, "groups", group.id);
@@ -86,7 +87,7 @@ const MemberRequestCard = ({ user, group }) => {
         </View>
         <View style={styles.options}>
           <Button
-            style={styles.options}
+            small
             title="Reject"
             onPress={() => {
               const groupDocRef = doc(db, "groups", group.id);
@@ -102,7 +103,8 @@ const MemberRequestCard = ({ user, group }) => {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    gap: 30,
+    gap: 20,
+    alignItems: 'center',
   },
   options: {
     flex: 3,

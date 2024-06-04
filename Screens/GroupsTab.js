@@ -20,25 +20,6 @@ const Stack = createNativeStackNavigator();
 
 /* This component defines the possible screens that can be accessed from the Groups Tab */
 const GroupsTab = ({ route, navigation }) => {
-  useEffect(() => {
-    const handleUrl = (event) => {
-      const url = event.url;
-      console.log('URL received: ', url);
-      const { path, queryParams } = Linking.parse(url);
-      const groupId = path.split('/')[1]; // Split the path by '/' and get the second part
-      // Handle the URL as needed
-      if (path === `group-invite/${groupId}`) {
-        navigation.navigate('Join Group Page', { groupId: groupId });
-      }
-    };
-
-    const subscription = Linking.addEventListener('url', handleUrl);
-
-    // Cleanup the event listener
-    return () => {
-      subscription.remove();
-    };
-  }, []);
   return (
     <Stack.Navigator initialRouteName="Groups Screen">
       {/* Groups Page is the default screen that will be shown when the user clicks on the Groups Tab. It displays a list of all groups the user is a part of. */}

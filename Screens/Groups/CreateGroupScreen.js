@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet, Alert, Text } from "react-native";
 import InputImage from "../../Components/InputImage";
 import SingleInput from "../../Components/SingleInput";
 import { useAppContext } from "../../AppContext";
@@ -37,11 +37,16 @@ const CreateGroupScreen = ({ navigation }) => {
          members: [state.userData.uid],
          memberRequests: [],
          photoURL: null,
-         inviteCode: `${groupId}`
+         inviteCode: null
        });
 
        groupId = groupDocRef.id;
        console.log("Group ID: ", groupId);
+
+        // update group with invite code
+        await updateDoc(groupDocRef, {
+          inviteCode: `${groupId}`
+        });
 
        // upload group image was not working properly
        try {
@@ -122,7 +127,7 @@ const CreateGroupScreen = ({ navigation }) => {
            passwordBool={false}
          />
        </View>
-       <Text>Have an invite code? Join a group.</Text>
+       <Text>Have an invite code? <Text style={{ color: theme.colors.purple }} onPress={() => navigation.navigate('Join Group Page')}>Join a group</Text></Text>
      </View>
      <View>
        <Button
