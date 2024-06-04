@@ -1,7 +1,7 @@
 import { initializeApp, getApp, getApps } from "firebase/app";
 import { initializeAuth, getReactNativePersistence, getAuth } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, doc, getDoc, getDocs, updateDoc, collection, query, where } from "firebase/firestore";
+import { getFirestore, doc, getDoc, getDocs, updateDoc, collection, query, where, addDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -103,22 +103,49 @@ export const getGroupContestData = async (groupIds) => {
   const dateStamp = year + "-" + month + "-" + day;
 
   try {
-    if (groupIds.length === 0) {
-      return [];
-    }
-
-    const q = query(collection(db, "group_contests"), where("groupId", "in", groupIds), where("date", "==", dateStamp))
-    const querySnapshot = await getDocs(q);
     const groupContestData = [];
 
-    querySnapshot.forEach((groupContestDoc) => {
-      const groupContest = groupContestDoc.data();
-      groupContest.id = groupContestDoc.id;
+    for (const groupId of groupIds) {
+      const groupIdString = groupId.toString();
+      const groupContestQuery = query(
+        collection(db, "group_contests"),
+        where("groupId", "==", groupIdString),
+        where("date", "==", dateStamp)
+      );
+      
+      // Execute the query
+      const results = [];
+      const querySnapshot = await getDocs(groupContestQuery);
+      querySnapshot.forEach((doc) => {
+        const groupContest = doc.data();
+        results.push(groupContest);
+        groupContestData.push(groupContest);
+      });
+      
+      if (results.length === 0) {
+        // No group contest document exists, so create one
+        try {
+          const contestDocRef = await addDoc(collection(db, "group_contests"), {
+            groupId: groupId,
+            date: dateStamp,
+            winner: null,
+            hasVotingOccurred: false,
+            prompt: "This is the prompt of the day",  // TODO fetch from prompt bank
+            submissions: [],
+            votes: [],
+            hasVoted: [],
+          });
 
-      groupContestData.push(groupContest);
-    });
-
-    console.log("groupContestData: ", groupContestData);
+          if (contestDocRef.exists()) {
+            const contestDoc = await getDoc(contestDocRef);
+            groupContestData.push(contestDoc.data());
+          }
+          
+        } catch (error) {
+          console.log("Error creating group contest: ", error.message);
+        }
+      }
+    }
 
     return groupContestData
   } catch (error) {

@@ -17,8 +17,8 @@ const MemberListBubbles = ({ group }) => {
   // Goes through all members and the submissions and returns whether each member has submitted or not
   function getMemberSubmissions() {
     const members = group.members;
-    const constestInfo  = getTodaysGroupContest(group, state.groupsContestData);
-    const submissions = constestInfo.submissions;
+    const contestInfo  = getTodaysGroupContest(group, state.groupsContestData);
+    const submissions = contestInfo ? contestInfo.submissions : [];
 
     const memberSubmissions = members.map(member => {
       const memberSubmission = submissions.find(submission => submission.userId === member.uid);
