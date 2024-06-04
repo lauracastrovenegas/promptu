@@ -19,6 +19,9 @@ const CreateGroupScreen = ({ navigation }) => {
  const [image, setImage] = useState(null);
  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
+ async function handleJoinGroup(joinCode) {
+
+ }
 
  async function handleCreateGroup() {
    if (group) {
@@ -34,18 +37,11 @@ const CreateGroupScreen = ({ navigation }) => {
          members: [state.userData.uid],
          memberRequests: [],
          photoURL: null,
-         inviteLink: null
+         inviteCode: `${groupId}`
        });
-
 
        groupId = groupDocRef.id;
        console.log("Group ID: ", groupId);
-
-
-       await updateDoc(groupDocRef, {
-         inviteLink: Linking.createURL(`group-invite/${groupId}`)
-       });
-
 
        // upload group image was not working properly
        try {
@@ -64,14 +60,11 @@ const CreateGroupScreen = ({ navigation }) => {
          Alert.alert("Error setting group image", error.message);
        }
 
-
      } catch (error) {
        Alert.alert("Error Creating Group", error.message);
      }
 
-
      const dateStamp = getTodaysDateStamp();
-
 
      try {
        // create group contest for the first day
@@ -89,10 +82,8 @@ const CreateGroupScreen = ({ navigation }) => {
        Alert.alert("Error Creating Group Contest", error.message);
      }
 
-
      const groupDataDoc = await getDoc(groupDocRef);
      const contestDataDoc = await getDoc(contestDocRef);
-
 
      if (groupDataDoc.exists() && contestDataDoc.exists()) {
        const groupData = groupDataDoc.data();
@@ -102,17 +93,13 @@ const CreateGroupScreen = ({ navigation }) => {
        dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: groupContestData });
        dispatch({ type: 'SET_GROUPS_DATA', payload: allGroupData });
 
-
        // go to the group screen
-       navigation.navigate('Share Group Page', { groupData, inviteLink: Linking.createURL(`group-invite/${groupId}`) });
+       navigation.navigate('Share Group Page', { groupData, inviteCode: `${groupId}`, backTo: 'Groups Screen'});
      } else {
        console.log("No group document exists.");
      }
-
-
    }
  }
-
 
  // Function to check if group and image fields are filled
  useEffect(() => {
@@ -122,7 +109,6 @@ const CreateGroupScreen = ({ navigation }) => {
      setIsButtonDisabled(true);
    }
  }, [group, image]);
-
 
  return (
    <View style={styles.screen}>
@@ -136,6 +122,7 @@ const CreateGroupScreen = ({ navigation }) => {
            passwordBool={false}
          />
        </View>
+       <Text>Have an invite code? Join a group.</Text>
      </View>
      <View>
        <Button

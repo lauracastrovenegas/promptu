@@ -9,6 +9,7 @@ import { useAppContext } from "../../AppContext";
 import Countdown from "../../Components/Countdown";
 import CommentSection from "../../Components/CommentSection";
 import PolaroidPhoto from "../../Components/PolaroidPhoto";
+import GroupLink from "../../Components/GroupLink";
 
 /* This component is the Individual Group Screen  */
 const GroupScreen = ({ route, navigation }) => {
@@ -16,7 +17,20 @@ const GroupScreen = ({ route, navigation }) => {
   const [votingStage, setVotingStage] = useState(0);
 
   const group = route.params.group;
+
+  if (group.members.length < 3) {
+    return (
+      <View style={styles.screen}>
+        <View style={styles.addMoreMembersMessage}>
+          <Text style={styles.largePromptTitle}>You need at least 3 members to complete your group! Share the joining code with more friends to begin!</Text>
+          <GroupLink link={group.inviteCode} />
+        </View>
+      </View>
+    );
+  }
+
   const contestInfo = route.params.contestInfo;
+  const hasUserSubmitted = contestInfo.submissions.map(submission => submission.userId).includes(state.userData.uid);
 
   useEffect(() => {
     // after five seconds, move to the next stage
@@ -37,11 +51,14 @@ const GroupScreen = ({ route, navigation }) => {
 
     switch (votingStage) {
       case 0:
-        return <DailyPromptInfoBox group={group} userData={state.userData} contestInfo={contestInfo} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
+        return <DailyPromptInfoBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
       case 1:
         const navTo = contestInfo.submissions.length >= 3 ? (contestInfo.submissions.length == 3 ? 'Second Voting Screen' : 'First Voting Screen') : 'Choose Prompt Screen';
-        return <VotingBox group={group} contestInfo={contestInfo} onSubmit={() => navigation.navigate(navTo, { group })} userId={state.userData.uid} />;
+        return <VotingBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate(navTo, { group })} />;
       case 2:
+        if (contestInfo.submissions.length < 3) {
+          return <VotingBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Choose Prompt Screen', { group })} />;
+        }
         return <ResultsBox group={group} contestInfo={contestInfo} />;
     }
   }
@@ -58,7 +75,7 @@ const GroupScreen = ({ route, navigation }) => {
 
 export default GroupScreen;
 
-const DailyPromptInfoBox = ({ group, userData, contestInfo, onSubmit }) => {
+const DailyPromptInfoBox = ({ group, contestInfo, hasUserSubmitted, onSubmit }) => {
   const { state } = useAppContext();
   return (
     <CardContainer>
@@ -68,7 +85,7 @@ const DailyPromptInfoBox = ({ group, userData, contestInfo, onSubmit }) => {
         <Countdown style={styles.countdown} deadline={group.votingTime} />
         <MemberListBubbles group={group} groupContests={state.groupsContestData} />
         <Button
-          title={`${hasUserSubmittedToGroup(group, userData, state.groupsContestData) ? "Resubmit" : "Submit"} Your Photo`}
+          title={`${hasUserSubmitted ? "Resubmit" : "Submit"} Your Photo`}
           onPress={onSubmit}
         />
       </View>
@@ -76,48 +93,39 @@ const DailyPromptInfoBox = ({ group, userData, contestInfo, onSubmit }) => {
   );
 }
 
-const VotingBox = ({ group, contestInfo, onSubmit, userId }) => {
-  const hasUserSubmitted = contestInfo.submissions.map(submission => submission.userId).includes(userId);
-  const voteButton = hasUserSubmitted ? <Button title="Vote" onPress={onSubmit}/> : null;
-
-  if (contestInfo.submissions.length < 3) {
-    return (
-      <CardContainer>
-        <View style={styles.cardContents}>
-          <Text style={styles.largePromptTitle}>You need at least 3 photos to vote, today you only had {contestInfo.submissions.length}!</Text>
-          <MemberListBubbles group={group} />
-          <Button title="Continue" onPress={onSubmit}/>
-        </View>
-      </CardContainer>
-    );
-  }
+const VotingBox = ({ group, contestInfo, hasUserSubmitted, onSubmit }) => {
+  const voteButton = hasUserSubmitted ? <Button title="Vote" onPress={onSubmit} /> : null;
 
   return (
     <CardContainer>
       <View style={styles.cardContents}>
-        <Text style={styles.largePromptTitle}>{hasUserSubmitted ? "It's time to vote!" : "You didn't submit today :( Wait for your friends to vote."}</Text>
+        {contestInfo.submissions.length < 3 ?
+          <Text style={styles.largePromptTitle}>You need at least 3 photos to vote, today you only had {contestInfo.submissions.length}!</Text>
+          : <Text style={styles.largePromptTitle}>{hasUserSubmitted ? "It's time to vote!" : "You didn't submit today :( Wait for your friends to vote."}</Text>
+        }
         <MemberListBubbles group={group} />
-        {voteButton}
+        {contestInfo.submissions.length < 3 ? <Button title="Continue" onPress={onSubmit} /> : voteButton}
       </View>
     </CardContainer>
   );
 }
 
-const ResultsBox = ({ group, contestInfo }) => {
+const ResultsBox = ({ contestInfo }) => {
   return (
     <CardContainer>
-      <View style={styles.cardContentsRow}>
-        <View style={styles.winner}>
-          <Text style={styles.promptTitle}>Today's Winner</Text>
-          <View style={styles.centerImage}>
-            <Image source={contestInfo.winner.photoURL ? { uri: contestInfo.winner.photoURL} : require('../../assets/default_profile_picture.png')} style={styles.image} />
+      {contestInfo.winner &&
+        <View style={styles.cardContentsRow}>
+          <View style={styles.winner}>
+            <Text style={styles.promptTitle}>Today's Winner</Text>
+            <View style={styles.centerImage}>
+              <Image source={contestInfo.winner && contestInfo.winner.photoURL ? { uri: contestInfo.winner.photoURL } : require('../../assets/default_profile_picture.png')} style={styles.image} />
+            </View>
+            <Text style={styles.prompt}>{contestInfo.winner.displayName}</Text>
           </View>
-          <Text style={styles.prompt}>{contestInfo.winner.displayName}</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <PolaroidPhoto small image={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].photo} caption={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].caption} />
-        </View>
-      </View>
+          <View style={{ flex: 1 }}>
+            <PolaroidPhoto small image={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].photo} caption={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].caption} />
+          </View>
+        </View>}
     </CardContainer>
   );
 }
@@ -171,5 +179,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 10,
     justifyContent: 'center',
+  },
+  addMoreMembersMessage: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    justifyContent: 'center',
+    height: '100%',
+    padding: 20,
+    gap: 40,
   }
 });
