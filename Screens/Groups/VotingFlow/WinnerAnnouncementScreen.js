@@ -17,7 +17,7 @@ const WinnerAnnouncementScreen = ({ route, navigation }) => {
     if (winner.uid === state.userData.uid) {
       navigation.navigate('Choose Prompt Screen', { group });
     } else {
-      navigation.navigate('Group Screen', { group });
+      navigation.navigate('Group Screen', { group, contestInfo: groupContest });
     }
   }
 

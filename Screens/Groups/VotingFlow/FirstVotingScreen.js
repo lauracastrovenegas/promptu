@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Button from '../../../Components/Button';
 import PolaroidPhoto from '../../../Components/PolaroidPhoto';
@@ -8,7 +8,7 @@ import theme from '../../../theme';
 import { useAppContext } from "../../../AppContext";
 
 const FirstVotingScreen = ({ route, navigation }) => {
-  const { state, isLoading, addVoteToGroup } = useAppContext();
+  const { state, isLoading } = useAppContext();
 
   if (isLoading) {
     return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
@@ -18,7 +18,7 @@ const FirstVotingScreen = ({ route, navigation }) => {
   const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   const contest = getTodaysGroupContest(group, state.groupsContestData);
-  const submissions = contest.submissions;
+  const submissions = contest.submissions.filter(submission => submission.userId !== state.userData.uid);
 
   function submitVote() {
     navigation.navigate('Second Voting Screen', { group, topChoice: selectedSubmission });

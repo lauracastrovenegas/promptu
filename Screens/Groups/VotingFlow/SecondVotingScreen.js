@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Button from '../../../Components/Button';
 import PolaroidPhoto from '../../../Components/PolaroidPhoto';
@@ -19,12 +19,14 @@ const SecondVotingScreen = ({ route, navigation }) => {
   const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   const contest = getTodaysGroupContest(group, state.groupsContestData);
-  const submissions = contest.submissions.filter(submission => submission.userId !== topChoice);
+  const submissions = contest.submissions.filter(submission => submission.userId !== topChoice && submission.userId !== state.userData.uid);
 
   async function submitVote() {
     // topChoice, secondChoice: selectedSubmission
-    await addVoteToGroup(group.id, topChoice, 2);
-    await addVoteToGroup(group.id, selectedSubmission, 1);
+    if (topChoice) {
+      await addVoteToGroup(group.id, topChoice, 2, state.userData.uid);
+    }
+    await addVoteToGroup(group.id, selectedSubmission, 1, state.userData.uid);
     navigation.navigate('Waiting Screen', { group });
   }
 
@@ -33,7 +35,7 @@ const SecondVotingScreen = ({ route, navigation }) => {
       <View style={styles.topSection}>
         <Text style={styles.promptTitle}>Today's Prompt</Text>
         <Text style={styles.prompt}>{contest.prompt}</Text>
-        <Text style={styles.purpleText}>Select your second choice!</Text>
+        <Text style={styles.purpleText}>Select your {topChoice ? "second" : "first"} choice!</Text>
         <ScrollView>
           <View style={{paddingHorizontal: 10, paddingTop: 5}}>
             {submissions.map(submission => (

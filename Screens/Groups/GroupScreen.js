@@ -9,7 +9,6 @@ import { useAppContext } from "../../AppContext";
 import Countdown from "../../Components/Countdown";
 import CommentSection from "../../Components/CommentSection";
 import PolaroidPhoto from "../../Components/PolaroidPhoto";
-import user2 from "../../assets/fakeProfilePhotos/user2.png";
 
 /* This component is the Individual Group Screen  */
 const GroupScreen = ({ route, navigation }) => {
@@ -40,7 +39,8 @@ const GroupScreen = ({ route, navigation }) => {
       case 0:
         return <DailyPromptInfoBox group={group} userData={state.userData} contestInfo={contestInfo} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
       case 1:
-        return <VotingBox group={group} contestInfo={contestInfo} onSubmit={() => navigation.navigate('First Voting Screen', { group })} />;
+        const navTo = contestInfo.submissions.length >= 3 ? (contestInfo.submissions.length == 3 ? 'Second Voting Screen' : 'First Voting Screen') : 'Choose Prompt Screen';
+        return <VotingBox group={group} contestInfo={contestInfo} onSubmit={() => navigation.navigate(navTo, { group })} userId={state.userData.uid} />;
       case 2:
         return <ResultsBox group={group} contestInfo={contestInfo} />;
     }
@@ -76,16 +76,28 @@ const DailyPromptInfoBox = ({ group, userData, contestInfo, onSubmit }) => {
   );
 }
 
-const VotingBox = ({ group, onSubmit }) => {
+const VotingBox = ({ group, contestInfo, onSubmit, userId }) => {
+  const hasUserSubmitted = contestInfo.submissions.map(submission => submission.userId).includes(userId);
+  const voteButton = hasUserSubmitted ? <Button title="Vote" onPress={onSubmit}/> : null;
+
+  if (contestInfo.submissions.length < 3) {
+    return (
+      <CardContainer>
+        <View style={styles.cardContents}>
+          <Text style={styles.largePromptTitle}>You need at least 3 photos to vote, today you only had {contestInfo.submissions.length}!</Text>
+          <MemberListBubbles group={group} />
+          <Button title="Continue" onPress={onSubmit}/>
+        </View>
+      </CardContainer>
+    );
+  }
+
   return (
     <CardContainer>
       <View style={styles.cardContents}>
-        <Text style={styles.largePromptTitle}>It's time to vote!</Text>
+        <Text style={styles.largePromptTitle}>{hasUserSubmitted ? "It's time to vote!" : "You didn't submit today :( Wait for your friends to vote."}</Text>
         <MemberListBubbles group={group} />
-        <Button
-          title="Vote"
-          onPress={onSubmit}
-        />
+        {voteButton}
       </View>
     </CardContainer>
   );

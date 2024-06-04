@@ -83,6 +83,7 @@ const CreateGroupScreen = ({ navigation }) => {
          prompt: "This is the prompt of the day",  // TODO fetch from prompt bank
          submissions: [],
          votes: [],
+         hasVoted: [],
        });
      } catch (error) {
        Alert.alert("Error Creating Group Contest", error.message);

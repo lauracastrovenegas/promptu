@@ -172,8 +172,7 @@ export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, 
   }
 }
 
-export const UpdateGroupContestWithVote = async (groupId, submissionId, numVotes) => {
-  console.log(groupId);
+export const UpdateGroupContestWithVote = async (groupId, submissionId, numVotes, userId) => {
   const votes = [];
 
   for (let i = 0; i < numVotes; i++)
@@ -193,7 +192,13 @@ export const UpdateGroupContestWithVote = async (groupId, submissionId, numVotes
         votes: updatedVotes
       });
 
-      return updatedVotes;
+      if (!groupContestData.hasVoted.includes(userId)) {
+        await updateDoc(groupContestDocRef, {
+          hasVoted: [...groupContestData.hasVoted, userId]
+        });
+        return { votes: updatedVotes, hasVoted: [...groupContestData.hasVoted, userId] };
+      }
+      return { votes: updatedVotes, hasVoted: groupContestData.hasVoted };
     } else {
       return null;
     }

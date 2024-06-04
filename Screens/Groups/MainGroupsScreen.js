@@ -21,10 +21,14 @@ const MainGroupsScreen = ({ navigation }) => {
               key={group.id}
               onPress={() => {
                 const contestInfo = getTodaysGroupContest(group, state.groupsContestData);
-                navigation.navigate('Group Screen', {
-                  group,
-                  contestInfo
-                });
+                if (!contestInfo.hasVotingOccurred && contestInfo.hasVoted.includes(state.userData.uid)) {
+                  navigation.navigate('Waiting Screen', { group });
+                } else {
+                  navigation.navigate('Group Screen', {
+                    group,
+                    contestInfo
+                  });
+                }
               }}>
               <GroupCard groupContests={state.groupsContestData} group={group} />
             </TouchableOpacity>

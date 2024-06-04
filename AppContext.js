@@ -78,6 +78,13 @@ const appReducer = (state, action) => {
           groupContest.groupId === action.payload.groupId ? { ...groupContest, votes: action.payload.data } : groupContest
         ),
       };
+      case 'UPDATE_GROUPS_CONTEST_HAS_VOTED':
+        return {
+          ...state,
+          groupsContestData: state.groupsContestData.map(groupContest =>
+            groupContest.groupId === action.payload.groupId ? { ...groupContest, hasVoted: action.payload.data } : groupContest
+          ),
+        };
     default:
       return state;
   }
@@ -161,11 +168,12 @@ export const AppProvider = ({ children, currentUser }) => {
     dispatch({ type: 'UPDATE_GROUPS_DATA', payload: currentContestInfo });
   }
 
-  const addVoteToGroup = async (groupId, submissionId, numVotes) => {
-    const updatedVotes = await UpdateGroupContestWithVote(groupId, submissionId, numVotes);
+  const addVoteToGroup = async (groupId, submissionId, numVotes, userId) => {
+    const updatedVotesAndHasVoted = await UpdateGroupContestWithVote(groupId, submissionId, numVotes, userId);
 
-    if (updatedVotes != null) {
-      dispatch({ type: 'UPDATE_GROUPS_CONTEST_VOTES', payload: { groupId: groupId, data: updatedVotes }});
+    if (updatedVotesAndHasVoted != null) {
+      dispatch({ type: 'UPDATE_GROUPS_CONTEST_VOTES', payload: { groupId: groupId, data: updatedVotesAndHasVoted.votes }});
+      dispatch({ type: 'UPDATE_GROUPS_CONTEST_HAS_VOTED', payload: { groupId: groupId, data: updatedVotesAndHasVoted.hasVoted }});
     }
   }
 
