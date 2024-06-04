@@ -116,8 +116,9 @@ export const getGroupContestData = async (groupIds) => {
       // Execute the query
       const results = [];
       const querySnapshot = await getDocs(groupContestQuery);
-      querySnapshot.forEach((doc) => {
-        const groupContest = doc.data();
+      querySnapshot.forEach((groupContestDoc) => {
+        const groupContest = groupContestDoc.data();
+        groupContest.id = groupContestDoc.id;
         results.push(groupContest);
         groupContestData.push(groupContest);
       });
@@ -138,7 +139,9 @@ export const getGroupContestData = async (groupIds) => {
 
           if (contestDocRef.exists()) {
             const contestDoc = await getDoc(contestDocRef);
-            groupContestData.push(contestDoc.data());
+            const groupContest = contestDoc.data();
+            groupContest.id = contestDoc.id;
+            groupContestData.push(groupContest);
           }
           
         } catch (error) {
@@ -162,7 +165,7 @@ export const UpdateGroupContestWithSubmission = async (groupContestId, photo, ca
   };
 
   try {
-    const groupContestDocRef = doc(db, "group_contests", groupContestId);
+    const groupContestDocRef = doc(db, "group_contests", `${groupContestId}`);
     const groupContestDoc = await getDoc(groupContestDocRef);
 
     if (groupContestDoc.exists()) {
@@ -191,6 +194,7 @@ export const UpdateGroupContestWithSubmission = async (groupContestId, photo, ca
 
       return updatedSubmissions;
     } else {
+      console.log("No group contest document exists.");
       return null;
     }
 
