@@ -1,31 +1,52 @@
-import React from "react";
-import { Text, Image, View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import React, { useEffect, useCallback, useState } from "react";
+import { Text, Image, View, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import { useAppContext } from "../../AppContext";
 import MemberRequestCard from '../../Components/MemberRequestCard';
 import theme from '../../theme';
 import GroupLink from '../../Components/GroupLink';
+import { getGroupData } from "../../config/firebase";
 
 /* This component is the Share Group Screen  */
 const ShareGroupScreen = ({ route }) => {
-  const { state, isLoading } = useAppContext();
-  let group = null;
-  if (route.params.groupData) {
-    group = route.params.groupData
-  } else {
-    group = route.params.group;
-  }
-  console.log("group: ", group)
+  const { state, isLoading, dispatch } = useAppContext();
+  const [refreshing, setRefreshing] = useState(false);
+  const [group, setGroup] = useState(null);
+  const [inviteCode, setInviteCode] = useState(null);
 
-  let inviteCode = null;
+  useEffect(() => {
+    setGroup(route.params.group);
 
-  if (!group.inviteCode) {
-    inviteCode = route.params.inviteCode; // Get invite link from params
-  } else {
-    inviteCode = group.inviteCode;
-  }
-  console.log(inviteCode)
+    if (route.params.inviteCode) {
+      setInviteCode(route.params.inviteCode);
+    } else {
+      setInviteCode(route.params.group.inviteCode);
+    }
+  }, []);
+
+  const onRefresh = useCallback(async (groupId) => {
+    console.log("Refreshing group screen...");
+    console.log(groupId);
+    try {
+      setRefreshing(true);
+      const groupData = await getGroupData(state.userData.uid);
+      const updatedGroup = groupData.find(groupObject => groupId === groupObject.id);
+      setGroup(updatedGroup);
+      setInviteCode(updatedGroup.id);
+      dispatch({ type: 'SET_GROUPS_DATA', payload: groupData });
+
+      setRefreshing(false);
+    } catch (error) {
+      console.error("Error refreshing group screen: ", error);
+      setRefreshing(false);
+    }
+  }, []);
+
   return (
-    <ScrollView style={{ backgroundColor: theme.colors.white }}>
+    <ScrollView
+      style={{ backgroundColor: theme.colors.white }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(group.id)} />
+      }>
       {isLoading || !group ? <Text>Loading...</Text>
         : <View style={styles.screen}>
           <Text style={styles.groupName}>{group.groupName}</Text>
@@ -33,19 +54,33 @@ const ShareGroupScreen = ({ route }) => {
           <Text style={styles.linkDescription}>Get friends to join by sharing the code below:</Text>
           <GroupLink link={inviteCode} />
           <Text style={styles.memberReqsTitle}>Member Requests</Text>
-          <View style={styles.requests}>
-            {group.memberRequests.map((user, index) => (
-              <MemberRequestCard
-                key={index}
-                user={user}
-                group={group}
-              />
-            ))}
-          </View>
+          <MemberRequests group={group} />
         </View>}
     </ScrollView>
   )
 };
+
+const MemberRequests = ({ group }) => {
+
+  useEffect(() => {
+    console.log("Member requests updated");
+  }, [group.memberRequests]);
+
+  return (
+    <View style={styles.requests}>
+      {group.memberRequests.length === 0 &&
+        <Text>No member requests at this time.</Text>
+      }
+      {group.memberRequests.map((user, index) => (
+        <MemberRequestCard
+          key={index}
+          user={user}
+          group={group}
+        />
+      ))}
+    </View>
+  );
+}
 
 const GroupPhoto = ({ groupPhoto }) => {
   return (

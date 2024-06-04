@@ -92,6 +92,8 @@ const CreateGroupScreen = ({ navigation }) => {
 
      if (groupDataDoc.exists() && contestDataDoc.exists()) {
        const groupData = groupDataDoc.data();
+       groupData.id = groupDataDoc.id;
+       groupData.inviteCode = `${groupId}`;
        const allGroupData = await getGroupData(state.userData.uid);
        const groupIds = allGroupData.map((groupDoc) => { return groupDoc.id; });
        const groupContestData = await getGroupContestData(groupIds);
@@ -99,7 +101,7 @@ const CreateGroupScreen = ({ navigation }) => {
        dispatch({ type: 'SET_GROUPS_DATA', payload: allGroupData });
 
        // go to the group screen
-       navigation.navigate('Share Group Page', { groupData, inviteCode: `${groupId}`, backTo: 'Groups Screen'});
+       navigation.navigate('Share Group Page', { group: groupData, inviteCode: `${groupId}`, backTo: 'Groups Screen'});
      } else {
        console.log("No group document exists.");
      }

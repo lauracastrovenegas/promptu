@@ -102,7 +102,6 @@ export const AppProvider = ({ children, currentUser }) => {
       if (currentUser) {
         const userData = await fetchUserData(currentUser.uid);
         const groupData = await fetchGroupData(currentUser.uid);
-
         const groupIds = groupData.map((group) => { return group.id; });
         const groupContestData = await fetchGroupContestData(groupIds);
         dispatch({ type: 'SET_USER_DATA', payload: userData });

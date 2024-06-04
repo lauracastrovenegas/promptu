@@ -16,6 +16,7 @@ const JoinGroupScreen = ({ navigation }) => {
   const { state } = useAppContext();
   const [group, setGroup] = useState(null);
   const [joinCode, setJoinCode] = useState('');
+  const [joinSubmitted, setJoinSubmitted] = useState(false);
 
   async function handleJoinGroup() {
     const groupId = joinCode;
@@ -29,9 +30,24 @@ const JoinGroupScreen = ({ navigation }) => {
         setGroup(groupData);
 
         const requests = groupData.memberRequests;
+        const members = groupData.members;
+
+        if (members.includes(state.userData.uid)) {
+          Alert.alert("You are already a member of this group.");
+          navigation.navigate("Groups Screen");
+          return;
+        }
+
+        if (requests.includes(state.userData.uid)) {
+          Alert.alert("You have already requested to join this group. Wait for the group members to accept your request.");
+          navigation.navigate("Groups Screen");
+          return;
+        }
+
         await updateDoc(docRef, {
           memberRequests: [...requests, state.userData.uid]
         });
+        setJoinSubmitted(true);
         Alert.alert(
           "You requested to join " + groupData.groupName + "! The group owner must now approve your request.",
           "",
@@ -70,7 +86,7 @@ const JoinGroupScreen = ({ navigation }) => {
           onPress={() => {
             handleJoinGroup()
           }}
-          disabled={joinCode === ''}
+          disabled={joinCode === '' || joinSubmitted}
         />
       </View>
     </View>
