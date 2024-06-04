@@ -28,7 +28,8 @@ const WaitingScreen = ({ route, navigation }) => {
       const groupContestData = await fetchGroupContestData([group.id]);
       dispatch({ type: 'UPDATE_GROUP_CONTEST_DATA', payload: {id: group.id, data: groupContestData[0] }});
 
-      if (groupContestData[0].votes.length === groupContestData[0].submissions.length * 3) {
+      const needNumVotes = groupContestData[0].submissions.length === 3 ? (groupContestData[0].submissions.length) : (groupContestData[0].submissions.length * 3);
+      if (groupContestData[0].votes.length === needNumVotes) {
         const winner = getWinner(groupContestData);
         // set voting to have occured & update winner
         try {

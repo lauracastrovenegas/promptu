@@ -127,7 +127,7 @@ export const getGroupContestData = async (groupIds) => {
   }
 };
 
-export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, uid) => {
+export const UpdateGroupContestWithSubmission = async (groupContestId, photo, caption, uid) => {
   const newSubmission = {
     photo: photo,
     caption: caption,
@@ -135,7 +135,7 @@ export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, 
   };
 
   try {
-    const groupContestDocRef = doc(db, "group_contests", groupId);
+    const groupContestDocRef = doc(db, "group_contests", groupContestId);
     const groupContestDoc = await getDoc(groupContestDocRef);
 
     if (groupContestDoc.exists()) {
@@ -172,7 +172,7 @@ export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, 
   }
 }
 
-export const UpdateGroupContestWithVote = async (groupId, submissionId, numVotes, userId) => {
+export const UpdateGroupContestWithVote = async (groupContestId, submissionId, numVotes, userId) => {
   const votes = [];
 
   for (let i = 0; i < numVotes; i++)
@@ -181,7 +181,7 @@ export const UpdateGroupContestWithVote = async (groupId, submissionId, numVotes
   }
 
   try {
-    const groupContestDocRef = doc(db, "group_contests", groupId);
+    const groupContestDocRef = doc(db, "group_contests", groupContestId);
     const groupContestDoc = await getDoc(groupContestDocRef);
 
     if (groupContestDoc.exists()) {
