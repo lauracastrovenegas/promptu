@@ -13,8 +13,8 @@ const MainGroupsScreen = ({ navigation }) => {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
+    console.log("Refreshing group screen...");
     try {
-      console.log("Refreshing group screen...");
       const groupData = await getGroupData(state.userData.uid);
       const groupIds = groupData.map((group) => { return group.id; });
       const groupContestData = await getGroupContestData(groupIds);

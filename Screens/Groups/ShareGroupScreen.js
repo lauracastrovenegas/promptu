@@ -24,7 +24,7 @@ const ShareGroupScreen = ({ route }) => {
   }, []);
 
   const onRefresh = useCallback(async (groupId) => {
-    console.log("Refreshing group screen...");
+    console.log("Refreshing share group screen...");
     console.log(groupId);
     try {
       setRefreshing(true);
@@ -37,6 +37,7 @@ const ShareGroupScreen = ({ route }) => {
       setRefreshing(false);
     } catch (error) {
       console.error("Error refreshing group screen: ", error);
+      console.log(state.userData);
       setRefreshing(false);
     }
   }, []);
