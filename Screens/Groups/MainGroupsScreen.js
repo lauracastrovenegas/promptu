@@ -10,12 +10,12 @@ import { getGroupContestData, getGroupData } from "../../config/firebase";
 const MainGroupsScreen = ({ navigation }) => {
   const { state, isLoading, dispatch } = useAppContext();
   const [refreshing, setRefreshing] = useState(false);
+  const [userData, setUserData] = useState(state.userData); // this is needed to access the user data in the onRefresh function
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    console.log("Refreshing group screen...");
     try {
-      const groupData = await getGroupData(state.userData.uid);
+      const groupData = await getGroupData(userData.uid);
       const groupIds = groupData.map((group) => { return group.id; });
       const groupContestData = await getGroupContestData(groupIds);
       dispatch({ type: 'SET_GROUPS_DATA', payload: groupData });
