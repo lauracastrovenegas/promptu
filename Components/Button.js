@@ -2,10 +2,10 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import theme from '../theme';
 
-const Button = ({ title, onPress, disabled }) => {
+const Button = ({ title, onPress, disabled, small }) => {
   return (
-    <TouchableOpacity style={disabled ? styles.buttonDisabled : styles.button} onPress={onPress} disabled={disabled}>
-      <Text style={styles.buttonText}>{title}</Text>
+    <TouchableOpacity style={[small ? styles.small : styles.normal].concat(disabled ? [styles.buttonDisabled] : [styles.button])} onPress={onPress} disabled={disabled}>
+      <Text style={small ? styles.buttonTextSmall : styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -13,16 +13,20 @@ const Button = ({ title, onPress, disabled }) => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: theme.colors.purple,
-    paddingHorizontal: 10,
-    paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonDisabled: {
-    backgroundColor: theme.colors.lightPurple,
+  normal: {
     paddingHorizontal: 10,
     paddingVertical: 15,
+  },
+  small: {
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+  },
+  buttonDisabled: {
+    backgroundColor: theme.colors.lightPurple,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -30,6 +34,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: theme.colors.white,
     fontSize: 16,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  buttonTextSmall: {
+    color: theme.colors.white,
+    fontSize: 12,
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },

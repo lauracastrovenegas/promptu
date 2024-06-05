@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -17,9 +17,8 @@ import { AppProvider } from "./AppContext";
 // needed for now because Expo SDK 51 is having issues with tab switching (app crashes)
 import 'react-native-reanimated';
 import useAuth from "./hooks/useAuth";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
 import * as Linking from 'expo-linking';
+import { View } from "react-native";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -124,6 +123,10 @@ function App() {
                 );
               },
               tabBarActiveTintColor: theme.colors.black,
+              tabBarStyle: {
+                paddingTop: 10,
+                height: 85,
+              },
             })}
           >
             {/* Bottom Navigation Bar Tabs */}
@@ -157,40 +160,5 @@ function App() {
     );
   }
 };
-/* 
-
-function App() {
-  let [fontsLoaded] = useFonts({
-    Inter_400Regular, Inter_700Bold, Inter_900Black,
-    PatrickHandSC_400Regular
-  });
-
-  const isReady = useSplashScreen([fontsLoaded]);
-
-  if (!isReady) {
-    return null;
-  }
-
-
-  return (
-    <AppProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{ headerShown: false }}
-        >
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Signup" component={SignupScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Groups Stack" component={HomeScreen} />
-        </Stack.Navigator>
-
-      </NavigationContainer>
-    </AppProvider>
-  );
-
-
-
-}; */
 
 export default App;
-

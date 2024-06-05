@@ -20,25 +20,6 @@ const Stack = createNativeStackNavigator();
 
 /* This component defines the possible screens that can be accessed from the Groups Tab */
 const GroupsTab = ({ route, navigation }) => {
-  useEffect(() => {
-    const handleUrl = (event) => {
-      const url = event.url;
-      console.log('URL received: ', url);
-      const { path, queryParams } = Linking.parse(url);
-      const groupId = path.split('/')[1]; // Split the path by '/' and get the second part
-      // Handle the URL as needed
-      if (path === `group-invite/${groupId}`) {
-        navigation.navigate('Join Group Page', { groupId: groupId });
-      }
-    };
-
-    const subscription = Linking.addEventListener('url', handleUrl);
-
-    // Cleanup the event listener
-    return () => {
-      subscription.remove();
-    };
-  }, []);
   return (
     <Stack.Navigator initialRouteName="Groups Screen">
       {/* Groups Page is the default screen that will be shown when the user clicks on the Groups Tab. It displays a list of all groups the user is a part of. */}
@@ -63,7 +44,8 @@ const GroupsTab = ({ route, navigation }) => {
                 color={theme.colors.black}
               />
             </TouchableOpacity>
-          )
+          ),
+          headerShadowVisible: false,
         })} />
       {/* Group Page is the screen that will be shown when the user clicks on a specific group in the Groups screen. */}
       <Stack.Screen
@@ -73,7 +55,7 @@ const GroupsTab = ({ route, navigation }) => {
           headerTitle: () => (
             <GroupHeaderButton
               group={route.params.group}
-              onPress={() => navigation.navigate('Share Group Page', { group: route.params.group })}
+              onPress={() => navigation.navigate('Share Group Page', { group: route.params.group, backTo: 'Group Screen'})}
             />
           ),
           headerLeft: () => (
@@ -93,13 +75,13 @@ const GroupsTab = ({ route, navigation }) => {
       <Stack.Screen
         name="Share Group Page"
         component={ShareGroupScreen}
-        options={({ navigation }) => ({
+        options={({ route, navigation }) => ({
           headerTitle: () => (
             <Text style={styles.title}>Share Group</Text>
           ),
           headerLeft: () => (
             <TouchableOpacity
-              onPress={() => navigation.navigate("Groups Screen")}
+              onPress={() => navigation.navigate(route.params.backTo, { group: route.params.group })}
             >
               <FontAwesome6
                 name="chevron-left"

@@ -24,7 +24,7 @@ const ShareGroupScreen = ({ route }) => {
   }, []);
 
   const onRefresh = useCallback(async (groupId) => {
-    console.log("Refreshing group screen...");
+    console.log("Refreshing share group screen...");
     console.log(groupId);
     try {
       setRefreshing(true);
@@ -48,11 +48,12 @@ const ShareGroupScreen = ({ route }) => {
         <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(group.id)} />
       }>
       {isLoading || !group ? <Text>Loading...</Text>
-      : <View style={styles.screen}>
-          {group.photoURL && <GroupPhoto groupPhoto={group.photoURL} />}
+        : <View style={styles.screen}>
           <Text style={styles.groupName}>{group.groupName}</Text>
+          <GroupPhoto groupPhoto={group.photoURL} />
           <Text style={styles.linkDescription}>Get friends to join by sharing the code below:</Text>
           <GroupLink link={inviteCode} />
+          <Text style={styles.memberReqsTitle}>Member Requests</Text>
           <MemberRequests group={group} />
         </View>}
     </ScrollView>
@@ -66,20 +67,17 @@ const MemberRequests = ({ group }) => {
   }, [group.memberRequests]);
 
   return (
-    <View>
-      <Text style={styles.memberReqsTitle}>Member Requests</Text>
-      <View style={styles.requests}>
-        {group.memberRequests.length === 0 &&
-          <Text style={{ color: theme.colors.gray }}>No member requests at this time.</Text>
-        }
-        {group.memberRequests.map((user, index) => (
-          <MemberRequestCard
-            key={index}
-            user={user}
-            group={group}
-          />
-        ))}
-      </View>
+    <View style={styles.requests}>
+      {group.memberRequests.length === 0 &&
+        <Text>No member requests at this time.</Text>
+      }
+      {group.memberRequests.map((user, index) => (
+        <MemberRequestCard
+          key={index}
+          user={user}
+          group={group}
+        />
+      ))}
     </View>
   );
 }
@@ -115,7 +113,6 @@ const styles = StyleSheet.create({
   groupName: {
     padding: 10,
     fontSize: 60,
-    lineHeight: 40,
     fontFamily: "PatrickHandSC_400Regular",
     textAlign: 'center',
   },
@@ -134,7 +131,7 @@ const styles = StyleSheet.create({
   memberReqsTitle: {
     fontSize: 36,
     fontFamily: "PatrickHandSC_400Regular",
-    paddingBottom: 10,
+    paddingLeft: 25
   },
   requests: {
     display: 'flex',

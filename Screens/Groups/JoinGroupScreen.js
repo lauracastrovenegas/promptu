@@ -1,45 +1,28 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Text, Image, View, StyleSheet, Alert } from "react-native";
 import { useAppContext } from "../../AppContext";
 import CardContainer from '../../Components/CardContainer';
 import UserPhotoName from '../../Components/UserPhotoName';
 import Button from "../../Components/Button";
 import theme from '../../theme';
-import { useNavigation, useRoute } from "@react-navigation/native";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import SingleInput from "../../Components/SingleInput";
 // import * as Linking from 'expo-linking';
 
 /* This component is the Join Group Screen  */
-const JoinGroupScreen = () => {
+const JoinGroupScreen = ({ navigation }) => {
   const { state } = useAppContext();
   const [group, setGroup] = useState(null);
-  const route = useRoute();
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    async function fetchGroupData() {
-      try {
-        const groupID = route.params.groupId
-        const docRef = doc(db, "groups", groupID);
-        const groupDoc = await getDoc(docRef);
-        if (groupDoc.exists()) {
-          const groupData = groupDoc.data();
-          setGroup(groupData);
-        } else {
-          console.log("No group document exists.");
-        }
-      } catch (error) {
-        console.error("Error fetching group data:", error);
-      }
-    }
-    fetchGroupData();
-  }, [])
+  const [joinCode, setJoinCode] = useState('');
+  const [joinSubmitted, setJoinSubmitted] = useState(false);
 
   async function handleJoinGroup() {
+    const groupId = joinCode;
+
     try {
-      const docRef = doc(db, "groups", route.params.groupId);
+      const docRef = doc(db, "groups", groupId);
       const groupDoc = await getDoc(docRef);
 
       if (groupDoc.exists()) {
@@ -47,9 +30,24 @@ const JoinGroupScreen = () => {
         setGroup(groupData);
 
         const requests = groupData.memberRequests;
+        const members = groupData.members;
+
+        if (members.includes(state.userData.uid)) {
+          Alert.alert("You are already a member of this group.");
+          navigation.navigate("Groups Screen");
+          return;
+        }
+
+        if (requests.includes(state.userData.uid)) {
+          Alert.alert("You have already requested to join this group. Wait for the group members to accept your request.");
+          navigation.navigate("Groups Screen");
+          return;
+        }
+
         await updateDoc(docRef, {
           memberRequests: [...requests, state.userData.uid]
         });
+        setJoinSubmitted(true);
         Alert.alert(
           "You requested to join " + groupData.groupName + "! The group owner must now approve your request.",
           "",
@@ -60,7 +58,7 @@ const JoinGroupScreen = () => {
             }
           ]
         );
-        
+
       } else {
         console.log("No group document exists.");
       }
@@ -68,6 +66,7 @@ const JoinGroupScreen = () => {
       Alert.alert("Error Requesting to Join Group", error.message);
     }
   }
+
   return (
     <View style={styles.screen}>
       {group ? (
@@ -77,7 +76,9 @@ const JoinGroupScreen = () => {
           <Members members={group.members} />
         </View>
       ) : (
-        <Text>Loading...</Text>
+        <View style={styles.topSection}>
+          <SingleInput placeholder="Enter invite code..." onChangeText={setJoinCode} text={joinCode} passwordBool={false} />
+        </View>
       )}
       <View>
         <Button
@@ -85,6 +86,7 @@ const JoinGroupScreen = () => {
           onPress={() => {
             handleJoinGroup()
           }}
+          disabled={joinCode === '' || joinSubmitted}
         />
       </View>
     </View>
@@ -133,6 +135,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 70,
     flex: 1,
+    justifyContent: 'center',
+    padding: 20,
   },
   groupPhoto: {
     width: 150,

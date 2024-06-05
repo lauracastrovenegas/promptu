@@ -62,13 +62,15 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    marginBottom: 10,
+    marginBottom: 20,
     fontWeight: 'bold',
   },
   groups: {
     flexDirection: 'row',
     gap: 20,
     flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   noGroups: {
     fontSize: 16,

@@ -1,7 +1,7 @@
 import { initializeApp, getApp, getApps } from "firebase/app";
 import { initializeAuth, getReactNativePersistence, getAuth } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, doc, getDoc, getDocs, updateDoc, collection, query, where } from "firebase/firestore";
+import { getFirestore, doc, getDoc, getDocs, updateDoc, collection, query, where, addDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -103,22 +103,52 @@ export const getGroupContestData = async (groupIds) => {
   const dateStamp = year + "-" + month + "-" + day;
 
   try {
-    if (groupIds.length === 0) {
-      return [];
-    }
-
-    const q = query(collection(db, "group_contests"), where("groupId", "in", groupIds), where("date", "==", dateStamp))
-    const querySnapshot = await getDocs(q);
     const groupContestData = [];
 
-    querySnapshot.forEach((groupContestDoc) => {
-      const groupContest = groupContestDoc.data();
-      groupContest.id = groupContestDoc.id;
+    for (const groupId of groupIds) {
+      const groupIdString = groupId.toString();
+      const groupContestQuery = query(
+        collection(db, "group_contests"),
+        where("groupId", "==", groupIdString),
+        where("date", "==", dateStamp)
+      );
+      
+      // Execute the query
+      const results = [];
+      const querySnapshot = await getDocs(groupContestQuery);
+      querySnapshot.forEach((groupContestDoc) => {
+        const groupContest = groupContestDoc.data();
+        groupContest.id = groupContestDoc.id;
+        results.push(groupContest);
+        groupContestData.push(groupContest);
+      });
+      
+      if (results.length === 0) {
+        // No group contest document exists, so create one
+        try {
+          const contestDocRef = await addDoc(collection(db, "group_contests"), {
+            groupId: groupId,
+            date: dateStamp,
+            winner: null,
+            hasVotingOccurred: false,
+            prompt: "This is the prompt of the day",  // TODO fetch from prompt bank
+            submissions: [],
+            votes: [],
+            hasVoted: [],
+          });
 
-      groupContestData.push(groupContest);
-    });
-
-    console.log("groupContestData: ", groupContestData);
+          if (contestDocRef.exists()) {
+            const contestDoc = await getDoc(contestDocRef);
+            const groupContest = contestDoc.data();
+            groupContest.id = contestDoc.id;
+            groupContestData.push(groupContest);
+          }
+          
+        } catch (error) {
+          console.log("Error creating group contest: ", error.message);
+        }
+      }
+    }
 
     return groupContestData
   } catch (error) {
@@ -127,7 +157,7 @@ export const getGroupContestData = async (groupIds) => {
   }
 };
 
-export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, uid) => {
+export const UpdateGroupContestWithSubmission = async (groupContestId, photo, caption, uid) => {
   const newSubmission = {
     photo: photo,
     caption: caption,
@@ -135,23 +165,77 @@ export const UpdateGroupContestWithSubmission = async (groupId, photo, caption, 
   };
 
   try {
-    const groupContestDocRef = doc(db, "group_contests", groupId);
+    const groupContestDocRef = doc(db, "group_contests", `${groupContestId}`);
     const groupContestDoc = await getDoc(groupContestDocRef);
 
     if (groupContestDoc.exists()) {
       const groupContestData = groupContestDoc.data();
 
+      const originalSubmissions = groupContestData.submissions;
+      const usersWhoSubmitted = originalSubmissions.map(submission => submission.userId);
+
+      let updatedSubmissions = [];
+      if (!usersWhoSubmitted.includes(uid)) {
+        updatedSubmissions = [...originalSubmissions, newSubmission];
+      } else {
+        originalSubmissions.forEach((submission) => {
+          if (submission.userId === uid)
+          {
+            updatedSubmissions.push(newSubmission);
+          } else {
+            updatedSubmissions.push(submission);
+          }
+        });
+      }
+
       await updateDoc(groupContestDocRef, {
-        submissions: [...groupContestData.submissions, newSubmission]
+        submissions: updatedSubmissions
       });
 
-      return { ...newSubmission, id: groupId };
+      return updatedSubmissions;
     } else {
+      console.log("No group contest document exists.");
       return null;
     }
 
   } catch (error) {
     console.log("Error getting document in UpdateGroupContestWithSubmission: ", error.message);
+  }
+}
+
+export const UpdateGroupContestWithVote = async (groupContestId, submissionId, numVotes, userId) => {
+  const votes = [];
+
+  for (let i = 0; i < numVotes; i++)
+  {
+    votes.push(submissionId);
+  }
+
+  try {
+    const groupContestDocRef = doc(db, "group_contests", groupContestId);
+    const groupContestDoc = await getDoc(groupContestDocRef);
+
+    if (groupContestDoc.exists()) {
+      const groupContestData = groupContestDoc.data();
+      const updatedVotes = [...groupContestData.votes, ...votes];
+
+      await updateDoc(groupContestDocRef, {
+        votes: updatedVotes
+      });
+
+      if (!groupContestData.hasVoted.includes(userId)) {
+        await updateDoc(groupContestDocRef, {
+          hasVoted: [...groupContestData.hasVoted, userId]
+        });
+        return { votes: updatedVotes, hasVoted: [...groupContestData.hasVoted, userId] };
+      }
+      return { votes: updatedVotes, hasVoted: groupContestData.hasVoted };
+    } else {
+      return null;
+    }
+
+  } catch (error) {
+    console.log("Error getting document in UpdateGroupContestWithVote: ", error.message);
   }
 }
 

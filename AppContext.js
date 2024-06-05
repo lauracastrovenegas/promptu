@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { user, groups, groupContests } from "./data/fakeData";
-import { getUserData, getGroupData, getGroupContestData, UpdateGroupContestWithSubmission } from './config/firebase';
+import { getUserData, getGroupData, getGroupContestData, UpdateGroupContestWithSubmission, UpdateGroupContestWithVote } from './config/firebase';
 import { signOut } from 'firebase/auth'; // Import signOut from Firebase auth
 import { auth, storage } from './config/firebase';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 const AppContext = createContext();
 
 
@@ -44,11 +44,11 @@ const appReducer = (state, action) => {
           action.payload,
         ],
       };
-    case 'UPDATE_GROUPS_DATA':
+    case 'UPDATE_GROUP_CONTEST_SUBMISSION_DATA':
       return {
         ...state,
         groupsContestData: state.groupsContestData.map(group =>
-          group.id === action.payload.id ? { ...group, submissions: [...group.submissions, action.payload] } : group
+          group.id === action.payload.id ? { ...group, submissions: action.payload.submissions } : group
         ),
       };
     case 'SET_GROUPS_CONTEST_DATA':
@@ -56,6 +56,13 @@ const appReducer = (state, action) => {
         ...state,
         groupsContestData: action.payload,
       };
+      case 'UPDATE_GROUP_CONTEST_DATA':
+        return {
+          ...state,
+          groupsContestData: state.groupsContestData.map(group =>
+            group.id === action.payload.id ? action.payload.data : group
+          ),
+        };
     case 'ADD_GROUPS_CONTEST_DATA':
       return {
         ...state,
@@ -64,6 +71,20 @@ const appReducer = (state, action) => {
           action.payload,
         ],
       };
+    case 'UPDATE_GROUPS_CONTEST_VOTES':
+      return {
+        ...state,
+        groupsContestData: state.groupsContestData.map(groupContest =>
+          groupContest.id === action.payload.groupContestId ? { ...groupContest, votes: action.payload.data } : groupContest
+        ),
+      };
+      case 'UPDATE_GROUPS_CONTEST_HAS_VOTED':
+        return {
+          ...state,
+          groupsContestData: state.groupsContestData.map(groupContest =>
+            groupContest.id === action.payload.groupContestId ? { ...groupContest, hasVoted: action.payload.data } : groupContest
+          ),
+        };
     default:
       return state;
   }
@@ -81,7 +102,6 @@ export const AppProvider = ({ children, currentUser }) => {
       if (currentUser) {
         const userData = await fetchUserData(currentUser.uid);
         const groupData = await fetchGroupData(currentUser.uid);
-
         const groupIds = groupData.map((group) => { return group.id; });
         const groupContestData = await fetchGroupContestData(groupIds);
         dispatch({ type: 'SET_USER_DATA', payload: userData });
@@ -132,15 +152,28 @@ export const AppProvider = ({ children, currentUser }) => {
     }
   }
 
-  const addSubmissionToGroup = async (groupId, photo, caption, uid) => {
+  const addSubmissionToGroup = async (groupContestId, photo, caption, uid, hasSubmitted) => {
     const response = await fetch(photo);
     const blob = await response.blob();
-    const storageRef = ref(storage, `submission_pictures/${groupId}_${uid}`);
+    const storageRef = ref(storage, `submission_pictures/${groupContestId}_${uid}`);
+
+    if (hasSubmitted) {
+      await deleteObject(storageRef);
+    }
     await uploadBytes(storageRef, blob);
     let photoURL = await getDownloadURL(storageRef);
 
-    const currentContestInfo = await UpdateGroupContestWithSubmission(groupId, photoURL, caption, uid);
-    dispatch({ type: 'UPDATE_GROUPS_DATA', payload: currentContestInfo });
+    const currentContestInfo = await UpdateGroupContestWithSubmission(groupContestId, photoURL, caption, uid);
+    dispatch({ type: 'UPDATE_GROUP_CONTEST_SUBMISSION_DATA', payload: {id: groupContestId, submissions: currentContestInfo} });
+  }
+
+  const addVoteToGroup = async (groupContestId, submissionId, numVotes, userId) => {
+    const updatedVotesAndHasVoted = await UpdateGroupContestWithVote(groupContestId, submissionId, numVotes, userId);
+
+    if (updatedVotesAndHasVoted != null) {
+      dispatch({ type: 'UPDATE_GROUPS_CONTEST_VOTES', payload: { groupContestId: groupContestId, data: updatedVotesAndHasVoted.votes }});
+      dispatch({ type: 'UPDATE_GROUPS_CONTEST_HAS_VOTED', payload: { groupContestId: groupContestId, data: updatedVotesAndHasVoted.hasVoted }});
+    }
   }
 
   const handleLogout = async () => {
@@ -155,7 +188,7 @@ export const AppProvider = ({ children, currentUser }) => {
   }
 
   return (
-    <AppContext.Provider value={{ state, dispatch, isLoading, handleLogout, addSubmissionToGroup, fetchGroupData, fetchGroupContestData }}>
+    <AppContext.Provider value={{ state, dispatch, isLoading, handleLogout, addSubmissionToGroup, fetchGroupData, fetchGroupContestData, addVoteToGroup }}>
       {children}
     </AppContext.Provider>
   );

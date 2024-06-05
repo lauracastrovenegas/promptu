@@ -10,10 +10,6 @@ import { getTodaysGroupContest, hasUserSubmittedToGroup,  } from '../../Function
 const PhotoSubmissionScreen = ({ route, navigation }) => {
   const { state, isLoading, dispatch, addSubmissionToGroup } = useAppContext();
 
-  if (isLoading) {
-    return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
-  }
-
   const [caption, onChangeCaption] = useState('');
   const [selectedGroup, setSelectedGroup] = useState(route.params.group ?? null);
   const [contestInfo, setContestInfo] = useState(null);
@@ -54,14 +50,18 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
       }
 
       // remove the existing submission
-      currentContestInfo.submissions = currentContestInfo.submissions.filter(submission => submission.userId !== state.userData.id);
+      currentContestInfo.submissions = currentContestInfo.submissions.filter(submission => submission.userId !== state.userData.uid);
     }
 
-    addSubmissionToGroup(selectedGroup.id, route.params.photo.uri, caption, state.userData.uid);
+    addSubmissionToGroup(currentContestInfo.id, route.params.photo.uri, caption, state.userData.uid, userHasSubmittedAlready);
     alert(`Photo submitted to ${selectedGroup.groupName}!`);
 
     // go to the camera screen
     navigation.navigate('Main Camera Screen');
+  }
+
+  if (isLoading) {
+    return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
   }
 
   return (

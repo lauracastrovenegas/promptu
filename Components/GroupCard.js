@@ -15,13 +15,13 @@ const GroupCard = ({ groupContests, group }) => {
     return <View><ActivityIndicator/></View>;
   }
 
- const constestInfo = getTodaysGroupContest(group, groupContests);
+ const contestInfo = getTodaysGroupContest(group, groupContests);
  return (
    <CardContainer>
      <View style={styles.row}>
        <GroupPhotoName group={group} />
        <View style={styles.promptAndMembers}>
-         <Text style={styles.prompt}>{constestInfo.prompt}</Text>
+         <Text style={styles.prompt}>{contestInfo ? contestInfo.prompt : ""}</Text>
          <MemberListBubbles group={group} groupContests={groupContests} />
        </View>
      </View>
