@@ -8,7 +8,6 @@ import theme from '../../theme';
 import { storage, db, getGroupData, getGroupContestData } from "../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, getDoc, addDoc, updateDoc, collection } from "firebase/firestore";
-import * as Linking from 'expo-linking';
 import { getTodaysDateStamp } from "../../Functions/utils";
 
 
