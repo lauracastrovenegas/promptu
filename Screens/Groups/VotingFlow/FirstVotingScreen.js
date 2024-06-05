@@ -9,13 +9,13 @@ import { useAppContext } from "../../../AppContext";
 
 const FirstVotingScreen = ({ route, navigation }) => {
   const { state, isLoading } = useAppContext();
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   if (isLoading) {
     return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
   }
 
   const group = route.params.group;
-  const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   const contest = getTodaysGroupContest(group, state.groupsContestData);
   const submissions = contest.submissions.filter(submission => submission.userId !== state.userData.uid);

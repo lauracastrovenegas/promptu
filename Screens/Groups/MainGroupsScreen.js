@@ -9,26 +9,32 @@ import { getGroupContestData, getGroupData } from "../../config/firebase";
 /* This component is the Main Groups Screen of the app opened by default */
 const MainGroupsScreen = ({ navigation }) => {
   const { state, isLoading, dispatch } = useAppContext();
-  if (isLoading) {
-    return <View style={styles.screen}><ActivityIndicator size="large" /></View>;
-  }
-
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    const groupData = await getGroupData(state.userData.uid);
-    const groupIds = groupData.map((group) => { return group.id; });
-    const groupContestData = await getGroupContestData(groupIds);
-    dispatch({ type: 'SET_GROUPS_DATA', payload: groupData });
-    dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: groupContestData });
+    try {
+      console.log("Refreshing group screen...");
+      const groupData = await getGroupData(state.userData.uid);
+      const groupIds = groupData.map((group) => { return group.id; });
+      const groupContestData = await getGroupContestData(groupIds);
+      dispatch({ type: 'SET_GROUPS_DATA', payload: groupData });
+      dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: groupContestData });
 
-    setRefreshing(false);
+      setRefreshing(false);
+    } catch (error) {
+      console.error("Error refreshing group screen: ", error);
+      setRefreshing(false);
+    }
   }, []);
 
   useEffect(() => {
     // this forces a rerender of the screen when there is an update to the groups data
   }, [state.groupsData]);
+
+  if (isLoading) {
+    return <View style={styles.screen}><ActivityIndicator size="large" /></View>;
+  }
 
   return (
     <ScrollView

@@ -10,10 +10,6 @@ import { getTodaysGroupContest, hasUserSubmittedToGroup,  } from '../../Function
 const PhotoSubmissionScreen = ({ route, navigation }) => {
   const { state, isLoading, dispatch, addSubmissionToGroup } = useAppContext();
 
-  if (isLoading) {
-    return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
-  }
-
   const [caption, onChangeCaption] = useState('');
   const [selectedGroup, setSelectedGroup] = useState(route.params.group ?? null);
   const [contestInfo, setContestInfo] = useState(null);
@@ -62,6 +58,10 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
 
     // go to the camera screen
     navigation.navigate('Main Camera Screen');
+  }
+
+  if (isLoading) {
+    return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
   }
 
   return (
