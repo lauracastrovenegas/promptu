@@ -7,15 +7,14 @@ import { getTodaysGroupContest } from "../../Functions/utils";
 import { getGroupContestData, getGroupData } from "../../config/firebase";
 
 /* This component is the Main Groups Screen of the app opened by default */
-const MainGroupsScreen = ({ navigation }) => {
+const MainGroupsScreen = ({ route, navigation }) => {
   const { state, isLoading, dispatch } = useAppContext();
   const [refreshing, setRefreshing] = useState(false);
-  const [userData, setUserData] = useState(state.userData); // this is needed to access the user data in the onRefresh function
 
-  const onRefresh = useCallback(async () => {
+  const onRefresh = async (userId) => {
     setRefreshing(true);
     try {
-      const groupData = await getGroupData(userData.uid);
+      const groupData = await getGroupData(userId);
       const groupIds = groupData.map((group) => { return group.id; });
       const groupContestData = await getGroupContestData(groupIds);
       dispatch({ type: 'SET_GROUPS_DATA', payload: groupData });
@@ -26,13 +25,19 @@ const MainGroupsScreen = ({ navigation }) => {
       console.error("Error refreshing group screen: ", error);
       setRefreshing(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     // this forces a rerender of the screen when there is an update to the groups data
   }, [state.groupsData]);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (route.params?.shouldRefresh) {
+      onRefresh(state.userData.uid);
+    }
+  }, [route.params]);
+
+  if (isLoading || !state.userData) {
     return <View style={styles.screen}><ActivityIndicator size="large" /></View>;
   }
 
@@ -40,7 +45,7 @@ const MainGroupsScreen = ({ navigation }) => {
     <ScrollView
       style={{ backgroundColor: theme.colors.white }}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(state.userData.uid)} />
       }>
       {!isLoading && <View style={styles.screen}>
         {state.groupsData.length === 0 && <Text style={styles.noGroups}>Create or join a group to get started!</Text>}
