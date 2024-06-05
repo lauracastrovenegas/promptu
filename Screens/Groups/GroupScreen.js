@@ -4,7 +4,7 @@ import theme from "../../theme";
 import MemberListBubbles from "../../Components/MemberListBubbles";
 import CardContainer from "../../Components/CardContainer";
 import Button from "../../Components/Button";
-import { hasUserSubmittedToGroup, getTodaysGroupContest } from "../../Functions/utils";
+import { getCurrentTimePDT } from "../../Functions/utils";
 import { useAppContext } from "../../AppContext";
 import Countdown from "../../Components/Countdown";
 import CommentSection from "../../Components/CommentSection";
@@ -14,7 +14,6 @@ import GroupLink from "../../Components/GroupLink";
 /* This component is the Individual Group Screen  */
 const GroupScreen = ({ route, navigation }) => {
   const { state } = useAppContext();
-  const [votingStage, setVotingStage] = useState(0);
 
   const group = route.params.group;
 
@@ -32,35 +31,26 @@ const GroupScreen = ({ route, navigation }) => {
   const contestInfo = route.params.contestInfo;
   const hasUserSubmitted = contestInfo.submissions.map(submission => submission.userId).includes(state.userData.uid);
 
-  useEffect(() => {
-    // after five seconds, move to the next stage
-    setTimeout(() => {
-      setVotingStage(1);
-    }, 5000);
-
-    // after ten seconds, move to the next stage
-    setTimeout(() => {
-      setVotingStage(2);
-    }, 10000);
-  }, []);
-
   function getBox() {
-    if (contestInfo.hasVotingOccurred) {
-      return <ResultsBox group={group} contestInfo={contestInfo} />;
-    }
+    const time = getCurrentTimePDT();
 
-    switch (votingStage) {
-      case 0:
-        return <DailyPromptInfoBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
-      case 1:
-        const navTo = contestInfo.submissions.length >= 3 ? (contestInfo.submissions.length == 3 ? 'Second Voting Screen' : 'First Voting Screen') : 'Choose Prompt Screen';
-        return <VotingBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate(navTo, { group })} />;
-      case 2:
-        if (contestInfo.submissions.length < 3) {
-          return <VotingBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Choose Prompt Screen', { group })} />;
-        }
+    if (time > 18 * 60) {  // 6PM
+      // voting has occured
+      if (contestInfo.hasVotingOccurred) {
         return <ResultsBox group={group} contestInfo={contestInfo} />;
+      }
+
+      // not enough users submitted
+      if (contestInfo.submissions.length < 3) {
+        return <VotingBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Choose Prompt Screen', { group })} />;
+      }
+
+      // voting screen
+      const navTo = contestInfo.submissions.length == 3 ? 'Second Voting Screen' : 'First Voting Screen';
+      return <VotingBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate(navTo, { group })} />;
     }
+    
+    return <DailyPromptInfoBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
   }
 
   return (

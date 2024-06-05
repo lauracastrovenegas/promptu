@@ -44,6 +44,7 @@ const ChoosePromptScreen = ({ route, navigation }) => {
           prompt: [customPrompt.length > 0 ? customPrompt : selectedPrompt], // Initialize prompt as an array
           submissions: [],
           votes: [],
+          hasVoted: [],
         });
       } else {
         // Contest exists, update the prompt array

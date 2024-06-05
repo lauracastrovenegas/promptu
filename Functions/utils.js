@@ -137,3 +137,14 @@ export function createConfirmationAlert(title, message, confirmOption) {
 		], { cancelable: false });
 	});
 };
+
+export function getCurrentTimePDT() {
+  const offset = -420;  // offset for PDT
+
+  const d = new Date();
+  const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+  const nd = new Date(utc + (60000 * offset));
+  const time_since_start_day = nd.getHours() * 60 + nd.getMinutes();
+
+  return time_since_start_day;
+};
