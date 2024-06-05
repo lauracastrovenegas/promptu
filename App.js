@@ -11,6 +11,7 @@ import CameraTab from "./Screens/CameraTab";
 import ProfileTab from "./Screens/ProfileTab";
 import theme from "./theme";
 import * as SplashScreen from "expo-splash-screen";
+import InitialLoadingScreen from "./Screens/Welcome/InitialLoadingScreen";
 import { useFonts, Inter_400Regular, Inter_700Bold, Inter_900Black, PatrickHandSC_400Regular, Poppins_500Medium, Poppins_400Regular } from '@expo-google-fonts/dev';
 import useSplashScreen from "./Functions/Hooks";
 import { AppProvider } from "./AppContext";
@@ -101,10 +102,10 @@ function App() {
   /* This can be expanded to more than just fonts in the future,
      could also check for api results, and other stuff. Just stick
      the bool in the array */
-  const isReady = useSplashScreen([fontsLoaded, authReady]);
+  const isReady = useSplashScreen([fontsLoaded, authReady, user !== null]);
 
   if (!isReady) {
-    return null;
+    return <InitialLoadingScreen />;
   }
 
   if (user) {
