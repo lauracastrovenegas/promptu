@@ -1,11 +1,21 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import theme from '../theme';
 
 const Button = ({ title, onPress, disabled, small, style }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  function onButtonPress() {
+    setIsLoading(true);
+    onPress();
+    setIsLoading(false);
+  }
+
   return (
-    <TouchableOpacity style={[small ? styles.small : styles.normal].concat(disabled ? [styles.buttonDisabled] : [styles.button]).concat([style])} onPress={onPress} disabled={disabled}>
-      <Text style={small ? styles.buttonTextSmall : styles.buttonText}>{title}</Text>
+    <TouchableOpacity style={[small ? styles.small : styles.normal].concat(disabled ? [styles.buttonDisabled] : [styles.button]).concat([style])} onPress={onButtonPress} disabled={disabled}>
+      {isLoading ? 
+        <ActivityIndicator size="small" color={theme.colors.white} /> 
+        : <Text style={small ? styles.buttonTextSmall : styles.buttonText}>{title}</Text>}
     </TouchableOpacity>
   );
 };

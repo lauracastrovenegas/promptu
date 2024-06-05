@@ -23,12 +23,11 @@ const ShareGroupScreen = ({ route }) => {
     }
   }, []);
 
-  const onRefresh = useCallback(async (groupId) => {
+  const onRefresh = async (groupId, userId) => {
     console.log("Refreshing share group screen...");
-    console.log(groupId);
     try {
       setRefreshing(true);
-      const groupData = await getGroupData(state.userData.uid);
+      const groupData = await getGroupData(userId);
       const updatedGroup = groupData.find(groupObject => groupId === groupObject.id);
       setGroup(updatedGroup);
       setInviteCode(updatedGroup.id);
@@ -39,13 +38,13 @@ const ShareGroupScreen = ({ route }) => {
       console.error("Error refreshing group screen: ", error);
       setRefreshing(false);
     }
-  }, []);
+  };
 
   return (
     <ScrollView
       style={{ backgroundColor: theme.colors.white }}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(group.id)} />
+        <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(group.id, state.userData.uid)} />
       }>
       {isLoading || !group ? <Text>Loading...</Text>
         : <View style={styles.screen}>
