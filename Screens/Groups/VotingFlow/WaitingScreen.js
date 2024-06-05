@@ -16,24 +16,44 @@ const WaitingScreen = ({ route, navigation }) => {
     const groupContest = getTodaysGroupContest(group, groupContestData);
     const votes = groupContest.votes;
 
-    // easy mode calculation
-    const winnerId = votes.sort((a, b) => votes.filter(v => v===a).length - votes.filter(v => v===b).length).pop();
+    // Create a map to count the votes for each member
+    const voteCount = {};
+    votes.forEach(vote => {
+      if (voteCount[vote]) {
+        voteCount[vote]++;
+      } else {
+        voteCount[vote] = 1;
+      }
+    });
 
-    const winner = group.members.filter(member => member.uid === winnerId)[0];
-    return winner;
+    // Find the maximum number of votes
+    const maxVotes = Math.max(...Object.values(voteCount));
+
+    // Collect all members who received the maximum number of votes
+    const winners = group.members.filter(member => voteCount[member.uid] === maxVotes);
+    console.log("Winners in waiting!: ", winners)
+    return winners;
+    // easy mode calculation
+    // const winnerId = votes.sort((a, b) => votes.filter(v => v===a).length - votes.filter(v => v===b).length).pop();
+
+    // const winner = group.members.filter(member => member.uid === winnerId)[0];
+    // return winner;
   }
 
   function reloadData() {
     const fetchData = async () => {
       const groupContestData = await fetchGroupContestData([group.id]);
-      dispatch({ type: 'UPDATE_GROUP_CONTEST_DATA', payload: {id: group.id, data: groupContestData[0] }});
+      console.log('bedore updates: ', groupContestData)
+
+      dispatch({ type: 'UPDATE_GROUP_CONTEST_DATA', payload: { id: group.id, data: groupContestData[0] } });
 
       const needNumVotes = groupContestData[0].submissions.length === 3 ? (groupContestData[0].submissions.length) : (groupContestData[0].submissions.length * 3);
       if (groupContestData[0].votes.length === needNumVotes) {
         const winner = getWinner(groupContestData);
+        console.log("WINNER(S): ", winner)
         // set voting to have occured & update winner
         try {
-          await updateDoc(doc(db, 'group_contests', group.id), {
+          await updateDoc(doc(db, 'group_contests', groupContestData[0].id), {
             hasVotingOccurred: true,
             winner: winner
           });
@@ -41,8 +61,8 @@ const WaitingScreen = ({ route, navigation }) => {
           Alert.alert("Error updating group contest doc to indicate voting has occured.", error.message);
         }
 
-        dispatch({ type: 'UPDATE_GROUP_CONTEST_DATA', payload: {id: group.id, data: {...groupContestData[0], hasVotingOccurred: true, winner: winner, hasVotingOccurred: true }}});
-
+        dispatch({ type: 'UPDATE_GROUP_CONTEST_DATA', payload: { id: group.id, data: { ...groupContestData[0], hasVotingOccurred: true, winner: winner, hasVotingOccurred: true } } });
+        
         navigation.navigate('Winner Announcement Screen', { group });
       }
     };

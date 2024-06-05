@@ -73,23 +73,23 @@ const CreateGroupScreen = ({ navigation }) => {
 
       const dateStamp = getTodaysDateStamp();
 
-      try {
-        // create group contest for the first day
-        contestDocRef = await addDoc(collection(db, "group_contests"), {   // ID for group contest is the same as for the group
-          groupId: groupId,
-          date: dateStamp,  // current date
-          winner: null,
-          hasVotingOccurred: false,
-          prompt: "This is the prompt of the day",  // TODO fetch from prompt bank
-          submissions: [],
-          votes: [],
-          hasVoted: [],
-        });
-      } catch (error) {
-        Alert.alert("Error Creating Group Contest", error.message);
-        setIsButtonLoading(false);
-        return;
-      }
+     try {
+       // create group contest for the first day
+       contestDocRef = await addDoc(collection(db, "group_contests"), {   // ID for group contest is the same as for the group
+         groupId: groupId,
+         date: dateStamp,  // current date
+         winner: [],
+         hasVotingOccurred: false,
+         prompt: ["This is the prompt of the day"],  // TODO fetch from prompt bank
+         submissions: [],
+         votes: [],
+         hasVoted: [],
+       });
+     } catch (error) {
+       Alert.alert("Error Creating Group Contest", error.message);
+       setIsButtonLoading(false);
+       return;
+     }
 
       const groupDataDoc = await getDoc(groupDocRef);
       const contestDataDoc = await getDoc(contestDocRef);

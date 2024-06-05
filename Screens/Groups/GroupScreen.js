@@ -123,7 +123,12 @@ const ResultsBox = ({ contestInfo }) => {
             <Text style={styles.prompt}>{contestInfo.winner.displayName}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <PolaroidPhoto small image={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].photo} caption={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].caption} />
+            {contestInfo.winner.uid
+              ?
+              <PolaroidPhoto small image={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].photo} caption={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].caption} />
+              :
+              null
+            }
           </View>
         </View>}
     </CardContainer>

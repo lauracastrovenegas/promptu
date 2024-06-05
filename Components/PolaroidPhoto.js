@@ -1,23 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import theme from '../theme';
-import submission1 from "../assets/fakeSubmissionPhotos/submission1.jpeg";
 
 const PolaroidPhoto = ({ image, caption, small, selectedValue }) => {
-
   return (
-    <View style={[styles.container].concat(small ? styles.containerSmall : {}).concat(selectedValue === 1 || selectedValue === 2 ? styles.selected : {})}>
+    <View style={[styles.container, small && styles.containerSmall, (selectedValue === 1 || selectedValue === 2) && styles.selected]}>
       <Image 
-        source={image ? {uri: image} : submission1} 
-        style={[styles.image].concat(small ? styles.imageSmall : {})} />
-      <Text style={[styles.caption].concat(small ? styles.captionSmall : {})}>{caption ?? "This is a caption for this submission"}</Text>
+        source={image ? {uri: image} : require("../assets/fakeSubmissionPhotos/submission1.jpeg")} 
+        style={[styles.image, small && styles.imageSmall]} />
+      <Text style={[styles.caption, small && styles.captionSmall]}>{caption ?? "This is a caption for this submission"}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
     padding: 20,
     backgroundColor: theme.colors.white,
     shadowColor: theme.colors.black,
@@ -29,19 +26,19 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     marginBottom: 20,
-    width: '100%',
+    width: '100%', // Ensuring full width
   },
   containerSmall: {
     padding: 10,
     marginBottom: 0,
   },
   image: {
-    width: '100%',
-    height: 350,
+    width: '80%', 
+    aspectRatio: 1, // Maintain aspect ratio
     marginBottom: 20,
   },
   imageSmall: {
-    height: 150,
+    aspectRatio: 1, // Maintain aspect ratio
     marginBottom: 10,
   },
   caption: {
