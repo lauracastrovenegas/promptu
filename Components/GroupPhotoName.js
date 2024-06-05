@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, StyleSheet, View, Image } from 'react-native';
 import { FontAwesome6 } from '@expo/vector-icons';
 import theme from '../theme';
+import defaultGroupPhoto from "../assets/default_group_image.png";
 
 const GroupPhotoName = ({ group }) => {
   return (
@@ -16,7 +17,7 @@ const GroupPhoto = ({ groupPhoto }) => {
   return (
     <View style={styles.centerImages}>
       {groupPhoto !== "null" ?
-        <Image style={styles.groupPhotoIcon} source={{ uri: groupPhoto }} />
+        <Image style={styles.groupPhotoIcon} source={groupPhoto !== null ? { uri: groupPhoto } : defaultGroupPhoto} />
         :
         <View style={styles.groupPhotoIcon}>
           <FontAwesome6 name="users" size={30} color={theme.colors.white} />

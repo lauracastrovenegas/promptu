@@ -11,6 +11,7 @@ const theme = {
       lighterPurple: "#F7F5FE",
       purple: "#7E60FD",
       green: "#00C48C",
+      red: "#FF5C6A",
     },
     fonts: {
       patrickHand: "PatrickHandSC_400Regular"
