@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, StyleSheet, View, Image } from "react-native";
+import { ScrollView, Text, StyleSheet, View, Image, FlatList } from "react-native";
 import theme from "../../theme";
 import { useAppContext } from "../../AppContext";
 import GroupPhotoName from "../../Components/GroupPhotoName";
@@ -11,7 +11,7 @@ const MainProfileScreen = () => {
   const user = state.userData;
 
   return (
-    <ScrollView style={{ backgroundColor: theme.colors.white }}>
+    <View style={{ backgroundColor: theme.colors.white, flex: 1 }}>
       {isLoading ? <Text>Loading...</Text> :
         <View style={styles.screen}>
           {user ? (
@@ -20,21 +20,26 @@ const MainProfileScreen = () => {
                 <Image source={user.photoURL ? { uri: user.photoURL } : require('../../assets/default_profile_picture.png')} style={styles.profilePic} />
                 <Text style={styles.userName}>{user.displayName}</Text>
               </View>
-              <View style={{ display: 'flex' }}>
+              <View>
                 <Text style={styles.sectionTitle}>Your Groups</Text>
-                <View style={styles.groups}>
-                {state.groupsData.length === 0 && <Text style={styles.noGroups}>You are not a part of any groups yet. Create or join a group to get started!</Text>}
-                  {state.groupsData.length > 0 && state.groupsData.map(group => (
-                    <GroupPhotoName key={group.id} group={group} />
-                  ))}
-                </View>
+                <FlatList
+                  data={state.groupsData}
+                  keyExtractor={item => item.id}
+                  numColumns={3}
+                  renderItem={({ item }) => (
+                    <View style={{ marginBottom: 20 }}>
+                      <GroupPhotoName group={item} />
+                    </View>
+                  )}
+                  style={styles.groups}
+                />
               </View>
             </View>
           ) : (
             <Text>No user data available</Text>
           )}
         </View>}
-    </ScrollView>
+    </View>
   )
 };
 
@@ -66,11 +71,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   groups: {
-    flexDirection: 'row',
-    gap: 20,
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: '100%',
   },
   noGroups: {
     fontSize: 16,

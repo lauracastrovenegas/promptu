@@ -10,13 +10,13 @@ import useAuth from "../hooks/useAuth";
 const Stack = createNativeStackNavigator();
 
 /* This component defines the possible screens that can be accessed from the Profile Tab */
-const ProfileTab = ({navigation}) => {
-    return (
-      <Stack.Navigator initialRouteName="Main Profile Screen">
-        <Stack.Screen 
-          name="Main Profile Screen" 
-          component={MainProfileScreen} 
-          options={() => ({
+const ProfileTab = ({ navigation }) => {
+  return (
+    <Stack.Navigator initialRouteName="Main Profile Screen">
+      <Stack.Screen
+        name="Main Profile Screen"
+        component={MainProfileScreen}
+        options={() => ({
           headerTitle: () => (
             <Text style={styles.title}>Profile</Text>
           ),
@@ -33,18 +33,28 @@ const ProfileTab = ({navigation}) => {
           ),
           headerShadowVisible: false,
         })} />
-        <Stack.Screen 
+      <Stack.Screen
         name="Profile Settings"
         component={ProfileSettings}
         options={() => ({
           headerTitle: () => (
             <Text style={styles.title}>Settings</Text>
           ),
-        
-        })} 
-        />
-      </Stack.Navigator>
-    )
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon} />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+    </Stack.Navigator>
+  )
 }
 
 
