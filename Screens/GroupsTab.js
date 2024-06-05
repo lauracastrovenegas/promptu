@@ -85,7 +85,7 @@ const GroupsTab = ({ route, navigation }) => {
       <Stack.Screen
         name="Group Settings"
         component={GroupSettings}
-        options={() => ({
+        options={({ navigation }) => ({
           headerTitle: () => (
             <Text style={styles.title}>Settings</Text>
           ),
