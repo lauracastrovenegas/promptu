@@ -5,7 +5,7 @@ import Button from '../../../Components/Button';
 import CardContainer from '../../../Components/CardContainer';
 import theme from '../../../theme';
 import { db } from "../../../config/firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, getDocs, query, updateDoc, where, doc } from "firebase/firestore";
 import { getTomorrowsDateStamp } from "../../../Functions/utils";
 
 const prompts = [
@@ -29,24 +29,39 @@ const ChoosePromptScreen = ({ route, navigation }) => {
   }
 
   async function onSubmit() {
-    // create a new group contest with the selected prompt
     try {
       const dateStamp = getTomorrowsDateStamp();
-      await addDoc(collection(db, "group_contests"), {   // ID for group contest is the same as for the group
-        groupId: group.id,
-        date: dateStamp,  // tomorrows date
-        winner: null,
-        hasVotingOccurred: false,
-        prompt: customPrompt.length > 0 ? customPrompt : selectedPrompt,  // TODO fetch from prompt bank
-        submissions: [],
-        votes: [],
-      });
+      const groupContestRef = collection(db, "group_contests");
+      const querySnapshot = await getDocs(query(groupContestRef, where("groupId", "==", group.id), where("date", "==", dateStamp)));
+  
+      if (querySnapshot.empty) {
+        // No contest exists for tomorrow, create a new one
+        await addDoc(groupContestRef, {
+          groupId: group.id,
+          date: dateStamp,
+          winner: [], // Update with actual winners if necessary
+          hasVotingOccurred: false,
+          prompt: [customPrompt.length > 0 ? customPrompt : selectedPrompt], // Initialize prompt as an array
+          submissions: [],
+          votes: [],
+        });
+      } else {
+        // Contest exists, update the prompt array
+        const contestDoc = querySnapshot.docs[0];
+        const newPrompt = customPrompt.length > 0 ? customPrompt : selectedPrompt;
+  
+        await updateDoc(doc(db, "group_contests", contestDoc.id), {
+          prompt: arrayUnion(newPrompt),
+        });
+        console.log('choose p: ', contestDoc.data().prompt)
+      }
     } catch (error) {
-      Alert.alert("Error Creating Group Contest", error.message);
+      Alert.alert("Error Creating or Updating Group Contest", error.message);
     }
-
+  
     navigation.pop(5); // Pop back to the group screen
   }
+  
 
   useEffect(() => {
     // TODO fetch from prompt bank

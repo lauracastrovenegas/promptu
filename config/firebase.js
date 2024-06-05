@@ -129,9 +129,9 @@ export const getGroupContestData = async (groupIds) => {
           const contestDocRef = await addDoc(collection(db, "group_contests"), {
             groupId: groupId,
             date: dateStamp,
-            winner: null,
+            winner: [],
             hasVotingOccurred: false,
-            prompt: "This is the prompt of the day",  // TODO fetch from prompt bank
+            prompt:[ "This is the prompt of the day"],  // TODO fetch from prompt bank
             submissions: [],
             votes: [],
             hasVoted: [],

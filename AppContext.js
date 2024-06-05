@@ -98,27 +98,29 @@ export const AppProvider = ({ children, currentUser }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-
+  
       if (currentUser) {
         const userData = await fetchUserData(currentUser.uid);
         const groupData = await fetchGroupData(currentUser.uid);
-        const groupIds = groupData.map((group) => { return group.id; });
+        const groupIds = groupData.map((group) => group.id);
         const groupContestData = await fetchGroupContestData(groupIds);
+  
+        console.log("Dispatching user data, group data, and group contest data"); // Add this line to debug
         dispatch({ type: 'SET_USER_DATA', payload: userData });
         dispatch({ type: 'SET_GROUPS_DATA', payload: groupData });
         dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: groupContestData });
-
+  
         setIsLoading(false);
       } else {
-        // No user logged in, clear user data from state
         dispatch({ type: 'SET_USER_DATA', payload: null });
         dispatch({ type: 'SET_GROUPS_DATA', payload: [] });
         dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: [] });
       }
     };
-
+  
     fetchData();
   }, [currentUser]);
+  
 
   const fetchUserData = async (uid) => {
     try {
@@ -145,12 +147,14 @@ export const AppProvider = ({ children, currentUser }) => {
   const fetchGroupContestData = async (groupIds) => {
     try {
       const groupContestData = await getGroupContestData(groupIds);
+      console.log("Fetched group contest data: ", groupContestData); // Add this line to debug
       return groupContestData;
     } catch (err) {
       console.log("Error fetching group contest data: ", err.message);
       return null;
     }
-  }
+  };
+  
 
   const addSubmissionToGroup = async (groupContestId, photo, caption, uid, hasSubmitted) => {
     const response = await fetch(photo);
