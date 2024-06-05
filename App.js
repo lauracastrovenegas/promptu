@@ -102,7 +102,7 @@ function App() {
   /* This can be expanded to more than just fonts in the future,
      could also check for api results, and other stuff. Just stick
      the bool in the array */
-  const isReady = useSplashScreen([fontsLoaded, authReady, user !== null]);
+  const isReady = useSplashScreen([fontsLoaded, authReady]);
 
   if (!isReady) {
     return <InitialLoadingScreen />;
