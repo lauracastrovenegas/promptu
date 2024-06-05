@@ -1,8 +1,8 @@
 import React from 'react';
-import Button from '../Components/Button';
-import { useAppContext } from '../AppContext';
+import Button from '../../Components/Button';
+import { useAppContext } from '../../AppContext';
 import { StyleSheet, View } from 'react-native';
-import theme from '../theme';
+import theme from '../../theme';
 
 export default function ProfileSettings() {
     const { handleLogout } = useAppContext();

@@ -14,7 +14,7 @@ import ChoosePromptScreen from './Groups/VotingFlow/ChoosePromptScreen';
 import FirstVotingScreen from './Groups/VotingFlow/FirstVotingScreen';
 import SecondVotingScreen from './Groups/VotingFlow/SecondVotingScreen';
 import WaitingScreen from './Groups/VotingFlow/WaitingScreen';
-import * as Linking from 'expo-linking';
+import GroupSettings from './Groups/GroupSettings';
 
 const Stack = createNativeStackNavigator();
 
@@ -57,6 +57,37 @@ const GroupsTab = ({ route, navigation }) => {
               group={route.params.group}
               onPress={() => navigation.navigate('Share Group Page', { group: route.params.group, backTo: 'Group Screen'})}
             />
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+            >
+              <FontAwesome6
+                name="chevron-left"
+                size={20}
+                color={theme.colors.black}
+                style={styles.icon} />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Group Settings", { group: route.params.group })}
+            >
+              <FontAwesome6
+                name="gear"
+                size={20}
+                color={theme.colors.black}
+              />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="Group Settings"
+        component={GroupSettings}
+        options={() => ({
+          headerTitle: () => (
+            <Text style={styles.title}>Settings</Text>
           ),
           headerLeft: () => (
             <TouchableOpacity

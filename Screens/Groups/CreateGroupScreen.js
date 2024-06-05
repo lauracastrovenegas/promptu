@@ -32,7 +32,7 @@ const CreateGroupScreen = ({ navigation }) => {
        // create group
        groupDocRef = await addDoc(collection(db, "groups"), {  // generates ID for you
          groupName: group,
-         ownderId: state.userData.uid,
+         ownerId: state.userData.uid,
          votingTime: 18,  // default to 6 PM
          members: [state.userData.uid],
          memberRequests: [],

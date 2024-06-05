@@ -2,9 +2,10 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import theme from '../theme';
 
-const Button = ({ title, onPress, disabled, small }) => {
+const Button = ({ title, onPress, disabled, small, style }) => {
+  console.log(style);
   return (
-    <TouchableOpacity style={[small ? styles.small : styles.normal].concat(disabled ? [styles.buttonDisabled] : [styles.button])} onPress={onPress} disabled={disabled}>
+    <TouchableOpacity style={[small ? styles.small : styles.normal].concat(disabled ? [styles.buttonDisabled] : [styles.button]).concat([style])} onPress={onPress} disabled={disabled}>
       <Text style={small ? styles.buttonTextSmall : styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );
