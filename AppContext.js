@@ -161,9 +161,13 @@ export const AppProvider = ({ children, currentUser }) => {
     const blob = await response.blob();
     const storageRef = ref(storage, `submission_pictures/${groupContestId}_${uid}`);
 
-    if (hasSubmitted) {
+    try {
+      let photoURL = await getDownloadURL(storageRef);
       await deleteObject(storageRef);
+    } catch (error) {
+      // photo not in storage
     }
+
     await uploadBytes(storageRef, blob);
     let photoURL = await getDownloadURL(storageRef);
 

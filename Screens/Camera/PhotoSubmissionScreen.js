@@ -37,7 +37,7 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
       currentContestInfo.submissions = currentContestInfo.submissions.filter(submission => submission.userId !== state.userData.uid);
     }
 
-    addSubmissionToGroup(currentContestInfo.id, route.params.photo.uri, caption, state.userData.uid, userHasSubmittedAlready);
+    await addSubmissionToGroup(currentContestInfo.id, route.params.photo.uri, caption, state.userData.uid, userHasSubmittedAlready);
     alert(`Photo submitted to ${selectedGroup.groupName}!`);
 
     // go to the camera screen
