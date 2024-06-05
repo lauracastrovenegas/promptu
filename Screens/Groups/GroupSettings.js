@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
 import Button from '../../Components/Button';
 import { useAppContext } from '../../AppContext';
-import { StyleSheet, View, Alert } from 'react-native';
+import { StyleSheet, View, Alert, ActivityIndicator } from 'react-native';
 import theme from '../../theme';
 import { createConfirmationAlert, getAllContestsForGroup, getGroupComments } from '../../Functions/utils';
 import { db } from '../../config/firebase';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { get, set } from 'firebase/database';
 
-export default function GroupSettings({ route, navigator }) {
+export default function GroupSettings({ route, navigation }) {
 	const { state } = useAppContext();
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const group = route.params.group;
 	const user = state.userData;
-
 
 	async function handleLeaveGroup() {
 		const shouldLeaveGroup = await createConfirmationAlert(`Leave ${group.groupName}?`, 'Are you sure you want to leave this group?', 'Yes, leave it');
@@ -58,7 +57,7 @@ export default function GroupSettings({ route, navigator }) {
 			} catch (error) {
 				console.error("Error deleting group contests: ", error);
 				setIsLoading(false);
-				navigator.navigate("Groups Screen");
+				navigation.navigate("Groups Screen");
 			}
 
 			try {
@@ -70,16 +69,20 @@ export default function GroupSettings({ route, navigator }) {
 			} catch (error) {
 				console.error("Error deleting group comments: ", error);
 				setIsLoading(false);
-				navigator.navigate("Groups Screen");
+				navigation.navigate("Groups Screen");
 			}
 
 			setIsLoading(false);
 			Alert.alert("Group Deleted", "The group has been successfully deleted.");
-			navigator.navigate("Groups Screen");
+			navigation.navigate("Groups Screen", { shouldRefresh: true });
 		} else {
 			console.log("Cancel Delete Group");
 		}
 	}
+
+	if (isLoading) {
+    return <View style={styles.screen}><ActivityIndicator size="large" /></View>;
+  }
 
 	return (
 		<View style={styles.screen}>
