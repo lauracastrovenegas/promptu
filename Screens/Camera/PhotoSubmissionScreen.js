@@ -5,7 +5,7 @@ import Button from '../../Components/Button';
 import DropdownMenu from '../../Components/DropdownMenu';
 import theme from '../../theme';
 import { useAppContext } from '../../AppContext';
-import { getTodaysGroupContest, hasUserSubmittedToGroup,  } from '../../Functions/utils';
+import { getTodaysGroupContest, hasUserSubmittedToGroup, createConfirmationAlert } from '../../Functions/utils';
 
 const PhotoSubmissionScreen = ({ route, navigation }) => {
   const { state, isLoading, dispatch, addSubmissionToGroup } = useAppContext();
@@ -20,22 +20,6 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
     }
   }, [selectedGroup]);
 
-  function createReplaceSubmissionConfirmationAlert() {
-    return new Promise((resolve) => {
-      Alert.alert('Confirm Submission', 'You have already submitted a photo for this group. Would you like to replace it?', [
-        {
-          text: 'Yes, replace it',
-          onPress: () => { resolve(true) },
-        },
-        {
-          text: 'Cancel',
-          onPress: () => { resolve(false) },
-          style: 'cancel',
-        },
-      ], { cancelable: false });
-    });
-  };
-
   async function submitPhoto() {
     const currentContestInfo = contestInfo;
 
@@ -43,7 +27,7 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
     const userHasSubmittedAlready = hasUserSubmittedToGroup(selectedGroup, state.userData, state.groupsContestData);
 
     if (userHasSubmittedAlready) {
-      const replaceSubmission = await createReplaceSubmissionConfirmationAlert();
+      const replaceSubmission = await createConfirmationAlert('Confirm Submission', 'You have already submitted a photo for this group. Would you like to replace it?', 'Yes, replace it');
 
       if (!replaceSubmission) {
         return;

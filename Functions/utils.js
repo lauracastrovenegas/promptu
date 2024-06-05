@@ -1,6 +1,6 @@
-import { groupComments } from '../data/fakeData';
 import { db } from "../config/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
+import { Alert } from 'react-native';
 
 export const hasUserSubmittedToGroup = (group, user, groupsContests) => {
   const contestInfo = getTodaysGroupContest(group, groupsContests);
@@ -75,6 +75,18 @@ export const getGroupComments = async (groupId) => {
   return comments;
 }
 
+export const getAllContestsForGroup = async (groupId) => {
+  const q = query(collection(db, "group_contests"), where("groupId", "==", groupId));
+  const querySnapshot = await getDocs(q);
+  const contests = [];
+
+  querySnapshot.forEach((doc) => {
+    contests.push({ ...doc.data(), id: doc.id });
+  });
+  
+  return contests;
+}
+
 export const getTodaysDateStamp = () => {
   const today = new Date();
 
@@ -109,3 +121,19 @@ export const getTodaysGroupContest = (group, groupContests) => {
   const dateStamp = getTodaysDateStamp();
   return groupContests.find(contest => contest.groupId === group.id && contest.date === dateStamp);
 }
+
+export function createConfirmationAlert(title, message, confirmOption) {
+	return new Promise((resolve) => {
+		Alert.alert(title, message, [
+			{
+				text: confirmOption,
+				onPress: () => { resolve(true) },
+			},
+			{
+				text: 'Cancel',
+				onPress: () => { resolve(false) },
+				style: 'cancel',
+			},
+		], { cancelable: false });
+	});
+};
