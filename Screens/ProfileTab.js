@@ -30,7 +30,8 @@ const ProfileTab = ({navigation}) => {
                 color={theme.colors.black}
               />
             </TouchableOpacity>
-          )
+          ),
+          headerShadowVisible: false,
         })} />
         <Stack.Screen 
         name="Profile Settings"

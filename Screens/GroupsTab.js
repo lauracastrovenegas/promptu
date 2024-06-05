@@ -44,7 +44,8 @@ const GroupsTab = ({ route, navigation }) => {
                 color={theme.colors.black}
               />
             </TouchableOpacity>
-          )
+          ),
+          headerShadowVisible: false,
         })} />
       {/* Group Page is the screen that will be shown when the user clicks on a specific group in the Groups screen. */}
       <Stack.Screen
