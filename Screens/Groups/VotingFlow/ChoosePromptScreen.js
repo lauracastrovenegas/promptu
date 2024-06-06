@@ -8,7 +8,7 @@ import { db, getPromptBank } from "../../../config/firebase";
 import { addDoc, arrayUnion, collection, getDocs, query, updateDoc, where, doc } from "firebase/firestore";
 import { getTomorrowsDateStamp } from "../../../Functions/utils";
 
-const prompts = [
+const defaultPrompts = [
   'This is the first option for a prompt',
   'This is another option for a prompt that is slightly longer',
   'This is a third option for a prompt',
@@ -33,7 +33,7 @@ const ChoosePromptScreen = ({ route, navigation }) => {
       const dateStamp = getTomorrowsDateStamp();
       const groupContestRef = collection(db, "group_contests");
       const querySnapshot = await getDocs(query(groupContestRef, where("groupId", "==", group.id), where("date", "==", dateStamp)));
-  
+
       if (querySnapshot.empty) {
         // No contest exists for tomorrow, create a new one
         await addDoc(groupContestRef, {
@@ -50,7 +50,7 @@ const ChoosePromptScreen = ({ route, navigation }) => {
         // Contest exists, update the prompt array
         const contestDoc = querySnapshot.docs[0];
         const newPrompt = customPrompt.length > 0 ? customPrompt : selectedPrompt;
-  
+
         await updateDoc(doc(db, "group_contests", contestDoc.id), {
           prompt: arrayUnion(newPrompt),
         });
@@ -59,34 +59,39 @@ const ChoosePromptScreen = ({ route, navigation }) => {
     } catch (error) {
       Alert.alert("Error Creating or Updating Group Contest", error.message);
     }
-  
+
     navigation.pop(5); // Pop back to the group screen
   }
-  
+
 
   useEffect(() => {
-    // TODO fetch from prompt bank
-    async function getPrompts () {
-      const promptBank = await getPromptBank();
-      // pick random three prompts from the bank
-      const promptOptions = [];
-      for (let i = 0; i < 3; i++) {
-        const randomIndex = Math.floor(Math.random() * promptBank.length);
-        const selectedPrompt = promptBank[randomIndex];
-        if (promptOptions.includes(selectedPrompt)) {
-          // if the prompt is already in the options, try again
-          i--;
-          continue;
+    // fetch from prompt bank
+    async function getPrompts() {
+      try {
+        const promptBank = await getPromptBank();
+        // pick random three prompts from the bank
+        const promptOptions = [];
+        for (let i = 0; i < 3; i++) {
+          const randomIndex = Math.floor(Math.random() * promptBank.length);
+          const selectedPrompt = promptBank[randomIndex];
+          if (promptOptions.includes(selectedPrompt)) {
+            // if the prompt is already in the options, try again
+            i--;
+            continue;
+          }
+          promptOptions.push(selectedPrompt);
+          promptBank.splice(randomIndex, 1);
         }
-        promptOptions.push(selectedPrompt);
-        promptBank.splice(randomIndex, 1);
-      }
 
-      setPromptBank(promptOptions);
-    }
+        setPromptBank(promptOptions);
+      } catch (error) {
+        console.error("Error fetching prompt bank", error);
+        setPromptBank(defaultPrompts);
+      }
+    };
 
     getPrompts();
-  },[]);
+  }, []);
 
   return (
     <View style={styles.screen}>

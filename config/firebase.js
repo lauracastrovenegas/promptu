@@ -159,14 +159,14 @@ export const getGroupContestData = async (groupIds) => {
 
 export const getPromptBank = async () => {
   try {
-    const promptBankQuery = query(collection(db, "prompt_bank"));
+    const promptBankQuery = query(collection(db, "prompts"));
     const querySnapshot = await getDocs(promptBankQuery);
     const promptBankData = [];
-    querySnapshot.forEach((prompttDoc) => {
-      const groupContest = prompttDoc.data();
-      groupContest.id = prompttDoc.id;
-      promptBankData.push(groupContest);
+    querySnapshot.forEach((promptDoc) => {
+      const prompt = promptDoc.data();
+      promptBankData.push(prompt.text);
     });
+    return promptBankData;
   } catch (error) {
     console.log("Error getting document in getPromptBank: ", error.message);
     // return a default prompt bank if there is an error

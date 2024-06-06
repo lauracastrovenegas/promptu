@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontFamily: 'PatrickHandSC-Regular',
+    lineHeight: 40,
     marginBottom: 20,
     textAlign: 'center',
   },
