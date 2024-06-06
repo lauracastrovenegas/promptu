@@ -34,7 +34,10 @@ const GroupScreen = ({ route, navigation }) => {
   function getBox() {
     const time = getCurrentTimePDT();
 
-    if (time > 18 * 60) {  // 6PM
+    console.log(time);
+    console.log(19 * 60);
+
+    if (time > 19 * 60) {  // 7PM
       // voting has occured
       if (contestInfo.hasVotingOccurred) {
         return <ResultsBox group={group} contestInfo={contestInfo} />;
