@@ -118,27 +118,49 @@ const VotingBox = ({ group, contestInfo, hasUserSubmitted, onSubmit }) => {
 }
 
 const ResultsBox = ({ contestInfo }) => {
+  if (contestInfo.winner.length === 0) {
+    return null;
+  }
+
+  if (contestInfo.winner.length === 1) {
+    return (
+      <CardContainer>
+        <WinnersBox showTitle contestInfo={contestInfo} winner={contestInfo.winner[0]} />
+      </CardContainer>
+    );
+  }
+
   return (
     <CardContainer>
-      {contestInfo.winner &&
-        <View style={styles.cardContentsRow}>
-          <View style={styles.winner}>
-            <Text style={styles.promptTitle}>Today's Winner</Text>
-            <View style={styles.centerImage}>
-              <Image source={contestInfo.winner && contestInfo.winner.photoURL ? { uri: contestInfo.winner.photoURL } : require('../../assets/default_profile_picture.png')} style={styles.image} />
-            </View>
-            <Text style={styles.prompt}>{contestInfo.winner.displayName}</Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            {contestInfo.winner.uid
-              ?
-              <PolaroidPhoto small image={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].photo} caption={contestInfo.submissions.filter(s => s.userId === contestInfo.winner.uid)[0].caption} />
-              :
-              null
-            }
-          </View>
-        </View>}
+      <Text style={styles.promptTitle}>Today's Winners</Text>
+      <ScrollView horizontal style={{}}>
+        {contestInfo.winner.map(winner => (
+          <WinnersBox key={winner.uid} contestInfo={contestInfo} winner={winner} />
+        ))}
+      </ScrollView>
     </CardContainer>
+  );
+}
+
+const WinnersBox = ({ contestInfo, winner, showTitle }) => {
+  return (
+    <View style={styles.cardContentsRow}>
+      <View style={styles.winner}>
+        {showTitle && <Text style={styles.promptTitle}>Today's Winner</Text>}
+        <View style={styles.centerImage}>
+          <Image source={winner && winner.photoURL ? { uri: winner.photoURL } : require('../../assets/default_profile_picture.png')} style={styles.image} />
+        </View>
+        <Text style={styles.prompt}>{winner.displayName}</Text>
+      </View>
+      <View style={{ flex: 1, width: 200, paddingBottom: 5 }}>
+        {winner.uid
+          ?
+          <PolaroidPhoto small image={contestInfo.submissions.filter(s => s.userId === winner.uid)[0].photo} caption={contestInfo.submissions.filter(s => s.userId === winner.uid)[0].caption} />
+          :
+          null
+        }
+      </View>
+    </View>
   );
 }
 
@@ -156,6 +178,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     gap: 20,
+    flexShrink: 1,
+    paddingTop: 20,
+    paddingHorizontal: 20,
   },
   promptTitle: {
     fontWeight: 'bold',

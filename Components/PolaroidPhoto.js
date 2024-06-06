@@ -5,17 +5,18 @@ import theme from '../theme';
 const PolaroidPhoto = ({ image, caption, small, selectedValue }) => {
   return (
     <View style={[styles.container, small && styles.containerSmall, (selectedValue === 1 || selectedValue === 2) && styles.selected]}>
-      <Image 
-        source={image ? {uri: image} : require("../assets/fakeSubmissionPhotos/submission1.jpeg")} 
+      <Image
+        source={image ? { uri: image } : require("../assets/fakeSubmissionPhotos/submission1.jpeg")}
         style={[styles.image, small && styles.imageSmall]} />
-      <Text style={[styles.caption, small && styles.captionSmall]}>{caption ?? "This is a caption for this submission"}</Text>
+      <Text style={[styles.caption, small && styles.captionSmall]}>{caption ?? ""}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingLeft: 20,
+    paddingVertical: 20,
     backgroundColor: theme.colors.white,
     shadowColor: theme.colors.black,
     shadowOffset: {
@@ -29,11 +30,11 @@ const styles = StyleSheet.create({
     width: '100%', // Ensuring full width
   },
   containerSmall: {
-    padding: 10,
+    paddingLeft: 10,
+    paddingVertical: 10,
     marginBottom: 0,
   },
   image: {
-    width: '80%', 
     aspectRatio: 1, // Maintain aspect ratio
     marginBottom: 20,
   },

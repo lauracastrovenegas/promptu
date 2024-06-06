@@ -119,6 +119,8 @@ export const getTodaysGroupContest = (group, groupContests) => {
 
   // get today's date
   const dateStamp = getTodaysDateStamp();
+  console.log("dateStamp", dateStamp);
+  console.log("groupContests", groupContests);
   return groupContests.find(contest => contest.groupId === group.id && contest.date === dateStamp);
 }
 
