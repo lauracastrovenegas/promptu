@@ -7,7 +7,7 @@ const PolaroidPhoto = ({ image, caption, small, selectedValue }) => {
     <View style={[styles.container, small && styles.containerSmall, (selectedValue === 1 || selectedValue === 2) && styles.selected]}>
       <Image
         source={image ? { uri: image } : require("../assets/fakeSubmissionPhotos/submission1.jpeg")}
-        style={[styles.image, small && styles.imageSmall]} />
+        style={[styles.photo, small && styles.imageSmall]} />
       <Text style={[styles.caption, small && styles.captionSmall]}>{caption ?? ""}</Text>
     </View>
   );
@@ -34,10 +34,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 0,
   },
-  image: {
-    aspectRatio: 1, // Maintain aspect ratio
-    marginBottom: 20,
-  },
   imageSmall: {
     aspectRatio: 1, // Maintain aspect ratio
     marginBottom: 10,
@@ -51,6 +47,17 @@ const styles = StyleSheet.create({
   selected: {
     borderColor: theme.colors.purple,
     borderWidth: 2,
+  },
+  photo: {
+    aspectRatio: 1, // Maintain aspect ratio
+    width: '100%',
+    height: 300,
+    marginBottom: 20,
+    marginRight: 20
+  },
+  caption: {
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 
