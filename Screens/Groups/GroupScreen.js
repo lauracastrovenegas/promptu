@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, KeyboardAvoidingView, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Keyboard, TextInput, TouchableOpacity, Alert } from "react-native";
 import theme from "../../theme";
 import MemberListBubbles from "../../Components/MemberListBubbles";
 import CardContainer from "../../Components/CardContainer";
@@ -10,23 +10,13 @@ import Countdown from "../../Components/Countdown";
 import CommentSection from "../../Components/CommentSection";
 import PolaroidPhoto from "../../Components/PolaroidPhoto";
 import GroupLink from "../../Components/GroupLink";
+import { addDoc, collection, getDoc } from "firebase/firestore";
+import { db } from "../../config/firebase";
+import { FontAwesome6 } from '@expo/vector-icons';
 
 /* This component is the Individual Group Screen  */
 const GroupScreen = ({ route, navigation }) => {
   const { state } = useAppContext();
-
-  /* useEffect(() => {
-    const interval = setInterval(() => {
-      const now = getCurrentTimePDT();
-
-      if (now === 19 * 60) {
-        // Replace 'YourScreenName' with the name of your screen
-        navigation.replace('Group Screen', { group: route.params.group });
-      }
-    }, 60000); // Check every minute
-
-    return () => clearInterval(interval);
-  }, [navigation]); */
 
   const group = route.params.group;
 
@@ -68,14 +58,53 @@ const GroupScreen = ({ route, navigation }) => {
     return <DailyPromptInfoBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
   }
 
-  return (
+  async function onSendComment(comment) {
+    if (comment.length === 0) return;
 
-    <View style={styles.screen}>
-      <View style={{ padding: 20 }}>
-        {getBox()}
-      </View>
-      <CommentSection group={group} />
-    </View>
+    const timestamp = new Date().getTime();
+
+    try {
+      const docRef = await addDoc(collection(db, "group_comments"), {  // generates ID for you
+        groupId: group.id,
+        user: state.userData,
+        createdAt: timestamp,
+        text: comment,
+      });
+
+      const commentDoc = await getDoc(docRef);
+
+      if (commentDoc.exists()) {
+        const newComment = commentDoc.data();
+        // setComments([...comments, { ...newComment, id: commentDoc.id }]);
+      } else {
+        console.log("No comment document exists.");
+      }
+    } catch (error) {
+      Alert.alert("Error Adding Comment", error.message);
+    }
+
+    Keyboard.dismiss();
+  }
+
+  return (
+    <KeyboardAvoidingView style={styles.screen} behavior="padding" keyboardVerticalOffset={95}>
+      
+
+          <View style={styles.topSection}>
+            <View style={{ padding: 20 }}>
+              {getBox()}
+            </View>
+              <CommentSection group={group} />
+            
+          </View>
+
+      
+      <View style={styles.bottomSection}>
+        <CommentTextInput
+          groupName={group.groupName}
+          onSend={onSendComment} />
+      </View >
+    </KeyboardAvoidingView >
   )
 };
 
@@ -163,10 +192,69 @@ const WinnersBox = ({ contestInfo, winner, showTitle }) => {
   );
 }
 
+const CommentTextInput = ({ groupName, onSend, isLoading }) => {
+  const [comment, setComment] = useState('');
+
+  function onSendComment() {
+    onSend(comment);
+    setComment('');
+  }
+
+  return (
+    <View style={styles.commentInputContainer}>
+      <TextInput
+        multiline
+        placeholder={`Send a message to ${groupName}`}
+        style={styles.commentTextBox}
+        maxLength={200}
+        onChangeText={setComment}
+        value={comment}
+        blurOnSubmit={true}
+        returnKeyType="done"/>
+      <TouchableOpacity style={styles.sendButton} onPress={onSendComment} disabled={isLoading}>
+        <FontAwesome6
+          name="arrow-up"
+          size={20}
+          color={theme.colors.white} />
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   screen: {
+    flexDirection: 'column',
     backgroundColor: theme.colors.white,
     height: '100%',
+    flex: 1
+  },
+  topSection: {
+    display: 'flex',
+    flex: 1,
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  bottomSection: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    height: 'fit-content',
+  },
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    flex: 3,
+  },
+  signupText: {
+    fontSize: 14,
+    fontFamily: "Poppins_400Regular",
+    textAlign: 'center',
+    margin: 16
   },
   cardContents: {
     display: 'flex',
@@ -224,5 +312,32 @@ const styles = StyleSheet.create({
     height: '100%',
     padding: 20,
     gap: 40,
-  }
+  },
+  commentInputContainer: {
+    backgroundColor: theme.colors.white,
+    borderTopWidth: 1,
+    borderColor: theme.colors.lightGray,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+  },
+  commentTextBox: {
+    backgroundColor: theme.colors.mediumGray,
+    borderColor: theme.colors.white,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    fontSize: 16,
+    flex: 1,
+  },
+  sendButton: {
+    backgroundColor: theme.colors.purple,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+    paddingHorizontal: 15,
+    height: 45,
+    marginVertical: 'auto'
+  },
 });
