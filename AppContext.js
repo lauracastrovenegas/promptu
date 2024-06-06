@@ -59,8 +59,8 @@ const appReducer = (state, action) => {
       case 'UPDATE_GROUP_CONTEST_DATA':
         return {
           ...state,
-          groupsContestData: state.groupsContestData.map(group =>
-            group.id === action.payload.id ? action.payload.data : group
+          groupsContestData: state.groupsContestData.map(groupContest =>
+            groupContest.id === action.payload.id ? action.payload.data : groupContest
           ),
         };
     case 'ADD_GROUPS_CONTEST_DATA':

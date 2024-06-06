@@ -61,7 +61,7 @@ const WinnerAnnouncementScreen = ({ route, navigation }) => {
       </Text>
       <ScrollView contentContainerStyle={styles.topSection}>
         {winners.map(winner => {
-          const winnerSubmission = groupContest.submissions.find(submission => submission.userId === winner.uid);
+          const winnerSubmission = groupContest.submissions.find(submission => submission.userId === winner.uid)[0];
           return (
             <View key={winner.uid} style={styles.winnerContainer}>
               <Text style={styles.winnerName}>{winner.displayName}</Text>

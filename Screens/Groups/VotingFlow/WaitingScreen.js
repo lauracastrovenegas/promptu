@@ -59,8 +59,11 @@ const WaitingScreen = ({ route, navigation }) => {
         } catch (error) {
           Alert.alert("Error updating group contest doc to indicate voting has occured.", error.message);
         }
+
+        console.log("Voting has occurred. Winner(s): ", winner);
+        console.log({ ...groupContest, hasVotingOccurred: true, winner: winner })
   
-        dispatch({ type: 'UPDATE_GROUP_CONTEST_DATA', payload: { ...groupContest, hasVotingOccurred: true, winner: winner, hasVotingOccurred: true } });
+        dispatch({ type: 'UPDATE_GROUP_CONTEST_DATA', payload: {data: { ...groupContest, hasVotingOccurred: true, winner: winner }}});
   
         navigation.navigate('Winner Announcement Screen', { group });
       }
