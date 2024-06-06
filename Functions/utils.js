@@ -10,13 +10,16 @@ export const hasUserSubmittedToGroup = (group, user, groupsContests) => {
 
 // used for the countdown timer in the group card
 export const timeUntilEndOfDay = (deadline) => {
+  const offset = -420;  // offset for PDT
 
   const now = new Date();
   const deadlineDate = new Date();
 
   // Get the current hour and minute
+  now.setTime(now.getTime() + (now.getTimezoneOffset() * 60000) + (60000 * offset));
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
+ 
 
   // Check if it's past deadline today
   if (currentHour > deadline || (currentHour === deadline && currentMinute > 0)) {

@@ -117,7 +117,7 @@ const DailyPromptInfoBox = ({ group, contestInfo, hasUserSubmitted, onSubmit }) 
       <View style={styles.cardContents}>
         <Text style={styles.promptTitle}>Today's Prompt</Text>
         <Text style={styles.prompt}>{contestInfo ? contestInfo.prompt : ""}</Text>
-        <Countdown style={styles.countdown} deadline={19} />
+        <Countdown style={styles.countdown} deadline={18} />
         <MemberListBubbles group={group} groupContests={state.groupsContestData} />
         <Button
           title={`${hasUserSubmitted ? "Resubmit" : "Submit"} Your Photo`}
