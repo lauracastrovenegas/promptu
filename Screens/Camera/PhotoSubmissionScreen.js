@@ -22,31 +22,43 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
   }, [selectedGroup]);
 
   async function submitPhoto() {
-    const currentContestInfo = contestInfo;
+    try {
+      const currentContestInfo = contestInfo;
 
-    // check if there is an existing submission for the user
-    const userHasSubmittedAlready = hasUserSubmittedToGroup(selectedGroup, state.userData, state.groupsContestData);
+      // check if there is an existing submission for the user
+      const userHasSubmittedAlready = hasUserSubmittedToGroup(selectedGroup, state.userData, state.groupsContestData);
 
-    if (userHasSubmittedAlready) {
-      const replaceSubmission = await createConfirmationAlert('Confirm Submission', 'You have already submitted a photo for this group. Would you like to replace it?', 'Yes, replace it');
+      if (userHasSubmittedAlready) {
+        const replaceSubmission = await createConfirmationAlert('Confirm Submission', 'You have already submitted a photo for this group. Would you like to replace it?', 'Yes, replace it');
 
-      if (!replaceSubmission) {
-        return;
+        if (!replaceSubmission) {
+          return;
+        }
+
+        // remove the existing submission
+        currentContestInfo.submissions = currentContestInfo.submissions.filter(submission => submission.userId !== state.userData.uid);
       }
+      setSubmissionLoading(true);
+      const success = await addSubmissionToGroup(currentContestInfo.id, route.params.photo.uri, caption, state.userData.uid, userHasSubmittedAlready);
+      setSubmissionLoading(false);
 
-      // remove the existing submission
-      currentContestInfo.submissions = currentContestInfo.submissions.filter(submission => submission.userId !== state.userData.uid);
+      if (success) {
+        alert(`Photo submitted to ${selectedGroup.groupName}!`);
+      } else {
+        Alert.alert("Error Submitting Photo", "An error occurred while submitting your photo. Please try again later.");
+      }
+      
+    } catch (error) {
+      console.error("Error submitting photo: ", error);
+      setSubmissionLoading(false);
+      Alert.alert("Error Submitting Photo", "An error occurred while submitting your photo. Please try again later.");
     }
-    setSubmissionLoading(true);
-    await addSubmissionToGroup(currentContestInfo.id, route.params.photo.uri, caption, state.userData.uid, userHasSubmittedAlready);
-    setSubmissionLoading(false);
-    alert(`Photo submitted to ${selectedGroup.groupName}!`);
 
     // go to the camera screen
     navigation.navigate('Main Camera Screen');
   }
 
-  if (isLoading || submissionLoading) {
+  if (isLoading) {
     return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
   }
 
@@ -64,7 +76,7 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
           maxLength={200}
           onChangeText={onChangeCaption}
           value={caption} />
-        <Button title="Submit Photo" onPress={submitPhoto} disabled={selectedGroup === null}/>
+        <Button title="Submit Photo" onPress={submitPhoto} disabled={selectedGroup === null} isLoading={submissionLoading}/>
       </View>
     </KeyboardAwareScrollView>
   );

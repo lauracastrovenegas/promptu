@@ -56,13 +56,13 @@ const appReducer = (state, action) => {
         ...state,
         groupsContestData: action.payload,
       };
-      case 'UPDATE_GROUP_CONTEST_DATA':
-        return {
-          ...state,
-          groupsContestData: state.groupsContestData.map(groupContest =>
-            groupContest.id === action.payload.data.groupContestId ? action.payload.data : groupContest
-          ),
-        };
+    case 'UPDATE_GROUP_CONTEST_DATA':
+      return {
+        ...state,
+        groupsContestData: state.groupsContestData.map(groupContest =>
+          groupContest.id === action.payload.data.groupContestId ? action.payload.data : groupContest
+        ),
+      };
     case 'ADD_GROUPS_CONTEST_DATA':
       return {
         ...state,
@@ -78,13 +78,13 @@ const appReducer = (state, action) => {
           groupContest.id === action.payload.groupContestId ? { ...groupContest, votes: action.payload.data } : groupContest
         ),
       };
-      case 'UPDATE_GROUPS_CONTEST_HAS_VOTED':
-        return {
-          ...state,
-          groupsContestData: state.groupsContestData.map(groupContest =>
-            groupContest.id === action.payload.groupContestId ? { ...groupContest, hasVoted: action.payload.data } : groupContest
-          ),
-        };
+    case 'UPDATE_GROUPS_CONTEST_HAS_VOTED':
+      return {
+        ...state,
+        groupsContestData: state.groupsContestData.map(groupContest =>
+          groupContest.id === action.payload.groupContestId ? { ...groupContest, hasVoted: action.payload.data } : groupContest
+        ),
+      };
     default:
       return state;
   }
@@ -98,18 +98,18 @@ export const AppProvider = ({ children, currentUser }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-  
+
       if (currentUser) {
         const userData = await fetchUserData(currentUser.uid);
         const groupData = await fetchGroupData(currentUser.uid);
         const groupIds = groupData.map((group) => group.id);
         const groupContestData = await fetchGroupContestData(groupIds);
-  
+
         console.log("Dispatching user data, group data, and group contest data"); // Add this line to debug
         dispatch({ type: 'SET_USER_DATA', payload: userData });
         dispatch({ type: 'SET_GROUPS_DATA', payload: groupData });
         dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: groupContestData });
-  
+
         setIsLoading(false);
       } else {
         dispatch({ type: 'SET_USER_DATA', payload: null });
@@ -117,10 +117,10 @@ export const AppProvider = ({ children, currentUser }) => {
         dispatch({ type: 'SET_GROUPS_CONTEST_DATA', payload: [] });
       }
     };
-  
+
     fetchData();
   }, [currentUser]);
-  
+
 
   const fetchUserData = async (uid) => {
     try {
@@ -154,33 +154,46 @@ export const AppProvider = ({ children, currentUser }) => {
       return null;
     }
   };
-  
+
 
   const addSubmissionToGroup = async (groupContestId, photo, caption, uid, hasSubmitted) => {
-    const response = await fetch(photo);
-    const blob = await response.blob();
-    const storageRef = ref(storage, `submission_pictures/${groupContestId}_${uid}`);
-
     try {
-      let photoURL = await getDownloadURL(storageRef);
-      await deleteObject(storageRef);
+      const response = await fetch(photo);
+      const blob = await response.blob();
+      const storageRef = ref(storage, `submission_pictures/${groupContestId}_${uid}`);
+
+      try {
+        let photoURL = await getDownloadURL(storageRef);
+        await deleteObject(storageRef);
+      } catch (error) {
+        // photo not in storage
+        return false;
+      }
+
+      try {
+        await uploadBytes(storageRef, blob);
+        let photoURL = await getDownloadURL(storageRef);
+
+        const currentContestInfo = await UpdateGroupContestWithSubmission(groupContestId, photoURL, caption, uid);
+        dispatch({ type: 'UPDATE_GROUP_CONTEST_SUBMISSION_DATA', payload: { id: groupContestId, submissions: currentContestInfo } });
+      } catch (error) {
+        console.log("Error adding submission to group: ", error.message);
+        return false;
+      }
     } catch (error) {
-      // photo not in storage
+      console.log("Error fetching photo: ", error.message);
+      return false;
     }
 
-    await uploadBytes(storageRef, blob);
-    let photoURL = await getDownloadURL(storageRef);
-
-    const currentContestInfo = await UpdateGroupContestWithSubmission(groupContestId, photoURL, caption, uid);
-    dispatch({ type: 'UPDATE_GROUP_CONTEST_SUBMISSION_DATA', payload: {id: groupContestId, submissions: currentContestInfo} });
+    return true;
   }
 
   const addVoteToGroup = async (groupContestId, submissionId, numVotes, userId) => {
     const updatedVotesAndHasVoted = await UpdateGroupContestWithVote(groupContestId, submissionId, numVotes, userId);
 
     if (updatedVotesAndHasVoted != null) {
-      dispatch({ type: 'UPDATE_GROUPS_CONTEST_VOTES', payload: { groupContestId: groupContestId, data: updatedVotesAndHasVoted.votes }});
-      dispatch({ type: 'UPDATE_GROUPS_CONTEST_HAS_VOTED', payload: { groupContestId: groupContestId, data: updatedVotesAndHasVoted.hasVoted }});
+      dispatch({ type: 'UPDATE_GROUPS_CONTEST_VOTES', payload: { groupContestId: groupContestId, data: updatedVotesAndHasVoted.votes } });
+      dispatch({ type: 'UPDATE_GROUPS_CONTEST_HAS_VOTED', payload: { groupContestId: groupContestId, data: updatedVotesAndHasVoted.hasVoted } });
     }
   }
 
