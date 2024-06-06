@@ -44,7 +44,9 @@ const WinnerAnnouncementScreen = ({ route, navigation }) => {
     );
   }
 
-  const winners = groupContest.winner || []; // Ensure winner is an array
+  const winners = groupContest.winner
+  // when there is only one winner
+  const winnerSubmission = groupContest.submissions.filter(submission => submission.userId === winners.uid)[0]; 
 
   function choosePromptOrWait() {
     if (winners.some(winner => winner.uid === state.userData.uid)) {
@@ -59,17 +61,25 @@ const WinnerAnnouncementScreen = ({ route, navigation }) => {
       <Text style={styles.title}>
         {winners.length > 1 ? 'Winners!' : 'Winner!'}
       </Text>
-      <ScrollView contentContainerStyle={styles.topSection}>
-        {winners.map(winner => {
-          const winnerSubmission = groupContest.submissions.find(submission => submission.userId === winner.uid)[0];
-          return (
-            <View key={winner.uid} style={styles.winnerContainer}>
-              <Text style={styles.winnerName}>{winner.displayName}</Text>
-              <PolaroidPhoto image={winnerSubmission.photo} caption={winnerSubmission.caption} />
-            </View>
-          );
-        })}
-      </ScrollView>
+      {winners.length > 1 ?
+            <ScrollView contentContainerStyle={styles.topSection}>
+            {winners.map(winner => {
+              // const winnerSubmission = groupContest.submissions.find(submission => submission.userId === winner.uid);
+              return (
+                <View key={winner.uid} style={styles.winnerContainer}>
+                  <Text style={styles.winnerName}>{winner.displayName}</Text>
+                  <PolaroidPhoto image={groupContest.submissions.filter(s => s.userId === winner.uid)[0].photo} caption={groupContest.submissions.filter(s => s.userId === winner.uid)[0].caption} />
+                  {/* <PolaroidPhoto image={winnerSubmission.photo} caption={winnerSubmission.caption} /> */}
+                </View>
+              );
+            })}
+          </ScrollView>
+          :
+          <View style={styles.topSection}>
+      <PolaroidPhoto image={winnerSubmission.photo} caption={winnerSubmission.caption}/>
+      </View>
+      }
+
       <Button
         title="Continue"
         onPress={choosePromptOrWait} />
