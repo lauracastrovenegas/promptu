@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, StyleSheet, View, Image, FlatList } from "react-native";
+import { ScrollView, Text, StyleSheet, View, Image, FlatList, ActivityIndicator } from "react-native";
 import theme from "../../theme";
 import { useAppContext } from "../../AppContext";
 import GroupPhotoName from "../../Components/GroupPhotoName";
@@ -10,11 +10,14 @@ const MainProfileScreen = () => {
 
   const user = state.userData;
 
+  if (isLoading || !user) {
+    return <View style={styles.screen}><ActivityIndicator size="large"/></View>;
+  }
+
+
   return (
     <View style={{ backgroundColor: theme.colors.white, flex: 1 }}>
-      {isLoading ? <Text>Loading...</Text> :
         <View style={styles.screen}>
-          {user ? (
             <View>
               <View style={styles.topSection}>
                 <Image source={user.photoURL ? { uri: user.photoURL } : require('../../assets/default_profile_picture.png')} style={styles.profilePic} />
@@ -35,10 +38,7 @@ const MainProfileScreen = () => {
                 />
               </View>
             </View>
-          ) : (
-            <Text>No user data available</Text>
-          )}
-        </View>}
+        </View>
     </View>
   )
 };
