@@ -188,18 +188,7 @@ const GroupsTab = ({ route, navigation }) => {
         options={({ route, navigation }) => ({
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
-          ),
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-            >
-              <FontAwesome6
-                name="chevron-left"
-                size={20}
-                color={theme.colors.black}
-                style={styles.icon} />
-            </TouchableOpacity>
-          ),
+          )
         })}
       />
       {/* Join Groups Page is the screen that allows users to join groups. */}

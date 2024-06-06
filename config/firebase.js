@@ -112,7 +112,7 @@ export const getGroupContestData = async (groupIds) => {
         where("groupId", "==", groupIdString),
         where("date", "==", dateStamp)
       );
-      
+
       // Execute the query
       const results = [];
       const querySnapshot = await getDocs(groupContestQuery);
@@ -122,7 +122,7 @@ export const getGroupContestData = async (groupIds) => {
         results.push(groupContest);
         groupContestData.push(groupContest);
       });
-      
+
       if (results.length === 0) {
         // No group contest document exists, so create one
         try {
@@ -131,7 +131,7 @@ export const getGroupContestData = async (groupIds) => {
             date: dateStamp,
             winner: [],
             hasVotingOccurred: false,
-            prompt:[ "This is the prompt of the day"],  // TODO fetch from prompt bank
+            prompt: ["This is the prompt of the day"],  // TODO fetch from prompt bank
             submissions: [],
             votes: [],
             hasVoted: [],
@@ -143,7 +143,7 @@ export const getGroupContestData = async (groupIds) => {
             groupContest.id = contestDoc.id;
             groupContestData.push(groupContest);
           }
-          
+
         } catch (error) {
           console.log("Error creating group contest: ", error.message);
         }
@@ -154,6 +154,28 @@ export const getGroupContestData = async (groupIds) => {
   } catch (error) {
     console.log("Error getting document in getGroupContestData: ", error.message);
     return [];
+  }
+};
+
+export const getPromptBank = async () => {
+  try {
+    const promptBankQuery = query(collection(db, "prompt_bank"));
+    const querySnapshot = await getDocs(promptBankQuery);
+    const promptBankData = [];
+    querySnapshot.forEach((prompttDoc) => {
+      const groupContest = prompttDoc.data();
+      groupContest.id = prompttDoc.id;
+      promptBankData.push(groupContest);
+    });
+  } catch (error) {
+    console.log("Error getting document in getPromptBank: ", error.message);
+    // return a default prompt bank if there is an error
+    return ["Capture a moment of gratitude: Share a picture of something you're thankful for today.",
+      "Embrace serenity: Post a picture of a peaceful scene that soothes your soul.",
+      "Reflect your current mood with a color: Share a picture representing your feelings today.",
+      "Find beauty in simplicity: Share a picture of something ordinary made extraordinary.",
+      "Explore your surroundings: Capture a unique perspective of your environment today.",
+      "Channel your inner artist: Share a picture inspired by a famous work of art."];
   }
 };
 
@@ -179,8 +201,7 @@ export const UpdateGroupContestWithSubmission = async (groupContestId, photo, ca
         updatedSubmissions = [...originalSubmissions, newSubmission];
       } else {
         originalSubmissions.forEach((submission) => {
-          if (submission.userId === uid)
-          {
+          if (submission.userId === uid) {
             updatedSubmissions.push(newSubmission);
           } else {
             updatedSubmissions.push(submission);
@@ -206,8 +227,7 @@ export const UpdateGroupContestWithSubmission = async (groupContestId, photo, ca
 export const UpdateGroupContestWithVote = async (groupContestId, submissionId, numVotes, userId) => {
   const votes = [];
 
-  for (let i = 0; i < numVotes; i++)
-  {
+  for (let i = 0; i < numVotes; i++) {
     votes.push(submissionId);
   }
 
