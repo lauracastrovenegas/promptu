@@ -60,7 +60,7 @@ const appReducer = (state, action) => {
         return {
           ...state,
           groupsContestData: state.groupsContestData.map(groupContest =>
-            groupContest.id === action.payload.id ? action.payload.data : groupContest
+            groupContest.id === action.payload.data.groupContestId ? action.payload.data : groupContest
           ),
         };
     case 'ADD_GROUPS_CONTEST_DATA':

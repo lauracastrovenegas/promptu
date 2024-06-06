@@ -11,7 +11,7 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
   const { state, isLoading, dispatch, addSubmissionToGroup } = useAppContext();
 
   const [caption, onChangeCaption] = useState('');
-  const [selectedGroup, setSelectedGroup] = useState(route.params.group ?? null);
+  const [selectedGroup, setSelectedGroup] = useState(route.params.group ?? (state.groupsData[0] ?? null));
   const [contestInfo, setContestInfo] = useState(null);
 
   useEffect(() => {
