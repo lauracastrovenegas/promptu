@@ -39,13 +39,13 @@ const PhotoSubmissionScreen = ({ route, navigation }) => {
         currentContestInfo.submissions = currentContestInfo.submissions.filter(submission => submission.userId !== state.userData.uid);
       }
       setSubmissionLoading(true);
-      const success = await addSubmissionToGroup(currentContestInfo.id, route.params.photo.uri, caption, state.userData.uid, userHasSubmittedAlready);
+      const { success, message } = await addSubmissionToGroup(currentContestInfo.id, route.params.photo.uri, caption, state.userData.uid, userHasSubmittedAlready);
       setSubmissionLoading(false);
 
       if (success) {
         alert(`Photo submitted to ${selectedGroup.groupName}!`);
       } else {
-        Alert.alert("Error Submitting Photo", "An error occurred while submitting your photo. Please try again later.");
+        Alert.alert("Error Submitting Photo", `An error occurred while submitting your photo. Please try again later.\n${message}`);
       }
       
     } catch (error) {
