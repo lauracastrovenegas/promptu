@@ -15,6 +15,19 @@ import GroupLink from "../../Components/GroupLink";
 const GroupScreen = ({ route, navigation }) => {
   const { state } = useAppContext();
 
+  /* useEffect(() => {
+    const interval = setInterval(() => {
+      const now = getCurrentTimePDT();
+
+      if (now === 19 * 60) {
+        // Replace 'YourScreenName' with the name of your screen
+        navigation.replace('Group Screen', { group: route.params.group });
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [navigation]); */
+
   const group = route.params.group;
 
   if (group.members.length < 3) {

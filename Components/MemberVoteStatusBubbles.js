@@ -4,11 +4,12 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import theme from '../theme';
 import { getTodaysGroupContest } from '../Functions/utils';
 import { useAppContext } from '../AppContext';
+import useGroupContest from '../hooks/useGroupContest';
 
-const MemberVoteStatusBubbles = ({ group }) => {
+const MemberVoteStatusBubbles = ({ group, groupContest, loading }) => {
   const { state, isLoading } = useAppContext();
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return <View><ActivityIndicator/></View>;
   }
 
@@ -17,10 +18,13 @@ const MemberVoteStatusBubbles = ({ group }) => {
   // Goes through all members and the submissions and returns whether each member has submitted or not
   function getMemberVotes() {
     const members = group.members;
-    const contestInfo  = getTodaysGroupContest(group, state.groupsContestData);
-    const hasVoted = contestInfo ? contestInfo.hasVoted : [];
+    const hasVoted = groupContest ? groupContest.hasVoted : [];
+    const submissions = groupContest ? groupContest.submissions : [];
 
-    const memberVotes = members.map(member => {
+    // remove any user that is not in the submissions array from the members array
+    const membersFiltered = members.filter(user => submissions.find(submission => submission.userId === user.uid));
+
+    const memberVotes = membersFiltered.map(member => {
       const memberVoted = hasVoted.find(userId => userId === member.uid);
 
       return {

@@ -4,7 +4,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Button from '../../../Components/Button';
 import CardContainer from '../../../Components/CardContainer';
 import theme from '../../../theme';
-import { db } from "../../../config/firebase";
+import { db, getPromptBank } from "../../../config/firebase";
 import { addDoc, arrayUnion, collection, getDocs, query, updateDoc, where, doc } from "firebase/firestore";
 import { getTomorrowsDateStamp } from "../../../Functions/utils";
 
@@ -66,7 +66,26 @@ const ChoosePromptScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     // TODO fetch from prompt bank
-    setPromptBank(prompts);
+    async function getPrompts () {
+      const promptBank = await getPromptBank();
+      // pick random three prompts from the bank
+      const promptOptions = [];
+      for (let i = 0; i < 3; i++) {
+        const randomIndex = Math.floor(Math.random() * promptBank.length);
+        const selectedPrompt = promptBank[randomIndex];
+        if (promptOptions.includes(selectedPrompt)) {
+          // if the prompt is already in the options, try again
+          i--;
+          continue;
+        }
+        promptOptions.push(selectedPrompt);
+        promptBank.splice(randomIndex, 1);
+      }
+
+      setPromptBank(promptOptions);
+    }
+
+    getPrompts();
   },[]);
 
   return (

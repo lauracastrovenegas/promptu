@@ -188,7 +188,8 @@ const GroupsTab = ({ route, navigation }) => {
         options={({ route, navigation }) => ({
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
-          )
+          ),
+          headerBackVisible: false
         })}
       />
       {/* Join Groups Page is the screen that allows users to join groups. */}

@@ -4,7 +4,6 @@ import { getDocs, collection, query, where, onSnapshot, orderBy } from "firebase
 import { db } from '../config/firebase';
 
 export default function useComments(groupId) {
-  console.log('groupId', groupId);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
 
