@@ -167,7 +167,7 @@ export const AppProvider = ({ children, currentUser }) => {
         await deleteObject(storageRef);
       } catch (error) {
         // photo not in storage
-        return false;
+        return { success: false, message: "Error deleting previous submission: " + error.message };
       }
 
       try {
@@ -178,14 +178,14 @@ export const AppProvider = ({ children, currentUser }) => {
         dispatch({ type: 'UPDATE_GROUP_CONTEST_SUBMISSION_DATA', payload: { id: groupContestId, submissions: currentContestInfo } });
       } catch (error) {
         console.log("Error adding submission to group: ", error.message);
-        return false;
+        return { success: false, message: "Error adding submission to group: " + error.message };
       }
     } catch (error) {
       console.log("Error fetching photo: ", error.message);
-      return false;
+      return { success: false, message: "Error fetching photo: " + error.message };
     }
 
-    return true;
+    return { success: true, message: "Submission added successfully" };
   }
 
   const addVoteToGroup = async (groupContestId, submissionId, numVotes, userId) => {
