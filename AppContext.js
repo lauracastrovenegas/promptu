@@ -166,8 +166,7 @@ export const AppProvider = ({ children, currentUser }) => {
         let photoURL = await getDownloadURL(storageRef);
         await deleteObject(storageRef);
       } catch (error) {
-        // photo not in storage
-        return { success: false, message: "Error deleting previous submission: " + error.message };
+        // old photo not in storage, continue
       }
 
       try {
