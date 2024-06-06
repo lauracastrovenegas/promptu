@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { getGroupComments, getCommentTimestamp } from '../Functions/utils';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import theme from '../theme';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useAppContext } from '../AppContext';
 import { db } from "../config/firebase";
 import { getDoc, addDoc, collection } from "firebase/firestore";
+import { onSnapshot, query, where } from "firebase/firestore";
+import useComments from '../hooks/useComments';
 
 const CommentSection = ({ group }) => {
   const { state } = useAppContext();
-  const [comments, setComments] = useState([]);
 
-  useEffect(() => {
-    const fetchAndSetComments = async () => {
-      const comments = await getGroupComments(group.id);
-      setComments(comments);
-    };
-
-    fetchAndSetComments();
-  }, []);
+  const { comments, loading } = useComments(group.id);
 
   async function onSend(comment) {
     if (comment.length === 0) return;
@@ -37,7 +32,7 @@ const CommentSection = ({ group }) => {
 
       if (commentDoc.exists()) {
         const newComment = commentDoc.data();
-        setComments([...comments, { ...newComment, id: commentDoc.id }]);
+        // setComments([...comments, { ...newComment, id: commentDoc.id }]);
       } else {
         console.log("No comment document exists.");
       }
@@ -48,20 +43,23 @@ const CommentSection = ({ group }) => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView
-        style={{ transform: [{ scaleY: -1 }] }}
+    <KeyboardAvoidingView behavior="position" style={styles.keyboardAvoidingView} keyboardVerticalOffset={95}>
+      <KeyboardAwareScrollView
+        style={{ transform: [{ scaleY: -1 }], backgroundColor: theme.colors.white }}
+        keyboardDismissMode="on-drag"
         horizontal={false}>
         <View style={styles.commentsContainer}>
-          {comments.map(comment => (
-            <Comment key={comment.id} comment={comment} />
-          ))}
+          {loading ? <ActivityIndicator size="small" color={theme.colors.white} />
+            : comments.map(comment => (
+              <Comment key={comment.id} comment={comment} />
+            ))}
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <CommentTextInput
         groupName={group.groupName}
-        onSend={onSend} />
-    </View>
+        onSend={onSend}
+        isLoading={loading} />
+    </KeyboardAvoidingView>
   );
 };
 
@@ -82,7 +80,7 @@ const Comment = ({ comment }) => {
   );
 }
 
-const CommentTextInput = ({ groupName, onSend }) => {
+const CommentTextInput = ({ groupName, onSend, isLoading }) => {
   const [comment, setComment] = useState('');
 
   function onSendComment() {
@@ -99,7 +97,7 @@ const CommentTextInput = ({ groupName, onSend }) => {
         maxLength={200}
         onChangeText={setComment}
         value={comment} />
-      <TouchableOpacity style={styles.sendButton} onPress={onSendComment}>
+      <TouchableOpacity style={styles.sendButton} onPress={onSendComment} disabled={isLoading}>
         <FontAwesome6
           name="arrow-up"
           size={20}
@@ -110,10 +108,18 @@ const CommentTextInput = ({ groupName, onSend }) => {
 }
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.lightGray,
+    flex: 1,
+    paddingBottom: 75,
+  },
   commentsContainer: {
     padding: 20,
     display: 'flex',
     gap: 15,
+    orderTopWidth: 1,
+    borderTopColor: theme.colors.lightGray,
     transform: [{ scaleY: -1 }]
   },
   commentContainer: {
@@ -145,6 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   commentInputContainer: {
+    backgroundColor: theme.colors.white,
     borderTopWidth: 1,
     borderColor: theme.colors.lightGray,
     paddingVertical: 10,

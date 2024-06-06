@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, KeyboardAvoidingView, ScrollView } from "react-native";
 import theme from "../../theme";
 import MemberListBubbles from "../../Components/MemberListBubbles";
 import CardContainer from "../../Components/CardContainer";
 import Button from "../../Components/Button";
-import { getCurrentTimePDT } from "../../Functions/utils";
+import { getCurrentTimePDT, getTodaysGroupContest } from "../../Functions/utils";
 import { useAppContext } from "../../AppContext";
 import Countdown from "../../Components/Countdown";
 import CommentSection from "../../Components/CommentSection";
@@ -28,7 +28,7 @@ const GroupScreen = ({ route, navigation }) => {
     );
   }
 
-  const contestInfo = route.params.contestInfo;
+  const contestInfo = getTodaysGroupContest(group, state.groupsContestData);
   const hasUserSubmitted = contestInfo.submissions.map(submission => submission.userId).includes(state.userData.uid);
 
   function getBox() {
@@ -49,11 +49,12 @@ const GroupScreen = ({ route, navigation }) => {
       const navTo = contestInfo.submissions.length == 3 ? 'Second Voting Screen' : 'First Voting Screen';
       return <VotingBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate(navTo, { group })} />;
     }
-    
+
     return <DailyPromptInfoBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
   }
 
   return (
+
     <View style={styles.screen}>
       <View style={{ padding: 20 }}>
         {getBox()}
