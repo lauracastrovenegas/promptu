@@ -160,7 +160,7 @@ export const AppProvider = ({ children, currentUser }) => {
     try {
       const response = await fetch(photo);
       const blob = await response.blob();
-      const storageRef = ref(storage, `submission_pictures/${groupContestId}_${uid}`);
+      let storageRef = ref(storage, `submission_pictures/${groupContestId}_${uid}`);
 
       try {
         let photoURL = await getDownloadURL(storageRef);
@@ -170,6 +170,7 @@ export const AppProvider = ({ children, currentUser }) => {
       }
 
       try {
+        storageRef = ref(storage, `submission_pictures/${groupContestId}_${uid}`);
         await uploadBytes(storageRef, blob);
         let photoURL = await getDownloadURL(storageRef);
 
