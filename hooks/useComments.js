@@ -10,7 +10,7 @@ export default function useComments(groupId) {
   useEffect(() => {
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
-    const startOfTodayTimestamp = Math.floor(startOfToday.getTime() / 1000);
+    const startOfTodayTimestamp = Math.floor(startOfToday.getTime());
 
     const q = query(collection(db, "group_comments"), where("groupId", "==", groupId), where("createdAt", ">=", startOfTodayTimestamp), orderBy('createdAt', 'asc'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
