@@ -5,7 +5,7 @@ import SingleInput from "../../Components/SingleInput";
 import { useAppContext } from "../../AppContext";
 import Button from "../../Components/Button";
 import theme from '../../theme';
-import { storage, db, getGroupData, getGroupContestData } from "../../config/firebase";
+import { storage, db, getGroupData, getGroupContestData, getPromptBank } from "../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, getDoc, addDoc, updateDoc, collection } from "firebase/firestore";
 import { getTodaysDateStamp } from "../../Functions/utils";
@@ -74,12 +74,14 @@ const CreateGroupScreen = ({ navigation }) => {
 
      try {
        // create group contest for the first day
+       const promptBank = await getPromptBank();
+       const prompt = promptBank[Math.floor(Math.random() * promptBank.length)];
        contestDocRef = await addDoc(collection(db, "group_contests"), {   // ID for group contest is the same as for the group
          groupId: groupId,
          date: dateStamp,  // current date
          winner: [],
          hasVotingOccurred: false,
-         prompt: ["This is the prompt of the day"],  // TODO fetch from prompt bank
+         prompt: [prompt],
          submissions: [],
          votes: [],
          hasVoted: [],

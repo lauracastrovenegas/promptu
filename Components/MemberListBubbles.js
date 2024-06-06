@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 10,
+    flexWrap: 'wrap',
   },
   userPhoto: {
     width: 30,

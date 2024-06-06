@@ -126,12 +126,14 @@ export const getGroupContestData = async (groupIds) => {
       if (results.length === 0) {
         // No group contest document exists, so create one
         try {
+          const promptBank = await getPromptBank();
+          const prompt = promptBank[Math.floor(Math.random() * promptBank.length)];
           const contestDocRef = await addDoc(collection(db, "group_contests"), {
             groupId: groupId,
             date: dateStamp,
             winner: [],
             hasVotingOccurred: false,
-            prompt: ["This is the prompt of the day"],  // TODO fetch from prompt bank
+            prompt: [prompt],
             submissions: [],
             votes: [],
             hasVoted: [],

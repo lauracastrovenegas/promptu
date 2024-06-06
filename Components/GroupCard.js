@@ -45,9 +45,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   prompt: {
-    textAlign: 'center',
     marginBottom: 'auto',
     fontSize: 16,
+    paddingBottom: 10,
   }
 });
 
