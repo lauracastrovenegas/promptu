@@ -162,20 +162,12 @@ export const AppProvider = ({ children, currentUser }) => {
       const blob = await response.blob();
       let storageRef = ref(storage, `submission_pictures/${groupContestId}_${uid}`);
 
-      if (hasSubmitted) {
-        try {
-          await deleteObject(storageRef);
-        } catch (error) {
-          return { success: false, message: "Error deleting photo: " + error.message };
-        }
-      }
-
-      /*try {
+      try {
         let photoURL = await getDownloadURL(storageRef);
         await deleteObject(storageRef);
       } catch (error) {
         // old photo not in storage, continue
-      }*/
+      }
 
       try {
         storageRef = ref(storage, `submission_pictures/${groupContestId}_${uid}`);
