@@ -73,6 +73,7 @@ const WinnerAnnouncementScreen = ({ route, navigation }) => {
                 <PolaroidPhoto
                   image={submission.photo}
                   caption={submission.caption}
+                  multiple={true}
                 />
               </View>
             );
