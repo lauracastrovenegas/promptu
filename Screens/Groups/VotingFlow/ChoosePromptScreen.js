@@ -107,7 +107,10 @@ const ChoosePromptScreen = ({ route, navigation }) => {
                 style={styles.textBox}
                 maxLength={200}
                 onChangeText={setCustomPrompt}
-                value={customPrompt} />
+                value={customPrompt}
+                blurOnSubmit={true}
+                returnKeyType='done'
+                />
             </CardContainer>
             {promptBank.map(prompt => (
               <TouchableOpacity key={prompt} onPress={() => setPrompt(prompt)}>

@@ -56,39 +56,40 @@ const WinnerAnnouncementScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>
-        {winners.length > 1 ? 'Winners!' : 'Winner!'}
-      </Text>
-      {winners.length > 1 ? (
-        <ScrollView contentContainerStyle={styles.topSection}>
-          {winners.map(winner => {
-            const submission = groupContest.submissions.find(s => s.userId === winner.uid);
-            if (!submission) {
-              console.error(`No submission found for userId: ${winner.uid}`);
-              return null;
-            }
-            return (
-              <View key={winner.uid} style={styles.winnerContainer}>
-                <Text style={styles.winnerName}>{winner.displayName}</Text>
-                <PolaroidPhoto
-                  image={submission.photo}
-                  caption={submission.caption}
-                  multiple={true}
-                />
-              </View>
-            );
-          })}
-        </ScrollView>
-      ) : (
-        <View style={styles.topSection}>
-          <Text style={styles.winnerTitle}>{winners[0].displayName}</Text>
-          <PolaroidPhoto
-            image={groupContest.submissions.find(s => s.userId === winners[0].uid).photo}
-            caption={groupContest.submissions.find(s => s.userId === winners[0].uid).caption}
-          />
-        </View>
-      )}
-
+      <ScrollView style={{paddingHorizontal: 5}}>
+        <Text style={styles.title}>
+          {winners.length > 1 ? 'Winners!' : 'Winner!'}
+        </Text>
+        {winners.length > 1 ? (
+          <ScrollView contentContainerStyle={styles.topSection}>
+            {winners.map(winner => {
+              const submission = groupContest.submissions.find(s => s.userId === winner.uid);
+              if (!submission) {
+                console.error(`No submission found for userId: ${winner.uid}`);
+                return null;
+              }
+              return (
+                <View key={winner.uid} style={styles.winnerContainer}>
+                  <Text style={styles.winnerName}>{winner.displayName}</Text>
+                  <PolaroidPhoto
+                    image={submission.photo}
+                    caption={submission.caption}
+                    multiple={true}
+                  />
+                </View>
+              );
+            })}
+          </ScrollView>
+        ) : (
+          <View style={styles.topSection}>
+            <Text style={styles.winnerTitle}>{winners[0].displayName.split(" ")[0]}</Text>
+            <PolaroidPhoto
+              image={groupContest.submissions.find(s => s.userId === winners[0].uid).photo}
+              caption={groupContest.submissions.find(s => s.userId === winners[0].uid).caption}
+            />
+          </View>
+        )}
+      </ScrollView>
       <Button
         title="Continue"
         onPress={choosePromptOrWait}
@@ -123,9 +124,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   title: {
-    fontSize: 40,
-    fontFamily: 'PatrickHandSC-Regular',
-    marginBottom: 20,
+    fontSize: 30,
+    marginVertical: 20,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   winnerTitle: {
