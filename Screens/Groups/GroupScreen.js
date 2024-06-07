@@ -10,7 +10,7 @@ import Countdown from "../../Components/Countdown";
 import CommentSection from "../../Components/CommentSection";
 import PolaroidPhoto from "../../Components/PolaroidPhoto";
 import GroupLink from "../../Components/GroupLink";
-import { addDoc, collection, getDoc } from "firebase/firestore";
+import { addDoc, collection, getDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { FontAwesome6 } from '@expo/vector-icons';
 import useGroupContest from "../../hooks/useGroupContest";
@@ -24,25 +24,29 @@ const GroupScreen = ({ route, navigation }) => {
   const [voteTime, setVoteTime] = useState(false);
 
   useEffect(() => {
-    // Interval to check the time every second
-    const intervalId = setInterval(() => {
+    // This is a hacky way to force a re-render when it's voting time by updating the database
+    const intervalId = setInterval(async () => {
       const time = getCurrentTimePDT();
 
       if (time >= 18 * 60 && !voteTime) {
         setVoteTime(true);
+        const groupContestDoc = await getDoc(doc(db, 'group_contests', groupContest.id));
+        if (groupContestDoc.exists()) {
+          await updateDoc(doc(db, "group_contests", groupContest.id), {
+            votingTimeReached: true,
+          });
+        }
       }
     }, 1000); // Check every second
 
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
-}, []);
+  }, []);
 
-useEffect(() => {
-  // reload if it's time to vote
-}, [voteTime]);
+  useEffect(() => {}, [voteTime]); // This forces the component to re-render when voteTime changes
 
   if (loading) {
-    return <View style={styles.screen}><ActivityIndicator size="large" style={{marginTop: 20}}/></View>;
+    return <View style={styles.screen}><ActivityIndicator size="large" style={{ marginTop: 20 }} /></View>;
   }
 
   if (group.members.length < 3) {
