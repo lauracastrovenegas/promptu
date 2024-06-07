@@ -99,14 +99,7 @@ const ChoosePromptScreen = ({ route, navigation }) => {
         <Text style={styles.title}>Choose tomorrow's photo prompt...</Text>
         <KeyboardAwareScrollView>
           <View style={styles.options}>
-            {promptBank.map(prompt => (
-              <TouchableOpacity key={prompt} onPress={() => setPrompt(prompt)}>
-                <CardContainer selected={selectedPrompt === prompt && customPrompt === ''}>
-                  <Text style={[styles.prompt].concat(selectedPrompt === prompt && customPrompt === '' ? { color: theme.colors.white, fontWeight: 'bold' } : {})}>{prompt}</Text>
-                </CardContainer>
-              </TouchableOpacity>
-            ))}
-            <CardContainer selected={customPrompt !== ''}>
+          <CardContainer selected={customPrompt !== ''}>
               <Text style={[styles.prompt].concat(customPrompt !== '' ? { color: theme.colors.white, fontWeight: 'bold' } : {})}>Custom Prompt</Text>
               <TextInput
                 multiline
@@ -116,6 +109,13 @@ const ChoosePromptScreen = ({ route, navigation }) => {
                 onChangeText={setCustomPrompt}
                 value={customPrompt} />
             </CardContainer>
+            {promptBank.map(prompt => (
+              <TouchableOpacity key={prompt} onPress={() => setPrompt(prompt)}>
+                <CardContainer selected={selectedPrompt === prompt && customPrompt === ''}>
+                  <Text style={[styles.prompt].concat(selectedPrompt === prompt && customPrompt === '' ? { color: theme.colors.white, fontWeight: 'bold' } : {})}>{prompt}</Text>
+                </CardContainer>
+              </TouchableOpacity>
+            ))}
           </View>
         </KeyboardAwareScrollView>
       </View>

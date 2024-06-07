@@ -19,7 +19,7 @@ export const timeUntilEndOfDay = (deadline) => {
   now.setTime(now.getTime() + (now.getTimezoneOffset() * 60000) + (60000 * offset));
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
- 
+
 
   // Check if it's past deadline today
   if (currentHour > deadline || (currentHour === deadline && currentMinute > 0)) {
@@ -86,7 +86,7 @@ export const getAllContestsForGroup = async (groupId) => {
   querySnapshot.forEach((doc) => {
     contests.push({ ...doc.data(), id: doc.id });
   });
-  
+
   return contests;
 }
 
@@ -104,7 +104,7 @@ export const getTodaysDateStamp = () => {
 
 export const getTomorrowsDateStamp = () => {
   const today = new Date();
-    
+
   // Add one day to the current date
   today.setDate(today.getDate() + 1);
 
@@ -118,27 +118,57 @@ export const getTomorrowsDateStamp = () => {
 }
 
 export const getTodaysGroupContest = (group, groupContests) => {
-  if (groupContests === null) return {};
-
   // get today's date
   const dateStamp = getTodaysDateStamp();
-  return groupContests.find(contest => contest.groupId === group.id && contest.date === dateStamp);
+
+  const defaultContest = {
+    groupId: group.id,
+    date: dateStamp,
+    winner: [],
+    hasVotingOccurred: false,
+    prompt: "",
+    submissions: [],
+    votes: [],
+    hasVoted: [],
+  };
+
+  if (groupContests === null) return defaultContest;
+
+  try {
+    const contest = groupContests.find(contest => contest.groupId === group.id && contest.date === dateStamp);
+
+    if (!contest) {
+      return defaultContest;
+    }
+
+    const prompts = contest.prompt;
+
+    // console.log("Prompt: ", contest.prompt);
+    if (contest.prompt instanceof Array) {
+      contest.prompt = prompts[0];
+    }
+
+    return contest;
+  } catch (error) {
+    console.error("Error getting today's group contest: ", error);
+    return defaultContest;
+  }
 }
 
 export function createConfirmationAlert(title, message, confirmOption) {
-	return new Promise((resolve) => {
-		Alert.alert(title, message, [
-			{
-				text: confirmOption,
-				onPress: () => { resolve(true) },
-			},
-			{
-				text: 'Cancel',
-				onPress: () => { resolve(false) },
-				style: 'cancel',
-			},
-		], { cancelable: false });
-	});
+  return new Promise((resolve) => {
+    Alert.alert(title, message, [
+      {
+        text: confirmOption,
+        onPress: () => { resolve(true) },
+      },
+      {
+        text: 'Cancel',
+        onPress: () => { resolve(false) },
+        style: 'cancel',
+      },
+    ], { cancelable: false });
+  });
 };
 
 export function getCurrentTimePDT() {

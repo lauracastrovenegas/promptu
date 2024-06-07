@@ -88,17 +88,17 @@ const GroupScreen = ({ route, navigation }) => {
 
   return (
     <KeyboardAvoidingView style={styles.screen} behavior="padding" keyboardVerticalOffset={95}>
-      
 
-          <View style={styles.topSection}>
-            <View style={{ padding: 20 }}>
-              {getBox()}
-            </View>
-              <CommentSection group={group} />
-            
-          </View>
 
-      
+      <View style={styles.topSection}>
+        <View style={{ padding: 20 }}>
+          {getBox()}
+        </View>
+        <CommentSection group={group} />
+
+      </View>
+
+
       <View style={styles.bottomSection}>
         <CommentTextInput
           groupName={group.groupName}
@@ -172,21 +172,24 @@ const ResultsBox = ({ contestInfo }) => {
 
 const WinnersBox = ({ contestInfo, winner, showTitle }) => {
   return (
-    <View style={styles.cardContentsRow}>
-      <View style={styles.winner}>
-        {showTitle && <Text style={styles.promptTitle}>Today's Winner</Text>}
-        <View style={styles.centerImage}>
-          <Image source={winner && winner.photoURL ? { uri: winner.photoURL } : require('../../assets/default_profile_picture.png')} style={styles.image} />
+    <View>
+      {showTitle && <Text style={styles.promptTitle}>Today's Winner</Text>}
+
+      <View style={styles.cardContentsRow}>
+        <View style={styles.winner}>
+          <View style={styles.centerImage}>
+            <Image source={winner && winner.photoURL ? { uri: winner.photoURL } : require('../../assets/default_profile_picture.png')} style={styles.image} />
+          </View>
+          <Text style={styles.prompt}>{winner.displayName.split(" ")[0]}</Text>
         </View>
-        <Text style={styles.prompt}>{winner.displayName}</Text>
-      </View>
-      <View style={{ flex: 1, width: 200, paddingBottom: 5 }}>
-        {winner.uid
-          ?
-          <PolaroidPhoto small image={contestInfo.submissions.filter(s => s.userId === winner.uid)[0].photo} caption={contestInfo.submissions.filter(s => s.userId === winner.uid)[0].caption} />
-          :
-          null
-        }
+        <View style={{ flex: 1, width: 200, paddingBottom: 5 }}>
+          {winner.uid
+            ?
+            <PolaroidPhoto small image={contestInfo.submissions.filter(s => s.userId === winner.uid)[0].photo} caption={contestInfo.submissions.filter(s => s.userId === winner.uid)[0].caption} />
+            :
+            null
+          }
+        </View>
       </View>
     </View>
   );
@@ -210,7 +213,7 @@ const CommentTextInput = ({ groupName, onSend, isLoading }) => {
         onChangeText={setComment}
         value={comment}
         blurOnSubmit={true}
-        returnKeyType="done"/>
+        returnKeyType="done" />
       <TouchableOpacity style={styles.sendButton} onPress={onSendComment} disabled={isLoading}>
         <FontAwesome6
           name="arrow-up"
