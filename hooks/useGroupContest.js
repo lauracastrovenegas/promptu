@@ -12,6 +12,7 @@ export default function useGroupContest(groupContestId) {
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "group_contests", groupContestId), (doc) => {
       const contest = { ...doc.data(), id: doc.id };
+      contest.prompt = contest.prompt[0]; // Prompt is stored as an array, but we only want the first element
       setGroupContest(contest);
       setLoading(false);
     });

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Keyboard, TextInput, TouchableOpacity, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Keyboard, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import theme from "../../theme";
 import MemberListBubbles from "../../Components/MemberListBubbles";
 import CardContainer from "../../Components/CardContainer";
@@ -13,12 +13,37 @@ import GroupLink from "../../Components/GroupLink";
 import { addDoc, collection, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { FontAwesome6 } from '@expo/vector-icons';
+import useGroupContest from "../../hooks/useGroupContest";
 
 /* This component is the Individual Group Screen  */
 const GroupScreen = ({ route, navigation }) => {
   const { state } = useAppContext();
-
   const group = route.params.group;
+  const contestInfo = getTodaysGroupContest(group, state.groupsContestData);
+  const { groupContest, loading } = useGroupContest(contestInfo.id);
+  const [voteTime, setVoteTime] = useState(false);
+
+  useEffect(() => {
+    // Interval to check the time every second
+    const intervalId = setInterval(() => {
+      const time = getCurrentTimePDT();
+
+      if (time >= 18 * 60 && !voteTime) {
+        setVoteTime(true);
+      }
+    }, 1000); // Check every second
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
+}, []);
+
+useEffect(() => {
+  // reload if it's time to vote
+}, [voteTime]);
+
+  if (loading) {
+    return <View style={styles.screen}><ActivityIndicator size="large" style={{marginTop: 20}}/></View>;
+  }
 
   if (group.members.length < 3) {
     return (
@@ -31,31 +56,28 @@ const GroupScreen = ({ route, navigation }) => {
     );
   }
 
-  const contestInfo = getTodaysGroupContest(group, state.groupsContestData);
-  const hasUserSubmitted = contestInfo.submissions.map(submission => submission.userId).includes(state.userData.uid);
+  const hasUserSubmitted = groupContest.submissions.map(submission => submission.userId).includes(state.userData.uid);
 
   function getBox() {
     const time = getCurrentTimePDT();
 
-    console.log(time);
-
     if (time >= 18 * 60) {  // 6PM
       // voting has occured
-      if (contestInfo.hasVotingOccurred) {
-        return <ResultsBox group={group} contestInfo={contestInfo} />;
+      if (groupContest.hasVotingOccurred) {
+        return <ResultsBox group={group} contestInfo={groupContest} />;
       }
 
       // not enough users submitted
-      if (contestInfo.submissions.length < 3) {
-        return <VotingBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Choose Prompt Screen', { group })} />;
+      if (groupContest.submissions.length < 3) {
+        return <VotingBox group={group} contestInfo={groupContest} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Choose Prompt Screen', { group })} />;
       }
 
       // voting screen
-      const navTo = contestInfo.submissions.length == 3 ? 'Second Voting Screen' : 'First Voting Screen';
-      return <VotingBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate(navTo, { group })} />;
+      const navTo = groupContest.submissions.length == 3 ? 'Second Voting Screen' : 'First Voting Screen';
+      return <VotingBox group={group} contestInfo={groupContest} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate(navTo, { group })} />;
     }
 
-    return <DailyPromptInfoBox group={group} contestInfo={contestInfo} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
+    return <DailyPromptInfoBox group={group} contestInfo={groupContest} hasUserSubmitted={hasUserSubmitted} onSubmit={() => navigation.navigate('Main Camera Screen', { group })} />;
   }
 
   async function onSendComment(comment) {
@@ -88,17 +110,12 @@ const GroupScreen = ({ route, navigation }) => {
 
   return (
     <KeyboardAvoidingView style={styles.screen} behavior="padding" keyboardVerticalOffset={95}>
-
-
       <View style={styles.topSection}>
         <View style={{ padding: 20 }}>
           {getBox()}
         </View>
         <CommentSection group={group} />
-
       </View>
-
-
       <View style={styles.bottomSection}>
         <CommentTextInput
           groupName={group.groupName}
@@ -229,7 +246,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: theme.colors.white,
     height: '100%',
-    flex: 1
+    flex: 1,
   },
   topSection: {
     display: 'flex',

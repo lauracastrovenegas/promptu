@@ -65,7 +65,7 @@ const WaitingScreen = ({ route, navigation }) => {
   
         dispatch({ type: 'UPDATE_GROUP_CONTEST_DATA', payload: {data: { ...groupContest, hasVotingOccurred: true, winner: winner }}});
   
-        navigation.navigate('Winner Announcement Screen', { group });
+        navigation.replace('Winner Announcement Screen', { group });
       }
     }
 

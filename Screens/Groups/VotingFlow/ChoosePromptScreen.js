@@ -60,7 +60,7 @@ const ChoosePromptScreen = ({ route, navigation }) => {
       Alert.alert("Error Creating or Updating Group Contest", error.message);
     }
 
-    navigation.pop(5); // Pop back to the group screen
+    navigation.goBack();
   }
 
 

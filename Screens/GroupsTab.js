@@ -149,17 +149,7 @@ const GroupsTab = ({ route, navigation }) => {
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
           ),
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-            >
-              <FontAwesome6
-                name="chevron-left"
-                size={20}
-                color={theme.colors.black}
-                style={styles.icon} />
-            </TouchableOpacity>
-          ),
+          headerBackVisible: false
         })}
       />
       <Stack.Screen
@@ -169,17 +159,7 @@ const GroupsTab = ({ route, navigation }) => {
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
           ),
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-            >
-              <FontAwesome6
-                name="chevron-left"
-                size={20}
-                color={theme.colors.black}
-                style={styles.icon} />
-            </TouchableOpacity>
-          ),
+          headerBackVisible: false
         })}
       />
       <Stack.Screen
@@ -219,17 +199,7 @@ const GroupsTab = ({ route, navigation }) => {
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
           ),
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-            >
-              <FontAwesome6
-                name="chevron-left"
-                size={20}
-                color={theme.colors.black}
-                style={styles.icon} />
-            </TouchableOpacity>
-          ),
+          headerBackVisible: false
         })} />
       <Stack.Screen
         name="Choose Prompt Screen"
@@ -238,17 +208,7 @@ const GroupsTab = ({ route, navigation }) => {
           headerTitle: () => (
             <GroupHeaderButton group={route.params.group} />
           ),
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-            >
-              <FontAwesome6
-                name="chevron-left"
-                size={20}
-                color={theme.colors.black}
-                style={styles.icon} />
-            </TouchableOpacity>
-          ),
+          headerBackVisible: false
         })}
       />
     </Stack.Navigator>

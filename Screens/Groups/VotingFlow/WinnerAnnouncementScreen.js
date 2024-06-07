@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import Button from '../../../Components/Button';
 import PolaroidPhoto from '../../../Components/PolaroidPhoto';
 import theme from '../../../theme';
@@ -29,11 +29,7 @@ const WinnerAnnouncementScreen = ({ route, navigation }) => {
   }, [group.id, fetchGroupContestData]);
 
   if (loading) {
-    return (
-      <View style={styles.screen}>
-        <Text style={styles.title}>Loading...</Text>
-      </View>
-    );
+    return <View style={styles.screen}><ActivityIndicator size="large" /></View>;
   }
 
   if (!groupContest) {
@@ -48,9 +44,9 @@ const WinnerAnnouncementScreen = ({ route, navigation }) => {
 
   function choosePromptOrWait() {
     if (winners.some(winner => winner.uid === state.userData.uid)) {
-      navigation.navigate('Choose Prompt Screen', { group });
+      navigation.replace('Choose Prompt Screen', { group });
     } else {
-      navigation.navigate('Group Screen', { group, contestInfo: groupContest });
+      navigation.replace('Group Screen', { group, contestInfo: groupContest });
     }
   }
 

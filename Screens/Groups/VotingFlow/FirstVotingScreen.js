@@ -21,7 +21,7 @@ const FirstVotingScreen = ({ route, navigation }) => {
   const submissions = contest.submissions.filter(submission => submission.userId !== state.userData.uid);
 
   function submitVote() {
-    navigation.navigate('Second Voting Screen', { group, topChoice: selectedSubmission });
+    navigation.replace('Second Voting Screen', { group, topChoice: selectedSubmission });
   }
 
   return (

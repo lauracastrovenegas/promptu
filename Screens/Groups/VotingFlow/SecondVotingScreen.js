@@ -27,7 +27,7 @@ const SecondVotingScreen = ({ route, navigation }) => {
       await addVoteToGroup(contest.id, topChoice, 2, state.userData.uid);
     }
     await addVoteToGroup(contest.id, selectedSubmission, 1, state.userData.uid);
-    navigation.navigate('Waiting Screen', { group });
+    navigation.replace('Waiting Screen', { group });
   }
 
   return (
